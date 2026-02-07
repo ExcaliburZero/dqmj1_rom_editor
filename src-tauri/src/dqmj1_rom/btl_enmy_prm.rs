@@ -22,7 +22,7 @@ pub struct ItemDrop {
 #[derive(Debug, Serialize)]
 pub struct BtlEnmyPrmEntry {
     pub species_id: u16,
-    pub unknown_a: [u8; 8],
+    pub unknown_a: [u8; 6],
     pub skills: [EnemySkill; 6],
     pub item_drops: [ItemDrop; 2],
     pub gold: u16,
