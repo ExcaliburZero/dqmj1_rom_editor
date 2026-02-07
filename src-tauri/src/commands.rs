@@ -14,7 +14,10 @@ pub fn unpack_rom(rom_filepath: &str, temp_directory: &str) {
 
 #[tauri::command]
 pub fn get_btl_enmy_prm(temp_directory: &str) -> BtlEnmyPrm {
-    let filepath = Path::new(temp_directory).join("BtlEnmyPrm.bin");
+    let filepath = Path::new(temp_directory)
+        .join("files")
+        .join("BtlEnmyPrm.bin");
+    println!("Reading BtlEnmyPrm from: {:?}", filepath);
     let file_data = fs::read(filepath).unwrap();
 
     BtlEnmyPrm::read(&mut Cursor::new(file_data)).unwrap()

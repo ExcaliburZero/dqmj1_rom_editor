@@ -7,18 +7,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DQMJ1 ROM Editor</title>
   <script type="module" src="/main.js" defer></script>
-  <script type="module" src="/index.js" defer></script>
+  <script type="module" src="/editor.js" defer></script>
 </head>
 
 <body>
   <main class="container">
-    <h1>Welcome to DQMJ1 ROM Editor</h1>
+    <h1>DQMJ1 ROM Editor</h1>
 
-    <p>Load a .nds ROM file of the game to start modding!</p>
-
-    <form class="row" id="rom-select-form">
-      <button id="rom-select-button" type="submit">Load ROM</button>
-    </form>
+    <div class="row">
+      <div class="column">
+        <p>Encounters</p>
+      </div>
+      <div class="column">
+        <div id="encounters-page">
+          <table id="encounters-table"></table>
+        </div>
+      </div>
+    </div>
   </main>
 </body>
 
