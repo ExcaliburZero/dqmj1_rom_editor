@@ -1,18 +1,22 @@
 const { invoke } = window.__TAURI__.core;
+const { open } = window.__TAURI__.dialog;
 
-let greetInputEl;
-let greetMsgEl;
+const tempDirectory = "tmp";
 
-async function greet() {
-  // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-  greetMsgEl.textContent = await invoke("greet", { name: greetInputEl.value });
+// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
+async function unpack_rom() {
+  console.log("Prompting user to choose rom file");
+  const romFilepath = await open({ multiple: false, directory: false, filters: [{ name: "Nintendo DS ROM", extensions: ["nds"] }] });
+
+  const options = { romFilepath: romFilepath, tempDirectory: tempDirectory };
+  console.log(`Unpacking rom: ${JSON.stringify(options)}`);
+  await invoke("unpack_rom", options);
+  console.log("Finished unpacking rom");
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  greetInputEl = document.querySelector("#greet-input");
-  greetMsgEl = document.querySelector("#greet-msg");
-  document.querySelector("#greet-form").addEventListener("submit", (e) => {
+  document.querySelector("#rom-select-button").addEventListener("click", (e) => {
     e.preventDefault();
-    greet();
+    unpack_rom();
   });
 });
