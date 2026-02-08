@@ -1,9 +1,9 @@
 use binrw::binrw;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 #[binrw]
 #[brw(little)]
-#[derive(Debug, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct EnemySkill {
     pub unknown_a: [u8; 2],
     pub skill_id: u16,
@@ -11,7 +11,7 @@ pub struct EnemySkill {
 
 #[binrw]
 #[brw(little)]
-#[derive(Debug, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct ItemDrop {
     pub item_id: u16,
     pub chance_denominator_2_power: u16,
@@ -19,7 +19,7 @@ pub struct ItemDrop {
 
 #[binrw]
 #[brw(little)]
-#[derive(Debug, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct BtlEnmyPrmEntry {
     pub species_id: u16,
     pub unknown_a: [u8; 6],
@@ -46,7 +46,7 @@ pub struct BtlEnmyPrmEntry {
 
 #[binrw]
 #[brw(little)]
-#[derive(Debug, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct BtlEnmyPrm {
     pub magic: u32, // TODO: use magic= field in brw instead
     pub length: u32,

@@ -1,4 +1,5 @@
 const { invoke } = window.__TAURI__.core;
+const { save } = window.__TAURI__.dialog;
 
 const tempDirectory = "tmp";
 
@@ -36,7 +37,7 @@ async function showEncounters() {
 
     setupEncounterSpecies();
 
-    const defaultEncounterId = 80; // early Slime encounter
+    const defaultEncounterId = 48; // starter Dracky
     select.value = defaultEncounterId;
     showEncounter(defaultEncounterId);
 }
@@ -87,7 +88,7 @@ function setupEncounterSpecies() {
     }
 
     speciesSelect.addEventListener("change", () => {
-        encounters.entries[currentEncounterId].species_id = speciesSelect.value;
+        encounters.entries[currentEncounterId].species_id = parseInt(speciesSelect.value);
     });
 }
 
@@ -129,6 +130,21 @@ function padToDigits(number, numDigits) {
     return string;
 }
 
+async function savePatchedRom() {
+    console.log(encounters);
+
+    // TODO: could do concurrently with user using the save dialog
+    await invoke("set_btl_enmy_prm", { tempDirectory: tempDirectory, btlEnmyPrm: encounters });
+
+    console.log("Prompting user to choose patched rom file save location");
+    const romFilepath = await save({ multiple: false, directory: false, filters: [{ name: "Nintendo DS ROM", extensions: ["nds"] }] });
+
+    const options = { romFilepath: romFilepath, tempDirectory: tempDirectory };
+    console.log(`Packing rom: ${JSON.stringify(options)}`);
+    await invoke("pack_rom", options);
+    console.log("Finished packing rom");
+}
+
 window.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#encounters-select").addEventListener("click", (e) => {
         e.preventDefault();
@@ -140,6 +156,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
         const encounterId = parseInt(value.substring(0, 3));
         showEncounter(encounterId);
+    });
+
+    document.querySelector("#save-patched-rom").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        savePatchedRom();
     });
 });
 

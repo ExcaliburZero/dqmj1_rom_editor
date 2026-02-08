@@ -1,7 +1,11 @@
-use std::{fs, io::Cursor, path::Path};
+use std::{
+    fs::{self, File},
+    io::Cursor,
+    path::Path,
+};
 
-use binrw::BinRead;
-use ds_rom::rom::{raw, Rom};
+use binrw::{BinRead, BinWriterExt};
+use ds_rom::rom::{raw, Rom, RomLoadOptions};
 
 use crate::dqmj1_rom::{btl_enmy_prm::BtlEnmyPrm, string_tables::StringTables};
 
@@ -13,6 +17,18 @@ pub fn unpack_rom(rom_filepath: &str, temp_directory: &str) {
 }
 
 #[tauri::command]
+pub fn pack_rom(rom_filepath: &str, temp_directory: &str) {
+    println!("Writing patched ROM to: {rom_filepath:?}");
+    println!("Reading from temp dir: {temp_directory:?}");
+
+    let config_filepath = Path::new(temp_directory).join("config.yaml");
+
+    let rom = Rom::load(config_filepath, RomLoadOptions::default()).unwrap();
+    let raw_rom = rom.build(None).unwrap();
+    raw_rom.save(rom_filepath).unwrap();
+}
+
+#[tauri::command]
 pub fn get_btl_enmy_prm(temp_directory: &str) -> BtlEnmyPrm {
     let filepath = Path::new(temp_directory)
         .join("files")
@@ -21,6 +37,17 @@ pub fn get_btl_enmy_prm(temp_directory: &str) -> BtlEnmyPrm {
     let file_data = fs::read(filepath).unwrap();
 
     BtlEnmyPrm::read(&mut Cursor::new(file_data)).unwrap()
+}
+
+#[tauri::command]
+pub fn set_btl_enmy_prm(temp_directory: &str, btl_enmy_prm: BtlEnmyPrm) {
+    let filepath = Path::new(temp_directory)
+        .join("files")
+        .join("BtlEnmyPrm.bin");
+    println!("Writing BtlEnmyPrm to: {filepath:?}");
+
+    let mut file = File::create(filepath).unwrap();
+    file.write_le(&btl_enmy_prm).unwrap();
 }
 
 #[tauri::command]

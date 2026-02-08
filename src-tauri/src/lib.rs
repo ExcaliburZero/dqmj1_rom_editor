@@ -1,4 +1,6 @@
-use crate::commands::{get_btl_enmy_prm, get_string_tables, unpack_rom};
+use crate::commands::{
+    get_btl_enmy_prm, get_string_tables, pack_rom, set_btl_enmy_prm, unpack_rom,
+};
 
 pub mod commands;
 pub mod dqmj1_rom;
@@ -11,7 +13,9 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
             unpack_rom,
+            pack_rom,
             get_btl_enmy_prm,
+            set_btl_enmy_prm,
             get_string_tables
         ])
         .run(tauri::generate_context!())
