@@ -36,6 +36,8 @@ async function showEncounters() {
     }
 
     setupEncounterSpecies();
+    setupItemDrop(1);
+    setupItemDrop(2);
 
     const defaultEncounterId = 48; // starter Dracky
     select.value = defaultEncounterId;
@@ -103,14 +105,31 @@ function setupEncounterSpecies() {
     });
 }
 
+function setupItemDrop(i) {
+    const itemDropItem = document.getElementById("encounters-item-drop-" + i + "-item");
+
+    let numItems = stringTables.item_names.length;
+    for (let i = 0; i < numItems; i++) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.innerHTML = `${stringTables.item_names[i]} (${i})`;
+
+        itemDropItem.appendChild(option);
+    }
+
+    itemDropItem.addEventListener("change", () => {
+        encounters.entries[currentEncounterId].item_drops[i - 1].item_id = parseInt(itemDropItem.value);
+    });
+}
+
 function populateItemDrop(encounter, i) {
     const itemDropItem = document.getElementById("encounters-item-drop-" + i + "-item");
-    const itemDropChance = document.getElementById("encounters-item-drop-" + i + "-chance");
 
     const itemDrop = encounter.item_drops[i - 1];
 
-    itemDropItem.innerHTML = `${stringTables.item_names[itemDrop.item_id]} (${itemDrop.item_id})`;
-    itemDropChance.innerHTML = itemDrop.chance_denominator_2_power;
+    itemDropItem.value = itemDrop.item_id;
+
+    setupInput("encounters-item-drop-" + i + "-chance", itemDrop.chance_denominator_2_power, (tag) => { itemDrop.chance_denominator_2_power = parseInt(tag.value) });
 }
 
 function populateSkill(encounter, i) {
@@ -167,7 +186,7 @@ async function savePatchedRom() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    document.querySelector("#encounters-select").addEventListener("click", (e) => {
+    document.querySelector("#encounters-select").addEventListener("change", (e) => {
         e.preventDefault();
 
         const select = document.getElementById("encounters-select");
