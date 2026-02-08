@@ -5,6 +5,8 @@ const tempDirectory = "tmp";
 let encounters = null;
 let stringTables = null;
 
+let currentEncounterId = null;
+
 async function showEncounters() {
     console.log("Showing encounters");
     if (encounters === null) {
@@ -32,6 +34,8 @@ async function showEncounters() {
         i++;
     }
 
+    setupEncounterSpecies();
+
     const defaultEncounterId = 80; // early Slime encounter
     select.value = defaultEncounterId;
     showEncounter(defaultEncounterId);
@@ -40,12 +44,14 @@ async function showEncounters() {
 async function showEncounter(encounterId) {
     console.log(`Showing encounter: ${encounterId}`);
 
+    currentEncounterId = encounterId;
+
     const encounter = encounters.entries[encounterId];
     console.log(encounter);
 
     document.getElementById("encounters-encounter-id").innerHTML = padToDigits(encounterId, 3);
 
-    document.getElementById("encounters-species").innerHTML = stringTables.species_names[encounter.species_id];
+    document.getElementById("encounters-species").value = encounter.species_id;
     document.getElementById("encounters-level").innerHTML = encounter.level;
     document.getElementById("encounters-max-hp").innerHTML = encounter.max_hp;
     document.getElementById("encounters-max-mp").innerHTML = encounter.max_mp;
@@ -66,6 +72,23 @@ async function showEncounter(encounterId) {
     populateSkill(encounter, 4);
     populateSkill(encounter, 5);
     populateSkill(encounter, 6);
+}
+
+function setupEncounterSpecies() {
+    const speciesSelect = document.getElementById("encounters-species");
+
+    let numSpecies = stringTables.species_names.length;
+    for (let i = 0; i < numSpecies; i++) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.innerHTML = `${stringTables.species_names[i]} (${i})`;
+
+        speciesSelect.appendChild(option);
+    }
+
+    speciesSelect.addEventListener("change", () => {
+        encounters.entries[currentEncounterId].species_id = speciesSelect.value;
+    });
 }
 
 function populateItemDrop(encounter, i) {
