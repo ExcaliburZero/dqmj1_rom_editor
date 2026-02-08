@@ -27,9 +27,14 @@ async function showEncounters() {
         select.appendChild(option);
 
         option.text = `${padToDigits(i, 3)} ${stringTables.species_names[encounter.species_id]}`
+        option.value = i;
 
         i++;
     }
+
+    const defaultEncounterId = 80; // early Slime encounter
+    select.value = defaultEncounterId;
+    showEncounter(defaultEncounterId);
 }
 
 async function showEncounter(encounterId) {
@@ -38,11 +43,19 @@ async function showEncounter(encounterId) {
     const encounter = encounters.entries[encounterId];
     console.log(encounter);
 
-    const encounterIdTd = document.getElementById("encounters-encounter-id");
-    encounterIdTd.innerHTML = padToDigits(encounterId, 3);
+    document.getElementById("encounters-encounter-id").innerHTML = padToDigits(encounterId, 3);
 
-    const speciesTd = document.getElementById("encounters-species");
-    speciesTd.innerHTML = stringTables.species_names[encounter.species_id];
+    document.getElementById("encounters-species").innerHTML = stringTables.species_names[encounter.species_id];
+    document.getElementById("encounters-level").innerHTML = encounter.level;
+    document.getElementById("encounters-max-hp").innerHTML = encounter.max_hp;
+    document.getElementById("encounters-max-mp").innerHTML = encounter.max_mp;
+    document.getElementById("encounters-attack").innerHTML = encounter.attack;
+    document.getElementById("encounters-defense").innerHTML = encounter.defense;
+    document.getElementById("encounters-wisdom").innerHTML = encounter.wisdom;
+    document.getElementById("encounters-agility").innerHTML = encounter.agility;
+    document.getElementById("encounters-scout-chance").innerHTML = encounter.scout_chance;
+    document.getElementById("encounters-exp").innerHTML = encounter.exp;
+    document.getElementById("encounters-gold").innerHTML = encounter.gold;
 }
 
 async function getStringTables() {
