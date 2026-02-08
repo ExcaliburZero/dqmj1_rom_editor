@@ -211,11 +211,15 @@ function padToDigits(number, numDigits) {
     return string;
 }
 
+async function syncFiles() {
+    await invoke("set_btl_enmy_prm", { btlEnmyPrm: encounters });
+}
+
 async function savePatchedRom() {
     console.log(encounters);
 
     // TODO: could do concurrently with user using the save dialog
-    await invoke("set_btl_enmy_prm", { btlEnmyPrm: encounters });
+    await syncFiles();
 
     console.log("Prompting user to choose patched rom file save location");
     const romFilepath = await save({ multiple: false, directory: false, filters: [{ name: "Nintendo DS ROM", extensions: ["nds"] }] });
@@ -224,6 +228,15 @@ async function savePatchedRom() {
     console.log(`Packing rom: ${JSON.stringify(options)}`);
     await invoke("pack_rom", options);
     console.log("Finished packing rom");
+}
+
+async function saveMod() {
+    await syncFiles();
+
+    const options = { modName: "mod1" };
+    console.log(`Saving mod: ${JSON.stringify(options)}`);
+    await invoke("save_mod", options);
+    console.log("Finished saving mod");
 }
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -237,6 +250,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
         const encounterId = parseInt(value.substring(0, 3));
         showEncounter(encounterId);
+    });
+
+    document.querySelector("#save-mod").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        saveMod();
     });
 
     document.querySelector("#save-patched-rom").addEventListener("click", (e) => {

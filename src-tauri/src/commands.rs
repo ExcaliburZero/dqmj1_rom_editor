@@ -1,7 +1,7 @@
 use std::{
     fs::{self, File},
     io::Cursor,
-    path::PathBuf,
+    path::{Path, PathBuf},
     time::Instant,
 };
 
@@ -11,21 +11,25 @@ use tauri::Manager;
 
 use crate::dqmj1_rom::{btl_enmy_prm::BtlEnmyPrm, string_tables::StringTables};
 
-fn get_mod_directory(app: tauri::AppHandle, temp_directory: &str) -> PathBuf {
+const MOD_FILES: [&str; 1] = ["files/BtlEnmyPrm.bin"];
+
+fn get_mod_directory(app: &tauri::AppHandle, mod_name: &str) -> PathBuf {
     let app_directory = app.path().app_data_dir().unwrap();
+    let mod_directory = app_directory.join("mods").join(mod_name);
 
-    fs::create_dir_all(&app_directory).unwrap();
+    fs::create_dir_all(&mod_directory).unwrap();
+    fs::create_dir_all(mod_directory.join("files")).unwrap();
 
-    app_directory.join("mods").join(temp_directory)
+    mod_directory
 }
 
-fn get_temp_directory(app: tauri::AppHandle) -> PathBuf {
+fn get_temp_directory(app: &tauri::AppHandle) -> PathBuf {
     get_mod_directory(app, "tmp")
 }
 
 #[tauri::command]
 pub fn unpack_rom(app: tauri::AppHandle, rom_filepath: &str) {
-    let temp_directory = get_temp_directory(app);
+    let temp_directory = get_temp_directory(&app);
 
     let now = Instant::now();
 
@@ -39,7 +43,7 @@ pub fn unpack_rom(app: tauri::AppHandle, rom_filepath: &str) {
 
 #[tauri::command]
 pub fn pack_rom(app: tauri::AppHandle, rom_filepath: &str) {
-    let temp_directory = get_temp_directory(app);
+    let temp_directory = get_temp_directory(&app);
 
     println!("Writing patched ROM to: {rom_filepath:?}");
     println!("Reading from temp dir: {temp_directory:?}");
@@ -58,7 +62,7 @@ pub fn pack_rom(app: tauri::AppHandle, rom_filepath: &str) {
 
 #[tauri::command]
 pub fn get_btl_enmy_prm(app: tauri::AppHandle) -> BtlEnmyPrm {
-    let temp_directory = get_temp_directory(app);
+    let temp_directory = get_temp_directory(&app);
 
     let filepath = temp_directory.join("files").join("BtlEnmyPrm.bin");
     println!("Reading BtlEnmyPrm from: {filepath:?}");
@@ -69,7 +73,7 @@ pub fn get_btl_enmy_prm(app: tauri::AppHandle) -> BtlEnmyPrm {
 
 #[tauri::command]
 pub fn set_btl_enmy_prm(app: tauri::AppHandle, btl_enmy_prm: BtlEnmyPrm) {
-    let temp_directory = get_temp_directory(app);
+    let temp_directory = get_temp_directory(&app);
 
     let filepath = temp_directory.join("files").join("BtlEnmyPrm.bin");
     println!("Writing BtlEnmyPrm to: {filepath:?}");
@@ -80,11 +84,28 @@ pub fn set_btl_enmy_prm(app: tauri::AppHandle, btl_enmy_prm: BtlEnmyPrm) {
 
 #[tauri::command]
 pub fn get_string_tables(app: tauri::AppHandle) -> StringTables {
-    let temp_directory = get_temp_directory(app);
+    let temp_directory = get_temp_directory(&app);
 
     let filepath = temp_directory.join("arm9").join("arm9.bin");
     println!("Reading string tables from ARM9 binary: {filepath:?}");
     let file_data = fs::read(filepath).unwrap();
 
     StringTables::from_arm9(&file_data)
+}
+
+#[tauri::command]
+pub fn save_mod(app: tauri::AppHandle, mod_name: &str) {
+    let temp_directory = get_temp_directory(&app);
+    let mod_directory = get_mod_directory(&app, mod_name);
+
+    for file in MOD_FILES.iter() {
+        let source = temp_directory.join(file);
+        let destination = mod_directory.join(file);
+
+        println!("---------");
+        println!("source: {source:?}");
+        println!("dest  : {destination:?}");
+
+        fs::copy(source, destination).unwrap();
+    }
 }

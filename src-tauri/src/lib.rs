@@ -1,5 +1,5 @@
 use crate::commands::{
-    get_btl_enmy_prm, get_string_tables, pack_rom, set_btl_enmy_prm, unpack_rom,
+    get_btl_enmy_prm, get_string_tables, pack_rom, save_mod, set_btl_enmy_prm, unpack_rom,
 };
 
 pub mod commands;
@@ -14,6 +14,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             unpack_rom,
             pack_rom,
+            save_mod,
             get_btl_enmy_prm,
             set_btl_enmy_prm,
             get_string_tables
