@@ -16,9 +16,27 @@ async function unpackRom() {
   window.location.href = "editor.html";
 }
 
+async function updateModList() {
+  const modsUl = document.getElementById("mod-list");
+
+  modsUl.innerHTML = "";
+
+  const mods = await invoke("get_mods", {});
+  for (const mod of mods) {
+    const modLi = document.createElement("li");
+    modLi.innerText = mod;
+
+    modsUl.appendChild(modLi);
+  }
+
+  console.log(mods)
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#rom-select-button").addEventListener("click", (e) => {
     e.preventDefault();
     unpackRom();
   });
+
+  updateModList();
 });

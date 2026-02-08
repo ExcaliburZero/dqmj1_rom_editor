@@ -1,3 +1,61 @@
+h1 {
+  font-family: 'Pixelify Sans';
+  font-size: 40pt;
+}
+
+#mod-list-div {
+  width: 200px;
+  height: 300px;
+  margin: auto;
+  margin-bottom: 10px;
+}
+
+#mod-list-div-inner {
+  height: 250px;
+  overflow-y: scroll;
+  scrollbar-color: #ffffff #202020;
+}
+
+#mod-list {
+  height: 250px;
+}
+
+.list-box {
+  background-color: #202020;
+  border: 2px solid #cbcbcb;
+  border-radius: 4px;
+  box-shadow: black 3px 3px;
+}
+
+.list-box ul {
+  padding-left: 0px;
+  margin: 0px;
+  text-align: left;
+}
+
+.list-box li {
+  padding: 10px;
+  list-style-type: none;
+}
+
+.list-box li:hover {
+  background-color: #101849;
+}
+
+.list-hover-button {
+  height: 35px;
+  padding-top: 13px;
+  background-color: #391842;
+}
+
+.list-hover-button:hover {
+  background-color: #101021;
+}
+
+.list-box hr {
+  margin: 0px;
+}
+
 td {
   vertical-align: top;
 }
@@ -11,8 +69,8 @@ td {
   line-height: 24px;
   font-weight: 400;
 
-  color: #0f0f0f;
-  background-color: #f6f6f6;
+  color: #ffffff;
+  background-color: #101849;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -62,6 +120,17 @@ h1 {
 
 .big-button {
   padding: 0.6em 1.2em;
+
+  background-color: #391842;
+  color: #ffffff;
+  border: 2px solid #cbcbcb;
+  border-radius: 4px;
+  box-shadow: black 3px 3px;
+}
+
+.big-button:hover {
+  border: 2px solid #cbcbcb;
+  background-color: #101021;
 }
 
 #editor-main input {

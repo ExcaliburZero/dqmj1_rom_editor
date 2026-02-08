@@ -1,7 +1,7 @@
 use std::{
     fs::{self, File},
     io::Cursor,
-    path::{Path, PathBuf},
+    path::PathBuf,
     time::Instant,
 };
 
@@ -25,6 +25,18 @@ fn get_mod_directory(app: &tauri::AppHandle, mod_name: &str) -> PathBuf {
 
 fn get_temp_directory(app: &tauri::AppHandle) -> PathBuf {
     get_mod_directory(app, "tmp")
+}
+
+fn get_mod_names(app: &tauri::AppHandle) -> Vec<String> {
+    let app_directory = app.path().app_data_dir().unwrap().join("mods");
+
+    fs::read_dir(app_directory)
+        .unwrap()
+        .map(|entry| entry.unwrap().path())
+        .filter(|path| path.is_dir())
+        .filter(|path| path.file_name().unwrap() != "tmp")
+        .map(|path| path.file_name().unwrap().to_str().unwrap().to_string())
+        .collect()
 }
 
 #[tauri::command]
@@ -91,6 +103,20 @@ pub fn get_string_tables(app: tauri::AppHandle) -> StringTables {
     let file_data = fs::read(filepath).unwrap();
 
     StringTables::from_arm9(&file_data)
+}
+
+#[tauri::command]
+pub fn get_mods(app: tauri::AppHandle) -> Vec<String> {
+    //get_mod_names(&app)
+    vec![
+        "a".to_string(),
+        "b".to_string(),
+        "c".to_string(),
+        "d".to_string(),
+        "e".to_string(),
+        "f".to_string(),
+        "g".to_string(),
+    ]
 }
 
 #[tauri::command]

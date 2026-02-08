@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="fonts.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DQMJ1 ROM Editor</title>
   <script type="module" src="/main.js" defer></script>
@@ -12,9 +13,17 @@
 
 <body>
   <main class="container">
-    <h1>Welcome to DQMJ1 ROM Editor</h1>
+    <h1>DQMJ1 ROM Editor</h1>
 
-    <p>Load a .nds ROM file of the game to start modding!</p>
+    <div id="mod-list-div" class="list-box">
+      <div id="mod-list-div-inner">
+        <ul id="mod-list">
+
+        </ul>
+      </div>
+      <hr />
+      <div class="list-hover-button">Create new mod (+)</div>
+    </div>
 
     <form class="row" id="rom-select-form">
       <button id="rom-select-button" class="big-button" type="submit">Load ROM</button>
