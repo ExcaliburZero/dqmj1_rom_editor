@@ -44,6 +44,9 @@ async function showEncounters() {
     setupSkill(4);
     setupSkill(5);
     setupSkill(6);
+    setupSkillSet(1);
+    setupSkillSet(2);
+    setupSkillSet(3);
 
     const defaultEncounterId = 48; // starter Dracky
     select.value = defaultEncounterId;
@@ -145,6 +148,23 @@ function setupSkill(i) {
     });
 }
 
+function setupSkillSet(i) {
+    const skillSet = document.getElementById("encounters-skill-set-" + i);
+
+    let numSkills = stringTables.skill_set_names.length;
+    for (let i = 0; i < numSkills; i++) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.innerHTML = `${stringTables.skill_set_names[i]} (${i})`;
+
+        skillSet.appendChild(option);
+    }
+
+    skillSet.addEventListener("change", () => {
+        encounters.entries[currentEncounterId].skill_set_ids[i - 1] = parseInt(skillSet.value);
+    });
+}
+
 function populateItemDrop(encounter, i) {
     const itemDropItem = document.getElementById("encounters-item-drop-" + i + "-item");
 
@@ -166,11 +186,9 @@ function populateSkill(encounter, i) {
 function populateSkillSet(encounter, i) {
     const skillSetTd = document.getElementById("encounters-skill-set-" + i);
 
-    console.log(encounter);
-
     const skillSetId = encounter.skill_set_ids[i - 1];
 
-    skillSetTd.innerHTML = `${stringTables.skill_set_names[skillSetId]} (${skillSetId})`;
+    skillSetTd.value = skillSetId;
 }
 
 async function getStringTables() {
