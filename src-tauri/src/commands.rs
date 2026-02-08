@@ -17,7 +17,7 @@ pub fn get_btl_enmy_prm(temp_directory: &str) -> BtlEnmyPrm {
     let filepath = Path::new(temp_directory)
         .join("files")
         .join("BtlEnmyPrm.bin");
-    println!("Reading BtlEnmyPrm from: {:?}", filepath);
+    println!("Reading BtlEnmyPrm from: {filepath:?}");
     let file_data = fs::read(filepath).unwrap();
 
     BtlEnmyPrm::read(&mut Cursor::new(file_data)).unwrap()
@@ -26,7 +26,7 @@ pub fn get_btl_enmy_prm(temp_directory: &str) -> BtlEnmyPrm {
 #[tauri::command]
 pub fn get_string_tables(temp_directory: &str) -> StringTables {
     let filepath = Path::new(temp_directory).join("arm9").join("arm9.bin");
-    println!("Reading string tables from ARM9 binary: {:?}", filepath);
+    println!("Reading string tables from ARM9 binary: {filepath:?}");
     let file_data = fs::read(filepath).unwrap();
 
     StringTables::from_arm9(&file_data)

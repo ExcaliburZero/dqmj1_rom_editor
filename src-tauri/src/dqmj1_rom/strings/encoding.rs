@@ -10,7 +10,7 @@ impl CharacterEncoding {
 
             // The skipping of 0x0A at possible string start is due to an edge case I saw at
             // 0x0207d792
-            if (byte == 0x00 || byte == 0x0A) && buffer.len() == 0 {
+            if (byte == 0x00 || byte == 0x0A) && buffer.is_empty() {
                 continue;
             } else if byte == 0xFF || (byte == 0xFE && bytes[i + 1] == 0x00) {
                 // Note: The check against 0xFE is due to an edge case at 0x02079c16.
@@ -45,7 +45,7 @@ impl CharacterEncoding {
     fn get_bytes_match(&self, bytes: &[u8], i: usize) -> (&str, usize) {
         let mut matches = self.byte_to_char_map.clone();
         let mut offset: usize = 0;
-        while matches.len() >= 1 {
+        while !matches.is_empty() {
             let mut remaining_matches = vec![];
             for (match_bytes, match_char) in matches.iter() {
                 if match_bytes[offset] == bytes[i + offset] {
