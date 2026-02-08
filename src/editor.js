@@ -3,6 +3,7 @@ const { invoke } = window.__TAURI__.core;
 const tempDirectory = "tmp";
 
 let encounters = null;
+let stringTables = null;
 
 async function show_encounters() {
     console.log("Showing encounters");
@@ -15,6 +16,8 @@ async function show_encounters() {
     console.log(`Encounters: ${JSON.stringify(encounters.entries[0])}`);
     console.log(`Encounters: ${JSON.stringify(encounters.entries[1])}`);
 
+    await get_string_tables();
+
     const table = document.getElementById("encounters-table");
     table.innerHTML = "";
 
@@ -26,10 +29,21 @@ async function show_encounters() {
         const row = document.createElement("tr");
         table.appendChild(row);
 
-        row.innerHTML = `<tr><td>${i}</td><td>${encounter.species_id}</td></tr>`;
+        row.innerHTML = `<tr><td>${i}</td><td>${stringTables.species_names[encounter.species_id]} (${encounter.species_id})</td></tr>`;
 
         i++;
     }
+}
+
+async function get_string_tables() {
+    if (stringTables !== null) {
+        return;
+    }
+
+    const options = { tempDirectory: tempDirectory };
+    console.log(`Getting string tables: ${JSON.stringify(options)}`);
+    stringTables = await invoke("get_string_tables", options);
+    console.log(stringTables);
 }
 
 show_encounters()
