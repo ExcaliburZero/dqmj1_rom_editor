@@ -5,7 +5,7 @@ const tempDirectory = "tmp";
 let encounters = null;
 let stringTables = null;
 
-async function show_encounters() {
+async function showEncounters() {
     console.log("Showing encounters");
     if (encounters === null) {
         const options = { tempDirectory: tempDirectory };
@@ -16,25 +16,36 @@ async function show_encounters() {
     console.log(`Encounters: ${JSON.stringify(encounters.entries[0])}`);
     console.log(`Encounters: ${JSON.stringify(encounters.entries[1])}`);
 
-    await get_string_tables();
+    await getStringTables();
 
-    const table = document.getElementById("encounters-table");
-    table.innerHTML = "";
-
-    table.innerHTML = "<tr><th>Index</th><th>Species id</th></tr>"
+    const select = document.getElementById("encounters-select");
+    select.innerHTML = "";
 
     let i = 0;
     for (const encounter of encounters.entries) {
-        const row = document.createElement("tr");
-        table.appendChild(row);
+        const option = document.createElement("option");
+        select.appendChild(option);
 
-        row.innerHTML = `<tr><td>${i}</td><td>${stringTables.species_names[encounter.species_id]} (${encounter.species_id})</td></tr>`;
+        option.text = `${padToDigits(i, 3)} ${stringTables.species_names[encounter.species_id]}`
 
         i++;
     }
 }
 
-async function get_string_tables() {
+async function showEncounter(encounterId) {
+    console.log(`Showing encounter: ${encounterId}`);
+
+    const encounter = encounters.entries[encounterId];
+    console.log(encounter);
+
+    const encounterIdTd = document.getElementById("encounters-encounter-id");
+    encounterIdTd.innerHTML = padToDigits(encounterId, 3);
+
+    const speciesTd = document.getElementById("encounters-species");
+    speciesTd.innerHTML = stringTables.species_names[encounter.species_id];
+}
+
+async function getStringTables() {
     if (stringTables !== null) {
         return;
     }
@@ -45,4 +56,27 @@ async function get_string_tables() {
     console.log(stringTables);
 }
 
-show_encounters()
+function padToDigits(number, numDigits) {
+    let string = number.toString();
+    while (string.length < numDigits) {
+        string = "0" + string;
+    }
+
+    return string;
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    document.querySelector("#encounters-select").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        const select = document.getElementById("encounters-select");
+        const value = select.value;
+
+        console.log(value)
+
+        const encounterId = parseInt(value.substring(0, 3));
+        showEncounter(encounterId);
+    });
+});
+
+showEncounters()

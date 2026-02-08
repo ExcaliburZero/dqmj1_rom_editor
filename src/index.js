@@ -4,7 +4,7 @@ const { open } = window.__TAURI__.dialog;
 const tempDirectory = "tmp";
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-async function unpack_rom() {
+async function unpackRom() {
   console.log("Prompting user to choose rom file");
   const romFilepath = await open({ multiple: false, directory: false, filters: [{ name: "Nintendo DS ROM", extensions: ["nds"] }] });
 
@@ -19,6 +19,6 @@ async function unpack_rom() {
 window.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#rom-select-button").addEventListener("click", (e) => {
     e.preventDefault();
-    unpack_rom();
+    unpackRom();
   });
 });
