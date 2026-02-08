@@ -2,6 +2,7 @@ use std::{
     fs::{self, File},
     io::Cursor,
     path::Path,
+    time::Instant,
 };
 
 use binrw::{BinRead, BinWriterExt};
@@ -11,9 +12,14 @@ use crate::dqmj1_rom::{btl_enmy_prm::BtlEnmyPrm, string_tables::StringTables};
 
 #[tauri::command]
 pub fn unpack_rom(rom_filepath: &str, temp_directory: &str) {
+    let now = Instant::now();
+
     let raw_rom = raw::Rom::from_file(rom_filepath).unwrap();
     let rom = Rom::extract(&raw_rom).unwrap();
     rom.save(temp_directory, None).unwrap();
+
+    let elapsed = now.elapsed();
+    println!("Unpacked ROM in: {elapsed:?}");
 }
 
 #[tauri::command]
@@ -23,9 +29,14 @@ pub fn pack_rom(rom_filepath: &str, temp_directory: &str) {
 
     let config_filepath = Path::new(temp_directory).join("config.yaml");
 
+    let now = Instant::now();
+
     let rom = Rom::load(config_filepath, RomLoadOptions::default()).unwrap();
     let raw_rom = rom.build(None).unwrap();
     raw_rom.save(rom_filepath).unwrap();
+
+    let elapsed = now.elapsed();
+    println!("Packed ROM in: {elapsed:?}");
 }
 
 #[tauri::command]
