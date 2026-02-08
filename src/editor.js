@@ -59,22 +59,31 @@ async function showEncounter(encounterId) {
 
     populateItemDrop(encounter, 1);
     populateItemDrop(encounter, 2);
+
+    populateSkill(encounter, 1);
+    populateSkill(encounter, 2);
+    populateSkill(encounter, 3);
+    populateSkill(encounter, 4);
+    populateSkill(encounter, 5);
+    populateSkill(encounter, 6);
 }
 
 function populateItemDrop(encounter, i) {
     const itemDropItem = document.getElementById("encounters-item-drop-" + i + "-item");
     const itemDropChance = document.getElementById("encounters-item-drop-" + i + "-chance");
 
-    console.log(`itemDrops: ${i}`);
-    console.log(encounter.item_drops);
-    console.log(encounter.item_drops[i - 1]);
-
     const itemDrop = encounter.item_drops[i - 1];
-
-    console.log(itemDropItem);
 
     itemDropItem.innerHTML = `${stringTables.item_names[itemDrop.item_id]} (${itemDrop.item_id})`;
     itemDropChance.innerHTML = itemDrop.chance_denominator_2_power;
+}
+
+function populateSkill(encounter, i) {
+    const skillTd = document.getElementById("encounters-skill-" + i);
+
+    const skill = encounter.skills[i - 1];
+
+    skillTd.innerHTML = `${stringTables.skill_names[skill.skill_id]} (${skill.skill_id})`;
 }
 
 async function getStringTables() {

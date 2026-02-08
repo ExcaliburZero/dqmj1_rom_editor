@@ -11,6 +11,7 @@ const POINTER_SIZE_IN_BYTES: usize = 4;
 pub struct StringTables {
     pub species_names: Vec<String>,
     pub item_names: Vec<String>,
+    pub skill_names: Vec<String>,
 }
 
 impl StringTables {
@@ -20,6 +21,7 @@ impl StringTables {
         StringTables {
             species_names: Self::read_table(arm9, &table_locations.species_names),
             item_names: Self::read_table(arm9, &table_locations.item_names),
+            skill_names: Self::read_table(arm9, &table_locations.skill_names),
         }
     }
 
