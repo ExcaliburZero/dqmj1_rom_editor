@@ -10,6 +10,7 @@ const POINTER_SIZE_IN_BYTES: usize = 4;
 #[derive(Serialize)]
 pub struct StringTables {
     pub species_names: Vec<String>,
+    pub item_names: Vec<String>,
 }
 
 impl StringTables {
@@ -18,6 +19,7 @@ impl StringTables {
 
         StringTables {
             species_names: Self::read_table(arm9, &table_locations.species_names),
+            item_names: Self::read_table(arm9, &table_locations.item_names),
         }
     }
 

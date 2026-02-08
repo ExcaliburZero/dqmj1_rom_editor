@@ -5,4 +5,5 @@ pub struct TableLocation {
 
 pub struct StringTableLocations {
     pub species_names: TableLocation,
+    pub item_names: TableLocation,
 }

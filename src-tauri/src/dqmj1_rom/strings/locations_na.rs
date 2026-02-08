@@ -5,4 +5,8 @@ pub const NA_STRING_TABLE_LOCATIONS: StringTableLocations = StringTableLocations
         start: 0x207785C,
         end: 0x207805C,
     },
+    item_names: TableLocation {
+        start: 0x20767E4,
+        end: 0x2076BE8,
+    },
 };

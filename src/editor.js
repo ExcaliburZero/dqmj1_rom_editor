@@ -56,6 +56,25 @@ async function showEncounter(encounterId) {
     document.getElementById("encounters-scout-chance").innerHTML = encounter.scout_chance;
     document.getElementById("encounters-exp").innerHTML = encounter.exp;
     document.getElementById("encounters-gold").innerHTML = encounter.gold;
+
+    populateItemDrop(encounter, 1);
+    populateItemDrop(encounter, 2);
+}
+
+function populateItemDrop(encounter, i) {
+    const itemDropItem = document.getElementById("encounters-item-drop-" + i + "-item");
+    const itemDropChance = document.getElementById("encounters-item-drop-" + i + "-chance");
+
+    console.log(`itemDrops: ${i}`);
+    console.log(encounter.item_drops);
+    console.log(encounter.item_drops[i - 1]);
+
+    const itemDrop = encounter.item_drops[i - 1];
+
+    console.log(itemDropItem);
+
+    itemDropItem.innerHTML = `${stringTables.item_names[itemDrop.item_id]} (${itemDrop.item_id})`;
+    itemDropChance.innerHTML = itemDrop.chance_denominator_2_power;
 }
 
 async function getStringTables() {
