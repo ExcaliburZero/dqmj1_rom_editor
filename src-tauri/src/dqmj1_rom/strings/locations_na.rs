@@ -13,4 +13,8 @@ pub const NA_STRING_TABLE_LOCATIONS: StringTableLocations = StringTableLocations
         start: 0x2076BE8,
         end: 0x207705C,
     },
+    skill_set_names: TableLocation {
+        start: 0x20763E0,
+        end: 0x20767E4,
+    },
 };

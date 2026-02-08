@@ -73,6 +73,10 @@ async function showEncounter(encounterId) {
     populateSkill(encounter, 4);
     populateSkill(encounter, 5);
     populateSkill(encounter, 6);
+
+    populateSkillSet(encounter, 1);
+    populateSkillSet(encounter, 2);
+    populateSkillSet(encounter, 3);
 }
 
 function setupEncounterSpecies() {
@@ -108,6 +112,16 @@ function populateSkill(encounter, i) {
     const skill = encounter.skills[i - 1];
 
     skillTd.innerHTML = `${stringTables.skill_names[skill.skill_id]} (${skill.skill_id})`;
+}
+
+function populateSkillSet(encounter, i) {
+    const skillSetTd = document.getElementById("encounters-skill-set-" + i);
+
+    console.log(encounter);
+
+    const skillSetId = encounter.skill_set_ids[i - 1];
+
+    skillSetTd.innerHTML = `${stringTables.skill_set_names[skillSetId]} (${skillSetId})`;
 }
 
 async function getStringTables() {
