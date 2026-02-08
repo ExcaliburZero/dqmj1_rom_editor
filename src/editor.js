@@ -51,18 +51,18 @@ async function showEncounter(encounterId) {
     console.log(encounter);
 
     document.getElementById("encounters-encounter-id").innerHTML = padToDigits(encounterId, 3);
-
     document.getElementById("encounters-species").value = encounter.species_id;
-    document.getElementById("encounters-level").innerHTML = encounter.level;
-    document.getElementById("encounters-max-hp").innerHTML = encounter.max_hp;
-    document.getElementById("encounters-max-mp").innerHTML = encounter.max_mp;
-    document.getElementById("encounters-attack").innerHTML = encounter.attack;
-    document.getElementById("encounters-defense").innerHTML = encounter.defense;
-    document.getElementById("encounters-wisdom").innerHTML = encounter.wisdom;
-    document.getElementById("encounters-agility").innerHTML = encounter.agility;
-    document.getElementById("encounters-scout-chance").innerHTML = encounter.scout_chance;
-    document.getElementById("encounters-exp").innerHTML = encounter.exp;
-    document.getElementById("encounters-gold").innerHTML = encounter.gold;
+
+    setupInput("encounters-level", encounter.level, (tag) => { encounters.entries[currentEncounterId].level = parseInt(tag.value) });
+    setupInput("encounters-max-hp", encounter.max_hp, (tag) => { encounters.entries[currentEncounterId].max_hp = parseInt(tag.value) });
+    setupInput("encounters-max-mp", encounter.max_mp, (tag) => { encounters.entries[currentEncounterId].max_mp = parseInt(tag.value) });
+    setupInput("encounters-attack", encounter.attack, (tag) => { encounters.entries[currentEncounterId].attack = parseInt(tag.value) });
+    setupInput("encounters-defense", encounter.defense, (tag) => { encounters.entries[currentEncounterId].defense = parseInt(tag.value) });
+    setupInput("encounters-wisdom", encounter.wisdom, (tag) => { encounters.entries[currentEncounterId].wisdom = parseInt(tag.value) });
+    setupInput("encounters-agility", encounter.agility, (tag) => { encounters.entries[currentEncounterId].agility = parseInt(tag.value) });
+    setupInput("encounters-scout-chance", encounter.scout_chance, (tag) => { encounters.entries[currentEncounterId].scout_chance = parseInt(tag.value) });
+    setupInput("encounters-exp", encounter.exp, (tag) => { encounters.entries[currentEncounterId].exp = parseInt(tag.value) });
+    setupInput("encounters-gold", encounter.gold, (tag) => { encounters.entries[currentEncounterId].gold = parseInt(tag.value) });
 
     populateItemDrop(encounter, 1);
     populateItemDrop(encounter, 2);
@@ -77,6 +77,13 @@ async function showEncounter(encounterId) {
     populateSkillSet(encounter, 1);
     populateSkillSet(encounter, 2);
     populateSkillSet(encounter, 3);
+}
+
+function setupInput(id, value, setter) {
+    const tag = document.getElementById(id);
+    tag.value = value;
+
+    tag.addEventListener("change", () => setter(tag))
 }
 
 function setupEncounterSpecies() {
