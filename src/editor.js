@@ -11,7 +11,7 @@ let currentEncounterId = null;
 async function showEncounters() {
     console.log("Showing encounters");
     if (encounters === null) {
-        const options = { tempDirectory: tempDirectory };
+        const options = {};
         console.log(`Getting encounters: ${JSON.stringify(options)}`);
         encounters = await invoke("get_btl_enmy_prm", options);
     }
@@ -196,7 +196,7 @@ async function getStringTables() {
         return;
     }
 
-    const options = { tempDirectory: tempDirectory };
+    const options = {};
     console.log(`Getting string tables: ${JSON.stringify(options)}`);
     stringTables = await invoke("get_string_tables", options);
     console.log(stringTables);
@@ -215,12 +215,12 @@ async function savePatchedRom() {
     console.log(encounters);
 
     // TODO: could do concurrently with user using the save dialog
-    await invoke("set_btl_enmy_prm", { tempDirectory: tempDirectory, btlEnmyPrm: encounters });
+    await invoke("set_btl_enmy_prm", { btlEnmyPrm: encounters });
 
     console.log("Prompting user to choose patched rom file save location");
     const romFilepath = await save({ multiple: false, directory: false, filters: [{ name: "Nintendo DS ROM", extensions: ["nds"] }] });
 
-    const options = { romFilepath: romFilepath, tempDirectory: tempDirectory };
+    const options = { romFilepath: romFilepath };
     console.log(`Packing rom: ${JSON.stringify(options)}`);
     await invoke("pack_rom", options);
     console.log("Finished packing rom");
