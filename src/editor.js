@@ -23,7 +23,6 @@ async function show_encounters() {
 
     table.innerHTML = "<tr><th>Index</th><th>Species id</th></tr>"
 
-    //table.append
     let i = 0;
     for (const encounter of encounters.entries) {
         const row = document.createElement("tr");
