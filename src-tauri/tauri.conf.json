@@ -10,7 +10,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "dqmj1_rom_editor",
+        "title": "DQMJ1 ROM Editor",
         "width": 800,
         "height": 610
       }
