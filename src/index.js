@@ -70,10 +70,24 @@ async function openEditor() {
   window.location.href = `editor.html?modName=${encodeURIComponent(modName)}`;
 }
 
+async function createNewMod() {
+  const modName = prompt("Enter the name for the new mod:");
+
+  const options = { modName: modName };
+  await invoke("create_mod", options);
+
+  updateModList();
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#rom-select-button").addEventListener("click", (e) => {
     e.preventDefault();
     openEditor();
+  });
+
+  document.querySelector("#create-new-mod").addEventListener("click", (e) => {
+    e.preventDefault();
+    createNewMod();
   });
 
   updateModList();

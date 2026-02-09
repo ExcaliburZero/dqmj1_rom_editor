@@ -1,6 +1,6 @@
 use crate::commands::{
-    get_btl_enmy_prm, get_mods, get_string_tables, load_mod, pack_rom, save_mod, set_btl_enmy_prm,
-    unpack_rom,
+    create_mod, get_btl_enmy_prm, get_mods, get_string_tables, load_mod, pack_rom, save_mod,
+    set_btl_enmy_prm, unpack_rom,
 };
 
 pub mod commands;
@@ -17,6 +17,7 @@ pub fn run() {
             pack_rom,
             save_mod,
             load_mod,
+            create_mod,
             get_mods,
             get_btl_enmy_prm,
             set_btl_enmy_prm,
