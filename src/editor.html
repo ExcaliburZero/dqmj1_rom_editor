@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="fonts.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DQMJ1 ROM Editor</title>
   <script type="module" src="/main.js" defer></script>
@@ -12,14 +13,16 @@
 
 <body>
   <main id="editor-main" class="container">
-    <h1>DQMJ1 ROM Editor</h1>
-    <button id="save-mod">Save</button>
 
     <div class="row">
-      <div class="column">
-        <p>Encounters</p>
+      <div class="column list-box">
+        <ul>
+          <li class="selected">Encounters</li>
+        </ul>
       </div>
       <div class="column">
+        <button id="save-mod" class="big-button">Save mod</button>
+        <button id="save-patched-rom" class="big-button">Export patched ROM</button>
         <div id="encounters-page">
           <select id="encounters-select"></select>
 
@@ -182,7 +185,6 @@
       </div>
     </div>
 
-    <button id="save-patched-rom">Save patched ROM</button>
   </main>
 </body>
 
