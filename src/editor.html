@@ -21,17 +21,20 @@
         </ul>
       </div>
       <div class="column">
-        <button id="save-mod" class="big-button">Save mod</button>
-        <button id="save-patched-rom" class="big-button">Export patched ROM</button>
-        <div id="encounters-page">
+        <div id="top-buttons-div">
+          <button id="save-mod" class="big-button">Save mod</button>
+          <button id="save-patched-rom" class="big-button">Export patched ROM</button>
+        </div>
+        <div id="encounters-page" class="page">
           <select id="encounters-select"></select>
+          <hr />
 
-          <table>
+          <table class="page-table">
             <tr>
               <td>
                 <table>
                   <tr>
-                    <th>Encounter Id</th>
+                    <th>Encounter</th>
                     <td id="encounters-encounter-id" colspan="2"></td>
                   </tr>
                   <tr>
@@ -100,6 +103,64 @@
                       <input id="encounters-gold"></input>
                     </td>
                   </tr>
+                </table>
+              </td>
+              <td>
+                <table>
+                  <tr>
+                    <th>Skill (1)</th>
+                    <td colspan="1">
+                      <select id="encounters-skill-1"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Skill (2)</th>
+                    <td colspan="1">
+                      <select id="encounters-skill-2"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Skill (3)</th>
+                    <td colspan="1">
+                      <select id="encounters-skill-3"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Skill (4)</th>
+                    <td colspan="1">
+                      <select id="encounters-skill-4"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Skill (5)</th>
+                    <td colspan="1">
+                      <select id="encounters-skill-5"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Skill (6)</th>
+                    <td colspan="1">
+                      <select id="encounters-skill-6"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Skill set (1)</th>
+                    <td colspan="1">
+                      <select id="encounters-skill-set-1"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Skill set (2)</th>
+                    <td colspan="1">
+                      <select id="encounters-skill-set-2"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Skill set (3)</th>
+                    <td colspan="1">
+                      <select id="encounters-skill-set-3"></select>
+                    </td>
+                  </tr>
                   <tr>
                     <th>Item drop (1)</th>
                     <td>
@@ -116,64 +177,6 @@
                     </td>
                     <td>
                       <input id="encounters-item-drop-2-chance"></input>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-              <td>
-                <table>
-                  <tr>
-                    <th>Skill (1)</th>
-                    <td colspan="2">
-                      <select id="encounters-skill-1"></select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Skill (2)</th>
-                    <td colspan="2">
-                      <select id="encounters-skill-2"></select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Skill (3)</th>
-                    <td colspan="2">
-                      <select id="encounters-skill-3"></select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Skill (4)</th>
-                    <td colspan="2">
-                      <select id="encounters-skill-4"></select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Skill (5)</th>
-                    <td colspan="2">
-                      <select id="encounters-skill-5"></select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Skill (6)</th>
-                    <td colspan="2">
-                      <select id="encounters-skill-6"></select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Skill set (1)</th>
-                    <td colspan="2">
-                      <select id="encounters-skill-set-1"></select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Skill set (2)</th>
-                    <td colspan="2">
-                      <select id="encounters-skill-set-2"></select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Skill set (3)</th>
-                    <td colspan="2">
-                      <select id="encounters-skill-set-3"></select>
                     </td>
                   </tr>
                 </table>

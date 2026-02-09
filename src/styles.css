@@ -3,6 +3,47 @@ h1 {
   font-size: 40pt;
 }
 
+.page {
+  background-color: #39424a;
+  border: 2px solid #cbcbcb;
+  border-radius: 4px;
+  box-shadow: black 3px 3px;
+
+  margin-left: 10px;
+  margin-top: 10px;
+  padding-top: 5px;
+}
+
+.page th {
+  text-align: right;
+}
+
+.page td {
+  text-align: left;
+  padding-left: 5px;
+}
+
+
+#top-buttons-div {
+  text-align: right;
+}
+
+#editor-main {
+  padding-top: 20px;
+}
+
+input {
+  border-radius: 4px;
+}
+
+select {
+  border-radius: 4px;
+}
+
+.page-table select {
+  width: 100%;
+}
+
 #mod-list-div {
   width: 200px;
   height: 300px;
