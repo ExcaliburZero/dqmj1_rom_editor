@@ -3,6 +3,9 @@ const { save } = window.__TAURI__.dialog;
 
 const tempDirectory = "tmp";
 
+const url = new URL(window.location.toLocaleString());
+const modName = url.searchParams.get("modName");
+
 let encounters = null;
 let stringTables = null;
 
@@ -233,7 +236,7 @@ async function savePatchedRom() {
 async function saveMod() {
     await syncFiles();
 
-    const options = { modName: "mod1" };
+    const options = { modName: modName };
     console.log(`Saving mod: ${JSON.stringify(options)}`);
     await invoke("save_mod", options);
     console.log("Finished saving mod");

@@ -107,8 +107,8 @@ pub fn get_string_tables(app: tauri::AppHandle) -> StringTables {
 
 #[tauri::command]
 pub fn get_mods(app: tauri::AppHandle) -> Vec<String> {
-    //get_mod_names(&app)
-    vec![
+    get_mod_names(&app)
+    /*vec![
         "a".to_string(),
         "b".to_string(),
         "c".to_string(),
@@ -116,7 +116,7 @@ pub fn get_mods(app: tauri::AppHandle) -> Vec<String> {
         "e".to_string(),
         "f".to_string(),
         "g".to_string(),
-    ]
+    ]*/
 }
 
 #[tauri::command]
@@ -127,6 +127,23 @@ pub fn save_mod(app: tauri::AppHandle, mod_name: &str) {
     for file in MOD_FILES.iter() {
         let source = temp_directory.join(file);
         let destination = mod_directory.join(file);
+
+        println!("---------");
+        println!("source: {source:?}");
+        println!("dest  : {destination:?}");
+
+        fs::copy(source, destination).unwrap();
+    }
+}
+
+#[tauri::command]
+pub fn load_mod(app: tauri::AppHandle, mod_name: &str) {
+    let temp_directory = get_temp_directory(&app);
+    let mod_directory = get_mod_directory(&app, mod_name);
+
+    for file in MOD_FILES.iter() {
+        let source = mod_directory.join(file);
+        let destination = temp_directory.join(file);
 
         println!("---------");
         println!("source: {source:?}");

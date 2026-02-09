@@ -12,7 +12,7 @@ h1 {
 
 #mod-list-div-inner {
   height: 250px;
-  overflow-y: scroll;
+  overflow-y: auto;
   scrollbar-color: #ffffff #202020;
 }
 
@@ -35,17 +35,43 @@ h1 {
 
 .list-box li {
   padding: 10px;
+  padding-left: 22px;
   list-style-type: none;
+  cursor: pointer;
+  position: relative;
 }
 
 .list-box li:hover {
   background-color: #101849;
 }
 
+.list-box li.selected {
+  background-color: #202841;
+}
+
+.list-box li::before {
+  content: "▲";
+  transform: rotate(90deg);
+  position: absolute;
+  top: 10px;
+  left: 4px;
+  color: #ffff42;
+  opacity: 0;
+}
+
+.list-box li:hover::before {
+  opacity: 0.5;
+}
+
+.list-box li.selected::before {
+  opacity: 1;
+}
+
 .list-hover-button {
   height: 35px;
   padding-top: 13px;
   background-color: #391842;
+  cursor: pointer;
 }
 
 .list-hover-button:hover {
