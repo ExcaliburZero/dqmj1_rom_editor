@@ -266,6 +266,18 @@ window.addEventListener("DOMContentLoaded", () => {
 
         savePatchedRom();
     });
+
+    document.addEventListener("keydown", async (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+            // Save mod - Ctrl+s (or Cmd+s on Mac)
+            e.preventDefault();
+            saveMod();
+        } else if ((e.ctrlKey || e.metaKey) && e.key === "e") {
+            // Export patched ROM - Ctrl+e (or Cmd+e on Mac)
+            e.preventDefault();
+            savePatchedRom();
+        }
+    });
 });
 
 showEncounters()
