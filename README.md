@@ -1,6 +1,8 @@
 # DQMJ1 ROM Editor
 An unofficial modding tool / ROM editor for Dragon Quest Monsters Joker 1.
 
+Currently only supports the North American release of the game, but I may add support for the European and Japanese releases at some point.
+
 ![Screenshot of the encounter editing screen](img/encounters.png)
 
 ## Installation
