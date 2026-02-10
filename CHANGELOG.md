@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+* Fixed bug that cause the program to close on startup. (#1)
+
 ## [0.1.0] - 2026-02-08
 
 ### Added
