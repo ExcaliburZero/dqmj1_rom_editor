@@ -13,8 +13,16 @@ use crate::dqmj1_rom::{btl_enmy_prm::BtlEnmyPrm, string_tables::StringTables};
 
 const MOD_FILES: [&str; 1] = ["files/BtlEnmyPrm.bin"];
 
-fn get_mod_directory(app: &tauri::AppHandle, mod_name: &str) -> PathBuf {
+fn get_app_directory(app: &tauri::AppHandle) -> PathBuf {
     let app_directory = app.path().app_data_dir().unwrap();
+
+    fs::create_dir_all(&app_directory).unwrap();
+
+    app_directory
+}
+
+fn get_mod_directory(app: &tauri::AppHandle, mod_name: &str) -> PathBuf {
+    let app_directory = get_app_directory(app);
     let mod_directory = app_directory.join("mods").join(mod_name);
 
     fs::create_dir_all(&mod_directory).unwrap();
@@ -28,9 +36,12 @@ fn get_temp_directory(app: &tauri::AppHandle) -> PathBuf {
 }
 
 fn get_mod_names(app: &tauri::AppHandle) -> Vec<String> {
-    let app_directory = app.path().app_data_dir().unwrap().join("mods");
+    let app_directory = get_app_directory(app);
+    let mods_directory = app_directory.join("mods");
 
-    fs::read_dir(app_directory)
+    fs::create_dir_all(&mods_directory).unwrap();
+
+    fs::read_dir(mods_directory)
         .unwrap()
         .map(|entry| entry.unwrap().path())
         .filter(|path| path.is_dir())
