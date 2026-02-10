@@ -7,21 +7,26 @@ const url = new URL(window.location.toLocaleString());
 const modName = url.searchParams.get("modName");
 
 let encounters = null;
+let skillSets = null;
 let stringTables = null;
 
 let currentEncounterId = null;
+let currentSkillSetId = null;
 
-async function showEncounters() {
-    console.log("Showing encounters");
+async function getEncounters() {
     if (encounters === null) {
         const options = {};
         console.log(`Getting encounters: ${JSON.stringify(options)}`);
         encounters = await invoke("get_btl_enmy_prm", options);
     }
+}
 
-    console.log(`Encounters: ${JSON.stringify(encounters.entries[0])}`);
-    console.log(`Encounters: ${JSON.stringify(encounters.entries[1])}`);
+async function showEncounters() {
+    console.log("Showing encounters");
 
+    document.getElementById("encounters-page").style["display"] = "block";
+
+    await getEncounters();
     await getStringTables();
 
     const select = document.getElementById("encounters-select");
@@ -194,6 +199,93 @@ function populateSkillSet(encounter, i) {
     skillSetTd.value = skillSetId;
 }
 
+async function showSkillSets() {
+    console.log("Showing skill sets");
+
+    document.getElementById("skill-sets-page").style["display"] = "block";
+
+    await getSkillSets();
+    await getStringTables();
+
+    const select = document.getElementById("skill-sets-select");
+    select.innerHTML = "";
+
+    let i = 0;
+    for (const _skillSet of skillSets.entries) {
+        const option = document.createElement("option");
+        select.appendChild(option);
+
+        option.text = `${padToDigits(i, 3)} ${stringTables.skill_set_names[i]}`
+        option.value = i;
+
+        i++;
+    }
+
+    setupSpecies(1);
+    setupSpecies(2);
+    setupSpecies(3);
+    setupSpecies(4);
+    setupSpecies(5);
+    setupSpecies(6);
+
+    console.log(skillSets);
+    showSkillSet(1);
+}
+
+function showSkillSet(skillSetId) {
+    const skillSet = skillSets.entries[skillSetId];
+    console.log(skillSet);
+
+    currentSkillSetId = skillSetId;
+
+    document.getElementById("skill-sets-skill-set-id").innerHTML = skillSetId;
+
+    setupInput("skill-sets-can-upgrade", skillSet.can_upgrade, (tag) => { skillSets.entries[currentSkillSetId].can_upgrade = parseInt(tag.value) });
+    setupInput("skill-sets-category", skillSet.category, (tag) => { skillSets.entries[currentSkillSetId].category = parseInt(tag.value) });
+    setupInput("skill-sets-max-skill-points", skillSet.max_skill_points, (tag) => { skillSets.entries[currentSkillSetId].max_skill_points = parseInt(tag.value) });
+
+    populateSpecies(skillSet, 1);
+    populateSpecies(skillSet, 2);
+    populateSpecies(skillSet, 3);
+    populateSpecies(skillSet, 4);
+    populateSpecies(skillSet, 5);
+    populateSpecies(skillSet, 6);
+}
+
+function populateSpecies(skillSet, i) {
+    const speciesSelect = document.getElementById("skill-sets-species-" + i);
+
+    const skillSetId = skillSet.species_ids[i - 1];
+
+    speciesSelect.value = skillSetId;
+}
+
+function setupSpecies(i) {
+    const species = document.getElementById("skill-sets-species-" + i);
+
+    let numSpecies = stringTables.species_names.length;
+    for (let i = 0; i < numSpecies; i++) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.innerHTML = `${stringTables.species_names[i]} (${i})`;
+
+        species.appendChild(option);
+    }
+
+    species.addEventListener("change", () => {
+        skillSets.entries[currentSkillSetId].species_ids[i - 1] = parseInt(species.value);
+    });
+}
+
+async function getSkillSets() {
+    if (skillSets === null) {
+        const options = {};
+        console.log(`Getting skill sets: ${JSON.stringify(options)}`);
+        skillSets = await invoke("get_skill_tbl", options);
+        console.log(skillSets);
+    }
+}
+
 async function getStringTables() {
     if (stringTables !== null) {
         return;
@@ -242,7 +334,11 @@ async function saveMod() {
     console.log("Finished saving mod");
 }
 
+
 window.addEventListener("DOMContentLoaded", () => {
+    //showEncounters();
+    showSkillSets();
+
     document.querySelector("#encounters-select").addEventListener("change", (e) => {
         e.preventDefault();
 
@@ -253,6 +349,18 @@ window.addEventListener("DOMContentLoaded", () => {
 
         const encounterId = parseInt(value.substring(0, 3));
         showEncounter(encounterId);
+    });
+
+    document.querySelector("#skill-sets-select").addEventListener("change", (e) => {
+        e.preventDefault();
+
+        const select = document.getElementById("skill-sets-select");
+        const value = select.value;
+
+        console.log(value)
+
+        const id = parseInt(value.substring(0, 3));
+        showSkillSet(id);
     });
 
     document.querySelector("#save-mod").addEventListener("click", (e) => {
@@ -279,5 +387,3 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-
-showEncounters()
