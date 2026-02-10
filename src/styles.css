@@ -25,6 +25,10 @@ h1 {
   padding-left: 5px;
 }
 
+.skill-set-level-tr {
+  padding: 3px;
+  display: block;
+}
 
 #top-buttons-div {
   text-align: right;
