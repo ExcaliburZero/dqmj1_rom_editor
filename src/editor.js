@@ -10,8 +10,10 @@ let encounters = null;
 let skillSets = null;
 let stringTables = null;
 
-let currentEncounterId = null;
-let currentSkillSetId = null;
+let currentEncounterId = 48; // starter Dracky
+let currentSkillSetId = 58; // Dark Knight
+let currentPage = null;
+let currentPageNavigation = null;
 
 async function getEncounters() {
     if (encounters === null) {
@@ -24,7 +26,11 @@ async function getEncounters() {
 async function showEncounters() {
     console.log("Showing encounters");
 
-    document.getElementById("encounters-page").style["display"] = "block";
+    currentPage = document.getElementById("encounters-page");
+    currentPageNavigation = document.getElementById("navigation-encounters");
+
+    currentPage.style["display"] = "block";
+    currentPageNavigation.classList = "selected";
 
     await getEncounters();
     await getStringTables();
@@ -56,9 +62,8 @@ async function showEncounters() {
     setupSkillSet(2);
     setupSkillSet(3);
 
-    const defaultEncounterId = 48; // starter Dracky
-    select.value = defaultEncounterId;
-    showEncounter(defaultEncounterId);
+    select.value = currentEncounterId;
+    showEncounter(currentEncounterId);
 }
 
 async function showEncounter(encounterId) {
@@ -202,7 +207,11 @@ function populateSkillSet(encounter, i) {
 async function showSkillSets() {
     console.log("Showing skill sets");
 
-    document.getElementById("skill-sets-page").style["display"] = "block";
+    currentPage = document.getElementById("skill-sets-page");
+    currentPageNavigation = document.getElementById("navigation-skill-sets");
+
+    currentPage.style["display"] = "block";
+    currentPageNavigation.classList = "selected";
 
     await getSkillSets();
     await getStringTables();
@@ -235,8 +244,8 @@ async function showSkillSets() {
         }
     }
 
-    console.log(skillSets);
-    showSkillSet(0);
+    select.value = currentSkillSetId;
+    showSkillSet(currentSkillSetId);
 }
 
 function showSkillSet(skillSetId) {
@@ -414,10 +423,36 @@ async function saveMod() {
     console.log("Finished saving mod");
 }
 
+async function showPage(pageName) {
+    if (currentPage !== null) {
+        currentPage.style["display"] = "none";
+    }
+    if (currentPageNavigation !== null) {
+        currentPageNavigation.classList = "";
+    }
+
+    if (pageName === "encounters") {
+        showEncounters();
+    } else if (pageName === "skill-sets") {
+        showSkillSets();
+    }
+}
+
 
 window.addEventListener("DOMContentLoaded", () => {
-    //showEncounters();
-    showSkillSets();
+    showEncounters();
+
+    document.querySelector("#navigation-encounters").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        showPage("encounters");
+    });
+
+    document.querySelector("#navigation-skill-sets").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        showPage("skill-sets");
+    });
 
     document.querySelector("#encounters-select").addEventListener("change", (e) => {
         e.preventDefault();
