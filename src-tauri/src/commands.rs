@@ -119,6 +119,17 @@ pub fn get_skill_tbl(app: tauri::AppHandle) -> SkillTbl {
 }
 
 #[tauri::command]
+pub fn set_skill_tbl(app: tauri::AppHandle, skill_tbl: SkillTbl) {
+    let temp_directory = get_temp_directory(&app);
+
+    let filepath = temp_directory.join("files").join("SkillTbl.bin");
+    println!("Writing SkillTbl to: {filepath:?}");
+
+    let mut file = File::create(filepath).unwrap();
+    file.write_le(&skill_tbl).unwrap();
+}
+
+#[tauri::command]
 pub fn get_string_tables(app: tauri::AppHandle) -> StringTables {
     let temp_directory = get_temp_directory(&app);
 

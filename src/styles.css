@@ -30,6 +30,15 @@ h1 {
   display: block;
 }
 
+#editor-main .skill-points-input {
+  width: 30px;
+}
+
+.skill-sets-table-separation {
+  padding-left: 50px;
+  display: block;
+}
+
 #top-buttons-div {
   text-align: right;
 }

@@ -215,7 +215,7 @@ async function showSkillSets() {
         const option = document.createElement("option");
         select.appendChild(option);
 
-        option.text = `${padToDigits(i, 3)} ${stringTables.skill_set_names[i]}`
+        option.text = `${stringTables.skill_set_names[i]} (${padToDigits(i, 3)})`
         option.value = i;
 
         i++;
@@ -263,6 +263,10 @@ function showSkillSet(skillSetId) {
             populateSkillForSkillSet(i, j);
             populateTraitForSkillSet(i, j);
         }
+    }
+
+    for (let i = 1; i <= 10; i++) {
+        setupInput(`skill-sets-skill-points-${i}`, skillSet.skill_point_requirements[i - 1].points_total, (tag) => { skillSets.entries[currentSkillSetId].skill_point_requirements[i - 1].points_total = parseInt(tag.value) });
     }
 }
 
@@ -380,10 +384,14 @@ function padToDigits(number, numDigits) {
 
 async function syncFiles() {
     await invoke("set_btl_enmy_prm", { btlEnmyPrm: encounters });
+    await invoke("set_skill_tbl", { skillTbl: skillSets });
 }
 
 async function savePatchedRom() {
     console.log(encounters);
+
+    await getEncounters();
+    await getSkillSets();
 
     // TODO: could do concurrently with user using the save dialog
     await syncFiles();
