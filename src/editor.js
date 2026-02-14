@@ -15,6 +15,28 @@ let currentSkillSetId = 58; // Dark Knight
 let currentPage = null;
 let currentPageNavigation = null;
 
+async function setupPages() {
+    await getStringTables();
+
+    setupEncounters();
+    setupSkillSets();
+}
+
+function setupEncounters() {
+    setupEncounterSpecies();
+    setupItemDrop(1);
+    setupItemDrop(2);
+    setupSkillForEncounter(1);
+    setupSkillForEncounter(2);
+    setupSkillForEncounter(3);
+    setupSkillForEncounter(4);
+    setupSkillForEncounter(5);
+    setupSkillForEncounter(6);
+    setupSkillSet(1);
+    setupSkillSet(2);
+    setupSkillSet(3);
+}
+
 async function getEncounters() {
     if (encounters === null) {
         const options = {};
@@ -48,19 +70,6 @@ async function showEncounters() {
 
         i++;
     }
-
-    setupEncounterSpecies();
-    setupItemDrop(1);
-    setupItemDrop(2);
-    setupSkillForEncounter(1);
-    setupSkillForEncounter(2);
-    setupSkillForEncounter(3);
-    setupSkillForEncounter(4);
-    setupSkillForEncounter(5);
-    setupSkillForEncounter(6);
-    setupSkillSet(1);
-    setupSkillSet(2);
-    setupSkillSet(3);
 
     select.value = currentEncounterId;
     showEncounter(currentEncounterId);
@@ -204,6 +213,22 @@ function populateSkillSet(encounter, i) {
     skillSetTd.value = skillSetId;
 }
 
+function setupSkillSets() {
+    setupSpecies(1);
+    setupSpecies(2);
+    setupSpecies(3);
+    setupSpecies(4);
+    setupSpecies(5);
+    setupSpecies(6);
+
+    for (let i = 1; i <= 10; i++) {
+        for (let j = 1; j <= 4; j++) {
+            setupSkillForSkillSet(i, j);
+            setupTraitForSkillSet(i, j);
+        }
+    }
+}
+
 async function showSkillSets() {
     console.log("Showing skill sets");
 
@@ -228,20 +253,6 @@ async function showSkillSets() {
         option.value = i;
 
         i++;
-    }
-
-    setupSpecies(1);
-    setupSpecies(2);
-    setupSpecies(3);
-    setupSpecies(4);
-    setupSpecies(5);
-    setupSpecies(6);
-
-    for (let i = 1; i <= 10; i++) {
-        for (let j = 1; j <= 4; j++) {
-            setupSkillForSkillSet(i, j);
-            setupTraitForSkillSet(i, j);
-        }
     }
 
     select.value = currentSkillSetId;
@@ -440,6 +451,7 @@ async function showPage(pageName) {
 
 
 window.addEventListener("DOMContentLoaded", () => {
+    setupPages();
     showEncounters();
 
     document.querySelector("#navigation-encounters").addEventListener("click", (e) => {
