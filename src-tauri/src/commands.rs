@@ -13,7 +13,7 @@ use crate::dqmj1_rom::{
     btl_enmy_prm::BtlEnmyPrm, skill_tbl::SkillTbl, string_tables::StringTables,
 };
 
-const MOD_FILES: [&str; 1] = ["files/BtlEnmyPrm.bin"];
+const MOD_FILES: [&str; 2] = ["files/BtlEnmyPrm.bin", "files/SkillTbl.bin"];
 
 fn get_app_directory(app: &tauri::AppHandle) -> PathBuf {
     let app_directory = app.path().app_data_dir().unwrap();
