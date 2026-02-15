@@ -1,4 +1,5 @@
 {
+  "$schema": "https://biomejs.dev/schemas/2.4.0/schema.json",
   "formatter": {
     "indentStyle": "space",
     "indentWidth": 4,
@@ -13,5 +14,18 @@
     "formatter": {
       "indentWidth": 2
     }
+  },
+  "linter": {
+    "rules": {
+      "a11y": {
+        "useGenericFontNames": "off"
+      },
+      "correctness": {
+        "useParseIntRadix": "off"
+      }
+    }
+  },
+  "files": {
+    "includes": ["**", "!src-tauri/target"]
   }
 }

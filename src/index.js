@@ -20,7 +20,7 @@ async function unpackRom() {
     console.log("Finished unpacking rom");
 }
 
-function selectMod(modName, tag) {
+function selectMod(tag) {
     tag.classList = "selected";
 
     if (selectedModLi !== null) {
@@ -45,7 +45,7 @@ async function updateModList() {
         modsUl.appendChild(modLi);
 
         modLi.addEventListener("click", () => {
-            selectMod(modLi.innerHTML, modLi);
+            selectMod(modLi);
         });
 
         if (firstModLi === null) {
@@ -53,7 +53,7 @@ async function updateModList() {
         }
     }
 
-    selectMod(firstModLi.innerHTML, firstModLi);
+    selectMod(firstModLi);
 
     console.log(mods);
 }

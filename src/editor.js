@@ -1,8 +1,6 @@
 const { invoke } = window.__TAURI__.core;
 const { save } = window.__TAURI__.dialog;
 
-const tempDirectory = "tmp";
-
 const url = new URL(window.location.toLocaleString());
 const modName = url.searchParams.get("modName");
 
@@ -51,7 +49,7 @@ async function showEncounters() {
     currentPage = document.getElementById("encounters-page");
     currentPageNavigation = document.getElementById("navigation-encounters");
 
-    currentPage.style["display"] = "block";
+    currentPage.style.display = "block";
     currentPageNavigation.classList = "selected";
 
     await getEncounters();
@@ -142,7 +140,7 @@ function setupInput(id, value, setter) {
 function setupEncounterSpecies() {
     const speciesSelect = document.getElementById("encounters-species");
 
-    let numSpecies = stringTables.species_names.length;
+    const numSpecies = stringTables.species_names.length;
     for (let i = 0; i < numSpecies; i++) {
         const option = document.createElement("option");
         option.value = i;
@@ -157,9 +155,9 @@ function setupEncounterSpecies() {
 }
 
 function setupItemDrop(i) {
-    const itemDropItem = document.getElementById("encounters-item-drop-" + i + "-item");
+    const itemDropItem = document.getElementById(`encounters-item-drop-${i}-item`);
 
-    let numItems = stringTables.item_names.length;
+    const numItems = stringTables.item_names.length;
     for (let i = 0; i < numItems; i++) {
         const option = document.createElement("option");
         option.value = i;
@@ -176,9 +174,9 @@ function setupItemDrop(i) {
 }
 
 function setupSkillForEncounter(i) {
-    const skill = document.getElementById("encounters-skill-" + i);
+    const skill = document.getElementById(`encounters-skill-${i}`);
 
-    let numSkills = stringTables.skill_names.length;
+    const numSkills = stringTables.skill_names.length;
     for (let i = 0; i < numSkills; i++) {
         const option = document.createElement("option");
         option.value = i;
@@ -193,9 +191,9 @@ function setupSkillForEncounter(i) {
 }
 
 function setupSkillSet(i) {
-    const skillSet = document.getElementById("encounters-skill-set-" + i);
+    const skillSet = document.getElementById(`encounters-skill-set-${i}`);
 
-    let numSkills = stringTables.skill_set_names.length;
+    const numSkills = stringTables.skill_set_names.length;
     for (let i = 0; i < numSkills; i++) {
         const option = document.createElement("option");
         option.value = i;
@@ -210,23 +208,19 @@ function setupSkillSet(i) {
 }
 
 function populateItemDrop(encounter, i) {
-    const itemDropItem = document.getElementById("encounters-item-drop-" + i + "-item");
+    const itemDropItem = document.getElementById(`encounters-item-drop-${i}-item`);
 
     const itemDrop = encounter.item_drops[i - 1];
 
     itemDropItem.value = itemDrop.item_id;
 
-    setupInput(
-        "encounters-item-drop-" + i + "-chance",
-        itemDrop.chance_denominator_2_power,
-        (tag) => {
-            itemDrop.chance_denominator_2_power = parseInt(tag.value);
-        },
-    );
+    setupInput(`encounters-item-drop-${i}-chance`, itemDrop.chance_denominator_2_power, (tag) => {
+        itemDrop.chance_denominator_2_power = parseInt(tag.value);
+    });
 }
 
 function populateSkill(encounter, i) {
-    const skillInput = document.getElementById("encounters-skill-" + i);
+    const skillInput = document.getElementById(`encounters-skill-${i}`);
 
     const skill = encounter.skills[i - 1];
 
@@ -234,7 +228,7 @@ function populateSkill(encounter, i) {
 }
 
 function populateSkillSet(encounter, i) {
-    const skillSetTd = document.getElementById("encounters-skill-set-" + i);
+    const skillSetTd = document.getElementById(`encounters-skill-set-${i}`);
 
     const skillSetId = encounter.skill_set_ids[i - 1];
 
@@ -263,7 +257,7 @@ async function showSkillSets() {
     currentPage = document.getElementById("skill-sets-page");
     currentPageNavigation = document.getElementById("navigation-skill-sets");
 
-    currentPage.style["display"] = "block";
+    currentPage.style.display = "block";
     currentPageNavigation.classList = "selected";
 
     await getSkillSets();
@@ -332,7 +326,7 @@ function showSkillSet(skillSetId) {
 }
 
 function populateSpecies(skillSet, i) {
-    const speciesSelect = document.getElementById("skill-sets-species-" + i);
+    const speciesSelect = document.getElementById(`skill-sets-species-${i}`);
 
     const skillSetId = skillSet.species_ids[i - 1];
 
@@ -340,9 +334,9 @@ function populateSpecies(skillSet, i) {
 }
 
 function setupSpecies(i) {
-    const species = document.getElementById("skill-sets-species-" + i);
+    const species = document.getElementById(`skill-sets-species-${i}`);
 
-    let numSpecies = stringTables.species_names.length;
+    const numSpecies = stringTables.species_names.length;
     for (let i = 0; i < numSpecies; i++) {
         const option = document.createElement("option");
         option.value = i;
@@ -357,9 +351,9 @@ function setupSpecies(i) {
 }
 
 function setupSkillForSkillSet(i, j) {
-    const skill = document.getElementById("skill-sets-skill-" + i + "-" + j);
+    const skill = document.getElementById(`skill-sets-skill-${i}-${j}`);
 
-    let numSkills = stringTables.skill_names.length;
+    const numSkills = stringTables.skill_names.length;
     for (let i = 0; i < numSkills; i++) {
         const option = document.createElement("option");
         option.value = i;
@@ -380,15 +374,15 @@ function setupSkillForSkillSet(i, j) {
 }
 
 function populateSkillForSkillSet(i, j) {
-    const skill = document.getElementById("skill-sets-skill-" + i + "-" + j);
+    const skill = document.getElementById(`skill-sets-skill-${i}-${j}`);
 
     skill.value = skillSets.entries[currentSkillSetId].skills[i - 1].skill_ids[j - 1];
 }
 
 function setupTraitForSkillSet(i, j) {
-    const trait = document.getElementById("skill-sets-trait-" + i + "-" + j);
+    const trait = document.getElementById(`skill-sets-trait-${i}-${j}`);
 
-    let numTraits = stringTables.trait_names.length;
+    const numTraits = stringTables.trait_names.length;
     for (let i = 0; i < numTraits; i++) {
         const option = document.createElement("option");
         option.value = i;
@@ -409,7 +403,7 @@ function setupTraitForSkillSet(i, j) {
 }
 
 function populateTraitForSkillSet(i, j) {
-    const trait = document.getElementById("skill-sets-trait-" + i + "-" + j);
+    const trait = document.getElementById(`skill-sets-trait-${i}-${j}`);
 
     trait.value = skillSets.entries[currentSkillSetId].traits[i - 1].trait_ids[j - 1];
 }
@@ -437,7 +431,7 @@ async function getStringTables() {
 function padToDigits(number, numDigits) {
     let string = number.toString();
     while (string.length < numDigits) {
-        string = "0" + string;
+        string = `0${string}`;
     }
 
     return string;
@@ -481,7 +475,7 @@ async function saveMod() {
 
 async function showPage(pageName) {
     if (currentPage !== null) {
-        currentPage.style["display"] = "none";
+        currentPage.style.display = "none";
     }
     if (currentPageNavigation !== null) {
         currentPageNavigation.classList = "";
