@@ -16,6 +16,10 @@ jobs:
       with:
         workspaces: "src-tauri -> target"
 
+    - name: Lint Rust code
+      working-directory: src-tauri
+      run: cargo clippy
+
     - name: Install dependencies
       run: npm install
 
