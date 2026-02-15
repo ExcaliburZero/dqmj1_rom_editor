@@ -9,9 +9,11 @@ use binrw::{BinRead, BinWriterExt};
 use ds_rom::rom::{raw, Rom, RomLoadOptions};
 use tauri::Manager;
 
-use crate::dqmj1_rom::{btl_enmy_prm::BtlEnmyPrm, string_tables::StringTables};
+use crate::dqmj1_rom::{
+    btl_enmy_prm::BtlEnmyPrm, skill_tbl::SkillTbl, string_tables::StringTables,
+};
 
-const MOD_FILES: [&str; 1] = ["files/BtlEnmyPrm.bin"];
+const MOD_FILES: [&str; 2] = ["files/BtlEnmyPrm.bin", "files/SkillTbl.bin"];
 
 fn get_app_directory(app: &tauri::AppHandle) -> PathBuf {
     let app_directory = app.path().app_data_dir().unwrap();
@@ -103,6 +105,28 @@ pub fn set_btl_enmy_prm(app: tauri::AppHandle, btl_enmy_prm: BtlEnmyPrm) {
 
     let mut file = File::create(filepath).unwrap();
     file.write_le(&btl_enmy_prm).unwrap();
+}
+
+#[tauri::command]
+pub fn get_skill_tbl(app: tauri::AppHandle) -> SkillTbl {
+    let temp_directory = get_temp_directory(&app);
+
+    let filepath = temp_directory.join("files").join("SkillTbl.bin");
+    println!("Reading SkillTbl from: {filepath:?}");
+    let file_data = fs::read(filepath).unwrap();
+
+    SkillTbl::read(&mut Cursor::new(file_data)).unwrap()
+}
+
+#[tauri::command]
+pub fn set_skill_tbl(app: tauri::AppHandle, skill_tbl: SkillTbl) {
+    let temp_directory = get_temp_directory(&app);
+
+    let filepath = temp_directory.join("files").join("SkillTbl.bin");
+    println!("Writing SkillTbl to: {filepath:?}");
+
+    let mut file = File::create(filepath).unwrap();
+    file.write_le(&skill_tbl).unwrap();
 }
 
 #[tauri::command]

@@ -7,21 +7,54 @@ const url = new URL(window.location.toLocaleString());
 const modName = url.searchParams.get("modName");
 
 let encounters = null;
+let skillSets = null;
 let stringTables = null;
 
-let currentEncounterId = null;
+let currentEncounterId = 48; // starter Dracky
+let currentSkillSetId = 58; // Dark Knight
+let currentPage = null;
+let currentPageNavigation = null;
 
-async function showEncounters() {
-    console.log("Showing encounters");
+async function setupPages() {
+    await getStringTables();
+
+    setupEncounters();
+    setupSkillSets();
+}
+
+function setupEncounters() {
+    setupEncounterSpecies();
+    setupItemDrop(1);
+    setupItemDrop(2);
+    setupSkillForEncounter(1);
+    setupSkillForEncounter(2);
+    setupSkillForEncounter(3);
+    setupSkillForEncounter(4);
+    setupSkillForEncounter(5);
+    setupSkillForEncounter(6);
+    setupSkillSet(1);
+    setupSkillSet(2);
+    setupSkillSet(3);
+}
+
+async function getEncounters() {
     if (encounters === null) {
         const options = {};
         console.log(`Getting encounters: ${JSON.stringify(options)}`);
         encounters = await invoke("get_btl_enmy_prm", options);
     }
+}
 
-    console.log(`Encounters: ${JSON.stringify(encounters.entries[0])}`);
-    console.log(`Encounters: ${JSON.stringify(encounters.entries[1])}`);
+async function showEncounters() {
+    console.log("Showing encounters");
 
+    currentPage = document.getElementById("encounters-page");
+    currentPageNavigation = document.getElementById("navigation-encounters");
+
+    currentPage.style["display"] = "block";
+    currentPageNavigation.classList = "selected";
+
+    await getEncounters();
     await getStringTables();
 
     const select = document.getElementById("encounters-select");
@@ -38,22 +71,8 @@ async function showEncounters() {
         i++;
     }
 
-    setupEncounterSpecies();
-    setupItemDrop(1);
-    setupItemDrop(2);
-    setupSkill(1);
-    setupSkill(2);
-    setupSkill(3);
-    setupSkill(4);
-    setupSkill(5);
-    setupSkill(6);
-    setupSkillSet(1);
-    setupSkillSet(2);
-    setupSkillSet(3);
-
-    const defaultEncounterId = 48; // starter Dracky
-    select.value = defaultEncounterId;
-    showEncounter(defaultEncounterId);
+    select.value = currentEncounterId;
+    showEncounter(currentEncounterId);
 }
 
 async function showEncounter(encounterId) {
@@ -134,7 +153,7 @@ function setupItemDrop(i) {
     });
 }
 
-function setupSkill(i) {
+function setupSkillForEncounter(i) {
     const skill = document.getElementById("encounters-skill-" + i);
 
     let numSkills = stringTables.skill_names.length;
@@ -194,6 +213,175 @@ function populateSkillSet(encounter, i) {
     skillSetTd.value = skillSetId;
 }
 
+function setupSkillSets() {
+    setupSpecies(1);
+    setupSpecies(2);
+    setupSpecies(3);
+    setupSpecies(4);
+    setupSpecies(5);
+    setupSpecies(6);
+
+    for (let i = 1; i <= 10; i++) {
+        for (let j = 1; j <= 4; j++) {
+            setupSkillForSkillSet(i, j);
+            setupTraitForSkillSet(i, j);
+        }
+    }
+}
+
+async function showSkillSets() {
+    console.log("Showing skill sets");
+
+    currentPage = document.getElementById("skill-sets-page");
+    currentPageNavigation = document.getElementById("navigation-skill-sets");
+
+    currentPage.style["display"] = "block";
+    currentPageNavigation.classList = "selected";
+
+    await getSkillSets();
+    await getStringTables();
+
+    const select = document.getElementById("skill-sets-select");
+    select.innerHTML = "";
+
+    let i = 0;
+    for (const _skillSet of skillSets.entries) {
+        const option = document.createElement("option");
+        select.appendChild(option);
+
+        option.text = `${stringTables.skill_set_names[i]} (${padToDigits(i, 3)})`
+        option.value = i;
+
+        i++;
+    }
+
+    select.value = currentSkillSetId;
+    showSkillSet(currentSkillSetId);
+}
+
+function showSkillSet(skillSetId) {
+    const skillSet = skillSets.entries[skillSetId];
+    console.log(skillSet);
+
+    currentSkillSetId = skillSetId;
+
+    document.getElementById("skill-sets-skill-set-id").innerHTML = skillSetId;
+
+    setupInput("skill-sets-can-upgrade", skillSet.can_upgrade, (tag) => { skillSets.entries[currentSkillSetId].can_upgrade = parseInt(tag.value) });
+    setupInput("skill-sets-category", skillSet.category, (tag) => { skillSets.entries[currentSkillSetId].category = parseInt(tag.value) });
+    setupInput("skill-sets-max-skill-points", skillSet.max_skill_points, (tag) => { skillSets.entries[currentSkillSetId].max_skill_points = parseInt(tag.value) });
+
+    populateSpecies(skillSet, 1);
+    populateSpecies(skillSet, 2);
+    populateSpecies(skillSet, 3);
+    populateSpecies(skillSet, 4);
+    populateSpecies(skillSet, 5);
+    populateSpecies(skillSet, 6);
+
+    for (let i = 1; i <= 10; i++) {
+        for (let j = 1; j <= 4; j++) {
+            populateSkillForSkillSet(i, j);
+            populateTraitForSkillSet(i, j);
+        }
+    }
+
+    for (let i = 1; i <= 10; i++) {
+        setupInput(`skill-sets-skill-points-${i}`, skillSet.skill_point_requirements[i - 1].points_total, (tag) => { skillSets.entries[currentSkillSetId].skill_point_requirements[i - 1].points_total = parseInt(tag.value) });
+    }
+}
+
+function populateSpecies(skillSet, i) {
+    const speciesSelect = document.getElementById("skill-sets-species-" + i);
+
+    const skillSetId = skillSet.species_ids[i - 1];
+
+    speciesSelect.value = skillSetId;
+}
+
+function setupSpecies(i) {
+    const species = document.getElementById("skill-sets-species-" + i);
+
+    let numSpecies = stringTables.species_names.length;
+    for (let i = 0; i < numSpecies; i++) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.innerHTML = `${stringTables.species_names[i]} (${i})`;
+
+        species.appendChild(option);
+    }
+
+    species.addEventListener("change", () => {
+        skillSets.entries[currentSkillSetId].species_ids[i - 1] = parseInt(species.value);
+    });
+}
+
+function setupSkillForSkillSet(i, j) {
+    const skill = document.getElementById("skill-sets-skill-" + i + "-" + j);
+
+    let numSkills = stringTables.skill_names.length;
+    for (let i = 0; i < numSkills; i++) {
+        const option = document.createElement("option");
+        option.value = i;
+
+        let label = `${stringTables.skill_names[i]} (${i})`;
+        if (i === 0) {
+            label = "";
+        }
+
+        option.innerHTML = label;
+
+        skill.appendChild(option);
+    }
+
+    skill.addEventListener("change", () => {
+        skillSets.entries[currentSkillSetId].skills[i - 1].skill_ids[j - 1] = parseInt(skill.value);
+    });
+}
+
+function populateSkillForSkillSet(i, j) {
+    const skill = document.getElementById("skill-sets-skill-" + i + "-" + j);
+
+    skill.value = skillSets.entries[currentSkillSetId].skills[i - 1].skill_ids[j - 1];
+}
+
+function setupTraitForSkillSet(i, j) {
+    const trait = document.getElementById("skill-sets-trait-" + i + "-" + j);
+
+    let numTraits = stringTables.trait_names.length;
+    for (let i = 0; i < numTraits; i++) {
+        const option = document.createElement("option");
+        option.value = i;
+
+        let label = `${stringTables.trait_names[i]} (${i})`;
+        if (i === 0) {
+            label = "";
+        }
+
+        option.innerHTML = label;
+
+        trait.appendChild(option);
+    }
+
+    trait.addEventListener("change", () => {
+        skillSets.entries[currentSkillSetId].traits[i - 1].trait_ids[j - 1] = parseInt(trait.value);
+    });
+}
+
+function populateTraitForSkillSet(i, j) {
+    const trait = document.getElementById("skill-sets-trait-" + i + "-" + j);
+
+    trait.value = skillSets.entries[currentSkillSetId].traits[i - 1].trait_ids[j - 1];
+}
+
+async function getSkillSets() {
+    if (skillSets === null) {
+        const options = {};
+        console.log(`Getting skill sets: ${JSON.stringify(options)}`);
+        skillSets = await invoke("get_skill_tbl", options);
+        console.log(skillSets);
+    }
+}
+
 async function getStringTables() {
     if (stringTables !== null) {
         return;
@@ -216,10 +404,14 @@ function padToDigits(number, numDigits) {
 
 async function syncFiles() {
     await invoke("set_btl_enmy_prm", { btlEnmyPrm: encounters });
+    await invoke("set_skill_tbl", { skillTbl: skillSets });
 }
 
 async function savePatchedRom() {
     console.log(encounters);
+
+    await getEncounters();
+    await getSkillSets();
 
     // TODO: could do concurrently with user using the save dialog
     await syncFiles();
@@ -242,7 +434,38 @@ async function saveMod() {
     console.log("Finished saving mod");
 }
 
+async function showPage(pageName) {
+    if (currentPage !== null) {
+        currentPage.style["display"] = "none";
+    }
+    if (currentPageNavigation !== null) {
+        currentPageNavigation.classList = "";
+    }
+
+    if (pageName === "encounters") {
+        showEncounters();
+    } else if (pageName === "skill-sets") {
+        showSkillSets();
+    }
+}
+
+
 window.addEventListener("DOMContentLoaded", () => {
+    setupPages();
+    showEncounters();
+
+    document.querySelector("#navigation-encounters").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        showPage("encounters");
+    });
+
+    document.querySelector("#navigation-skill-sets").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        showPage("skill-sets");
+    });
+
     document.querySelector("#encounters-select").addEventListener("change", (e) => {
         e.preventDefault();
 
@@ -253,6 +476,18 @@ window.addEventListener("DOMContentLoaded", () => {
 
         const encounterId = parseInt(value.substring(0, 3));
         showEncounter(encounterId);
+    });
+
+    document.querySelector("#skill-sets-select").addEventListener("change", (e) => {
+        e.preventDefault();
+
+        const select = document.getElementById("skill-sets-select");
+        const value = select.value;
+
+        console.log(value)
+
+        const id = parseInt(value.substring(0, 3));
+        showSkillSet(id);
     });
 
     document.querySelector("#save-mod").addEventListener("click", (e) => {
@@ -279,5 +514,3 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-
-showEncounters()

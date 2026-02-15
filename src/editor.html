@@ -17,7 +17,8 @@
     <div class="row">
       <div class="column list-box">
         <ul>
-          <li class="selected">Encounters</li>
+          <li id="navigation-encounters">Encounters</li>
+          <li id="navigation-skill-sets">Skill sets</li>
         </ul>
       </div>
       <div class="column">
@@ -25,6 +26,7 @@
           <button id="save-mod" class="big-button">Save mod</button>
           <button id="save-patched-rom" class="big-button">Export patched ROM</button>
         </div>
+        <!-- Encounters -->
         <div id="encounters-page" class="page">
           <select id="encounters-select"></select>
           <hr />
@@ -185,10 +187,427 @@
           </table>
           </table>
         </div>
+        <!-- Skill sets -->
+        <div id="skill-sets-page" class="page">
+          <select id="skill-sets-select"></select>
+          <hr />
+
+          <table class="page-table">
+            <tr>
+              <td>
+                <table>
+                  <tr>
+                    <th>Skill Set</th>
+                    <td id="skill-sets-skill-set-id"></td>
+                    <th class="skill-sets-table-separation">Species (1)</th>
+                    <td>
+                      <select id="skill-sets-species-1"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Can upgrade</th>
+                    <td>
+                      <input id="skill-sets-can-upgrade"></input>
+                    </td>
+                    <th class="skill-sets-table-separation">Species (2)</th>
+                    <td>
+                      <select id="skill-sets-species-2"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Category</th>
+                    <td>
+                      <input id="skill-sets-category"></input>
+                    </td>
+                    <th class="skill-sets-table-separation">Species (3)</th>
+                    <td>
+                      <select id="skill-sets-species-3"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Max skill points</th>
+                    <td>
+                      <input id="skill-sets-max-skill-points"></input>
+                    </td>
+                    <th class="skill-sets-table-separation">Species (4)</th>
+                    <td>
+                      <select id="skill-sets-species-4"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <th class="skill-sets-table-separation">Species (5)</th>
+                    <td>
+                      <select id="skill-sets-species-5"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <th class="skill-sets-table-separation">Species (6)</th>
+                    <td>
+                      <select id="skill-sets-species-6"></select>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <table>
+                  <!-- 1st -->
+                  <tr>
+                    <th>1st</th>
+                    <td>
+                      <select id="skill-sets-skill-1-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-1-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-1-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-1-4"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input id="skill-sets-skill-points-1" class="skill-points-input"></input>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-1-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-1-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-1-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-1-4"></select>
+                    </td>
+                  </tr>
+                  <!-- 2nd -->
+                  <tr class="skill-set-level-tr">
+                  </tr>
+                  <tr>
+                    <th>2nd</th>
+                    <td>
+                      <select id="skill-sets-skill-2-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-2-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-2-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-2-4"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input id="skill-sets-skill-points-2" class="skill-points-input"></input>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-2-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-2-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-2-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-2-4"></select>
+                    </td>
+                  </tr>
+                  <!-- 3rd -->
+                  <tr class="skill-set-level-tr">
+                  </tr>
+                  <tr>
+                    <th>3rd</th>
+                    <td>
+                      <select id="skill-sets-skill-3-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-3-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-3-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-3-4"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input id="skill-sets-skill-points-3" class="skill-points-input"></input>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-3-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-3-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-3-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-3-4"></select>
+                    </td>
+                  </tr>
+                  <!-- 4th -->
+                  <tr class="skill-set-level-tr">
+                  </tr>
+                  <tr>
+                    <th>4th</th>
+                    <td>
+                      <select id="skill-sets-skill-4-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-4-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-4-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-4-4"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input id="skill-sets-skill-points-4" class="skill-points-input"></input>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-4-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-4-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-4-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-4-4"></select>
+                    </td>
+                  </tr>
+                  <!-- 5th -->
+                  <tr class="skill-set-level-tr">
+                  </tr>
+                  <tr>
+                    <th>5th</th>
+                    <td>
+                      <select id="skill-sets-skill-5-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-5-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-5-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-5-4"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input id="skill-sets-skill-points-5" class="skill-points-input"></input>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-5-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-5-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-5-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-5-4"></select>
+                    </td>
+                  </tr>
+                  <!-- 6th -->
+                  <tr class="skill-set-level-tr">
+                  </tr>
+                  <tr>
+                    <th>6th</th>
+                    <td>
+                      <select id="skill-sets-skill-6-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-6-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-6-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-6-4"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input id="skill-sets-skill-points-6" class="skill-points-input"></input>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-6-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-6-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-6-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-6-4"></select>
+                    </td>
+                  </tr>
+                  <!-- 7th -->
+                  <tr class="skill-set-level-tr">
+                  </tr>
+                  <tr>
+                    <th>7th</th>
+                    <td>
+                      <select id="skill-sets-skill-7-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-7-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-7-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-7-4"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input id="skill-sets-skill-points-7" class="skill-points-input"></input>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-7-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-7-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-7-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-7-4"></select>
+                    </td>
+                  </tr>
+                  <!-- 8th -->
+                  <tr class="skill-set-level-tr">
+                  </tr>
+                  <tr>
+                    <th>8th</th>
+                    <td>
+                      <select id="skill-sets-skill-8-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-8-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-8-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-8-4"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input id="skill-sets-skill-points-8" class="skill-points-input"></input>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-8-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-8-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-8-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-8-4"></select>
+                    </td>
+                  </tr>
+                  <!-- 9th -->
+                  <tr class="skill-set-level-tr">
+                  </tr>
+                  <tr>
+                    <th>9th</th>
+                    <td>
+                      <select id="skill-sets-skill-9-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-9-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-9-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-9-4"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input id="skill-sets-skill-points-9" class="skill-points-input"></input>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-9-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-9-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-9-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-9-4"></select>
+                    </td>
+                  </tr>
+                  <!-- 10th -->
+                  <tr class="skill-set-level-tr">
+                  </tr>
+                  <tr>
+                    <th>10th</th>
+                    <td>
+                      <select id="skill-sets-skill-10-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-10-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-10-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-skill-10-4"></select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input id="skill-sets-skill-points-10" class="skill-points-input"></input>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-10-1"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-10-2"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-10-3"></select>
+                    </td>
+                    <td>
+                      <select id="skill-sets-trait-10-4"></select>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
-    </div>
-
-  </main>
 </body>
-
-</html>
