@@ -65,7 +65,7 @@ async function showEncounters() {
         const option = document.createElement("option");
         select.appendChild(option);
 
-        option.text = `${padToDigits(i, 3)} ${stringTables.species_names[encounter.species_id]}`
+        option.text = `${padToDigits(i, 3)} ${stringTables.species_names[encounter.species_id]}`;
         option.value = i;
 
         i++;
@@ -86,16 +86,36 @@ async function showEncounter(encounterId) {
     document.getElementById("encounters-encounter-id").innerHTML = padToDigits(encounterId, 3);
     document.getElementById("encounters-species").value = encounter.species_id;
 
-    setupInput("encounters-level", encounter.level, (tag) => { encounters.entries[currentEncounterId].level = parseInt(tag.value) });
-    setupInput("encounters-max-hp", encounter.max_hp, (tag) => { encounters.entries[currentEncounterId].max_hp = parseInt(tag.value) });
-    setupInput("encounters-max-mp", encounter.max_mp, (tag) => { encounters.entries[currentEncounterId].max_mp = parseInt(tag.value) });
-    setupInput("encounters-attack", encounter.attack, (tag) => { encounters.entries[currentEncounterId].attack = parseInt(tag.value) });
-    setupInput("encounters-defense", encounter.defense, (tag) => { encounters.entries[currentEncounterId].defense = parseInt(tag.value) });
-    setupInput("encounters-wisdom", encounter.wisdom, (tag) => { encounters.entries[currentEncounterId].wisdom = parseInt(tag.value) });
-    setupInput("encounters-agility", encounter.agility, (tag) => { encounters.entries[currentEncounterId].agility = parseInt(tag.value) });
-    setupInput("encounters-scout-chance", encounter.scout_chance, (tag) => { encounters.entries[currentEncounterId].scout_chance = parseInt(tag.value) });
-    setupInput("encounters-exp", encounter.exp, (tag) => { encounters.entries[currentEncounterId].exp = parseInt(tag.value) });
-    setupInput("encounters-gold", encounter.gold, (tag) => { encounters.entries[currentEncounterId].gold = parseInt(tag.value) });
+    setupInput("encounters-level", encounter.level, (tag) => {
+        encounters.entries[currentEncounterId].level = parseInt(tag.value);
+    });
+    setupInput("encounters-max-hp", encounter.max_hp, (tag) => {
+        encounters.entries[currentEncounterId].max_hp = parseInt(tag.value);
+    });
+    setupInput("encounters-max-mp", encounter.max_mp, (tag) => {
+        encounters.entries[currentEncounterId].max_mp = parseInt(tag.value);
+    });
+    setupInput("encounters-attack", encounter.attack, (tag) => {
+        encounters.entries[currentEncounterId].attack = parseInt(tag.value);
+    });
+    setupInput("encounters-defense", encounter.defense, (tag) => {
+        encounters.entries[currentEncounterId].defense = parseInt(tag.value);
+    });
+    setupInput("encounters-wisdom", encounter.wisdom, (tag) => {
+        encounters.entries[currentEncounterId].wisdom = parseInt(tag.value);
+    });
+    setupInput("encounters-agility", encounter.agility, (tag) => {
+        encounters.entries[currentEncounterId].agility = parseInt(tag.value);
+    });
+    setupInput("encounters-scout-chance", encounter.scout_chance, (tag) => {
+        encounters.entries[currentEncounterId].scout_chance = parseInt(tag.value);
+    });
+    setupInput("encounters-exp", encounter.exp, (tag) => {
+        encounters.entries[currentEncounterId].exp = parseInt(tag.value);
+    });
+    setupInput("encounters-gold", encounter.gold, (tag) => {
+        encounters.entries[currentEncounterId].gold = parseInt(tag.value);
+    });
 
     populateItemDrop(encounter, 1);
     populateItemDrop(encounter, 2);
@@ -116,7 +136,7 @@ function setupInput(id, value, setter) {
     const tag = document.getElementById(id);
     tag.value = value;
 
-    tag.addEventListener("change", () => setter(tag))
+    tag.addEventListener("change", () => setter(tag));
 }
 
 function setupEncounterSpecies() {
@@ -149,7 +169,9 @@ function setupItemDrop(i) {
     }
 
     itemDropItem.addEventListener("change", () => {
-        encounters.entries[currentEncounterId].item_drops[i - 1].item_id = parseInt(itemDropItem.value);
+        encounters.entries[currentEncounterId].item_drops[i - 1].item_id = parseInt(
+            itemDropItem.value,
+        );
     });
 }
 
@@ -194,7 +216,13 @@ function populateItemDrop(encounter, i) {
 
     itemDropItem.value = itemDrop.item_id;
 
-    setupInput("encounters-item-drop-" + i + "-chance", itemDrop.chance_denominator_2_power, (tag) => { itemDrop.chance_denominator_2_power = parseInt(tag.value) });
+    setupInput(
+        "encounters-item-drop-" + i + "-chance",
+        itemDrop.chance_denominator_2_power,
+        (tag) => {
+            itemDrop.chance_denominator_2_power = parseInt(tag.value);
+        },
+    );
 }
 
 function populateSkill(encounter, i) {
@@ -249,7 +277,7 @@ async function showSkillSets() {
         const option = document.createElement("option");
         select.appendChild(option);
 
-        option.text = `${stringTables.skill_set_names[i]} (${padToDigits(i, 3)})`
+        option.text = `${stringTables.skill_set_names[i]} (${padToDigits(i, 3)})`;
         option.value = i;
 
         i++;
@@ -267,9 +295,15 @@ function showSkillSet(skillSetId) {
 
     document.getElementById("skill-sets-skill-set-id").innerHTML = skillSetId;
 
-    setupInput("skill-sets-can-upgrade", skillSet.can_upgrade, (tag) => { skillSets.entries[currentSkillSetId].can_upgrade = parseInt(tag.value) });
-    setupInput("skill-sets-category", skillSet.category, (tag) => { skillSets.entries[currentSkillSetId].category = parseInt(tag.value) });
-    setupInput("skill-sets-max-skill-points", skillSet.max_skill_points, (tag) => { skillSets.entries[currentSkillSetId].max_skill_points = parseInt(tag.value) });
+    setupInput("skill-sets-can-upgrade", skillSet.can_upgrade, (tag) => {
+        skillSets.entries[currentSkillSetId].can_upgrade = parseInt(tag.value);
+    });
+    setupInput("skill-sets-category", skillSet.category, (tag) => {
+        skillSets.entries[currentSkillSetId].category = parseInt(tag.value);
+    });
+    setupInput("skill-sets-max-skill-points", skillSet.max_skill_points, (tag) => {
+        skillSets.entries[currentSkillSetId].max_skill_points = parseInt(tag.value);
+    });
 
     populateSpecies(skillSet, 1);
     populateSpecies(skillSet, 2);
@@ -286,7 +320,14 @@ function showSkillSet(skillSetId) {
     }
 
     for (let i = 1; i <= 10; i++) {
-        setupInput(`skill-sets-skill-points-${i}`, skillSet.skill_point_requirements[i - 1].points_total, (tag) => { skillSets.entries[currentSkillSetId].skill_point_requirements[i - 1].points_total = parseInt(tag.value) });
+        setupInput(
+            `skill-sets-skill-points-${i}`,
+            skillSet.skill_point_requirements[i - 1].points_total,
+            (tag) => {
+                skillSets.entries[currentSkillSetId].skill_point_requirements[i - 1].points_total =
+                    parseInt(tag.value);
+            },
+        );
     }
 }
 
@@ -417,7 +458,11 @@ async function savePatchedRom() {
     await syncFiles();
 
     console.log("Prompting user to choose patched rom file save location");
-    const romFilepath = await save({ multiple: false, directory: false, filters: [{ name: "Nintendo DS ROM", extensions: ["nds"] }] });
+    const romFilepath = await save({
+        multiple: false,
+        directory: false,
+        filters: [{ name: "Nintendo DS ROM", extensions: ["nds"] }],
+    });
 
     const options = { romFilepath: romFilepath };
     console.log(`Packing rom: ${JSON.stringify(options)}`);
@@ -449,7 +494,6 @@ async function showPage(pageName) {
     }
 }
 
-
 window.addEventListener("DOMContentLoaded", () => {
     setupPages();
     showEncounters();
@@ -472,7 +516,7 @@ window.addEventListener("DOMContentLoaded", () => {
         const select = document.getElementById("encounters-select");
         const value = select.value;
 
-        console.log(value)
+        console.log(value);
 
         const encounterId = parseInt(value.substring(0, 3));
         showEncounter(encounterId);
@@ -484,7 +528,7 @@ window.addEventListener("DOMContentLoaded", () => {
         const select = document.getElementById("skill-sets-select");
         const value = select.value;
 
-        console.log(value)
+        console.log(value);
 
         const id = parseInt(value.substring(0, 3));
         showSkillSet(id);

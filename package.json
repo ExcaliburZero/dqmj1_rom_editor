@@ -1,13 +1,13 @@
 {
-	"name": "dqmj1_rom_editor",
-	"private": true,
-	"version": "0.2.0",
-	"type": "module",
-	"scripts": {
-		"tauri": "tauri"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "2.4.0",
-		"@tauri-apps/cli": "^2"
-	}
+  "name": "dqmj1_rom_editor",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "tauri": "tauri"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.0",
+    "@tauri-apps/cli": "^2"
+  }
 }
