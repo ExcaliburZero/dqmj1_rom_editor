@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+* Made various misc improvements to GitHub Actions builds. (#3, #5)
+    * Cache Rust dependencies
+    * Check Rust code formatting
+    * Run clippy linter on Rust code
+    * Run Biome formatter and linter on JS, CSS, JSON, and HTML
+    * Add status badges to readme
+
 ## [0.2.0] - 2026-02-14
 
 ### Added
