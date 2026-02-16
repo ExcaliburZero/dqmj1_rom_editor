@@ -1,8 +1,11 @@
 use serde::Serialize;
 
-use crate::dqmj1_rom::strings::{
-    encoding_na::get_na_character_encoding, locations::TableLocation,
-    locations_na::NA_STRING_TABLE_LOCATIONS,
+use crate::dqmj1_rom::{
+    regions::Region,
+    strings::{
+        encoding::CharacterEncoding,
+        locations::{StringTableLocations, TableLocation},
+    },
 };
 
 const POINTER_SIZE_IN_BYTES: usize = 4;
@@ -17,21 +20,21 @@ pub struct StringTables {
 }
 
 impl StringTables {
-    pub fn from_arm9(arm9: &[u8]) -> StringTables {
-        let table_locations = NA_STRING_TABLE_LOCATIONS;
+    pub fn from_arm9(arm9: &[u8], region: Region) -> StringTables {
+        let table_locations = StringTableLocations::get(region);
 
         StringTables {
-            species_names: Self::read_table(arm9, &table_locations.species_names),
-            item_names: Self::read_table(arm9, &table_locations.item_names),
-            skill_names: Self::read_table(arm9, &table_locations.skill_names),
-            trait_names: Self::read_table(arm9, &table_locations.trait_names),
-            skill_set_names: Self::read_table(arm9, &table_locations.skill_set_names),
+            species_names: Self::read_table(arm9, &table_locations.species_names, region),
+            item_names: Self::read_table(arm9, &table_locations.item_names, region),
+            skill_names: Self::read_table(arm9, &table_locations.skill_names, region),
+            trait_names: Self::read_table(arm9, &table_locations.trait_names, region),
+            skill_set_names: Self::read_table(arm9, &table_locations.skill_set_names, region),
         }
     }
 
-    pub fn read_table(arm9: &[u8], table_location: &TableLocation) -> Vec<String> {
+    pub fn read_table(arm9: &[u8], table_location: &TableLocation, region: Region) -> Vec<String> {
         let offset: u32 = 0x02000000; // arm9.bin
-        let character_encoding = get_na_character_encoding();
+        let character_encoding = CharacterEncoding::get(region);
 
         let start = (table_location.start - offset) as usize;
         let end = (table_location.end - offset) as usize;

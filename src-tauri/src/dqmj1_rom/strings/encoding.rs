@@ -1,8 +1,17 @@
+use crate::dqmj1_rom::{regions::Region, strings::encoding_na::get_na_character_encoding};
+
 pub struct CharacterEncoding {
     pub byte_to_char_map: Vec<(Vec<u8>, &'static str)>,
 }
 
 impl CharacterEncoding {
+    pub fn get(region: Region) -> CharacterEncoding {
+        match region {
+            Region::NorthAmerica => get_na_character_encoding(),
+            _ => panic!(),
+        }
+    }
+
     pub fn read_string(&self, bytes: &[u8]) -> String {
         let mut buffer: Vec<u8> = Vec::new();
         for (i, byte) in bytes.iter().enumerate() {
