@@ -1,4 +1,7 @@
-use crate::dqmj1_rom::{regions::Region, strings::encoding_na::get_na_character_encoding};
+use crate::dqmj1_rom::{
+    regions::Region,
+    strings::{encoding_jp::get_jp_character_encoding, encoding_na::get_na_character_encoding},
+};
 
 pub struct CharacterEncoding {
     pub byte_to_char_map: Vec<(Vec<u8>, &'static str)>,
@@ -8,6 +11,7 @@ impl CharacterEncoding {
     pub fn get(region: Region) -> CharacterEncoding {
         match region {
             Region::NorthAmerica => get_na_character_encoding(),
+            Region::Japan => get_jp_character_encoding(),
             _ => panic!(),
         }
     }
@@ -33,7 +37,7 @@ impl CharacterEncoding {
     }
 
     fn bytes_to_string(&self, bytes: &[u8]) -> String {
-        let mut chars: Vec<&str> = vec![];
+        let mut chars: Vec<String> = vec![];
         let mut i = 0;
         while i < bytes.len() {
             let byte = bytes[i];
@@ -51,7 +55,7 @@ impl CharacterEncoding {
         chars.into_iter().collect()
     }
 
-    fn get_bytes_match(&self, bytes: &[u8], i: usize) -> (&str, usize) {
+    fn get_bytes_match(&self, bytes: &[u8], i: usize) -> (String, usize) {
         let mut matches = self.byte_to_char_map.clone();
         let mut offset: usize = 0;
         while !matches.is_empty() {
@@ -59,7 +63,7 @@ impl CharacterEncoding {
             for (match_bytes, match_char) in matches.iter() {
                 if match_bytes[offset] == bytes[i + offset] {
                     if match_bytes.len() == offset + 1 {
-                        return (*match_char, i + offset + 1);
+                        return (match_char.to_string(), i + offset + 1);
                     } else {
                         remaining_matches.push((match_bytes.clone(), *match_char))
                     }
@@ -70,10 +74,12 @@ impl CharacterEncoding {
             offset += 1;
         }
 
-        if matches.len() == 1 {
-            return (matches[0].1, i + offset);
+        if matches.is_empty() || (matches.len() == 1 && matches[0].0.len() <= offset) {
+            (format!("[0x{:X?}]", bytes[i]), i + 1)
+        } else if matches.len() == 1 {
+            (matches[0].1.to_string(), i + offset)
+        } else {
+            panic!()
         }
-
-        panic!("Not implemented yet")
     }
 }
