@@ -9,7 +9,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v6
 
     - name: Cache Rust dependencies
       uses: Swatinem/rust-cache@v2
