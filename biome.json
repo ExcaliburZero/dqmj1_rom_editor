@@ -3,7 +3,8 @@
   "formatter": {
     "indentStyle": "space",
     "indentWidth": 4,
-    "lineWidth": 100
+    "lineWidth": 100,
+    "lineEnding": "lf"
   },
   "css": {
     "formatter": {
