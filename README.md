@@ -1,4 +1,4 @@
-# DQMJ1 ROM Editor
+# DQMJ1 ROM Editor [![Build](https://github.com/ExcaliburZero/dqmj1_rom_editor/actions/workflows/build.yml/badge.svg)](https://github.com/ExcaliburZero/dqmj1_rom_editor/actions/workflows/build.yml) [![Maintainability](https://qlty.sh/gh/ExcaliburZero/projects/dqmj1_rom_editor/maintainability.svg)](https://qlty.sh/gh/ExcaliburZero/projects/dqmj1_rom_editor)
 An unofficial modding tool / ROM editor for Dragon Quest Monsters Joker 1.
 
 Currently only supports the North American release of the game, but I may add support for the European and Japanese releases at some point.
