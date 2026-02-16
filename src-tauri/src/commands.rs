@@ -11,7 +11,8 @@ use ds_rom::rom::{raw, Rom, RomLoadOptions};
 use tauri::Manager;
 
 use crate::dqmj1_rom::{
-    btl_enmy_prm::BtlEnmyPrm, regions::Region, skill_tbl::SkillTbl, string_tables::StringTables,
+    btl_enmy_prm::BtlEnmyPrm, regions::Region, skill_tbl::SkillTblWithRegion,
+    string_tables::StringTables,
 };
 
 const MOD_FILES: [&str; 2] = ["files/BtlEnmyPrm.bin", "files/SkillTbl.bin"];
@@ -117,25 +118,30 @@ pub fn set_btl_enmy_prm(app: tauri::AppHandle, btl_enmy_prm: BtlEnmyPrm) {
 }
 
 #[tauri::command]
-pub fn get_skill_tbl(app: tauri::AppHandle) -> SkillTbl {
+pub fn get_skill_tbl(app: tauri::AppHandle) -> SkillTblWithRegion {
     let temp_directory = get_temp_directory(&app);
+    let region = get_region(&temp_directory);
 
     let filepath = temp_directory.join("files").join("SkillTbl.bin");
     println!("Reading SkillTbl from: {filepath:?}");
     let file_data = fs::read(filepath).unwrap();
 
-    SkillTbl::read(&mut Cursor::new(file_data)).unwrap()
+    SkillTblWithRegion::read(&file_data, region).unwrap()
 }
 
 #[tauri::command]
-pub fn set_skill_tbl(app: tauri::AppHandle, skill_tbl: SkillTbl) {
+pub fn set_skill_tbl(app: tauri::AppHandle, skill_tbl: SkillTblWithRegion) {
     let temp_directory = get_temp_directory(&app);
+    //let region = get_region(&temp_directory); // TODO: check region
 
     let filepath = temp_directory.join("files").join("SkillTbl.bin");
     println!("Writing SkillTbl to: {filepath:?}");
 
     let mut file = File::create(filepath).unwrap();
-    file.write_le(&skill_tbl).unwrap();
+    match skill_tbl {
+        SkillTblWithRegion::Na(skill_tbl) => file.write_le(&skill_tbl).unwrap(),
+        SkillTblWithRegion::Jp(skill_tbl) => file.write_le(&skill_tbl).unwrap(),
+    };
 }
 
 #[tauri::command]
