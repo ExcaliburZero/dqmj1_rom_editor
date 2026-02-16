@@ -16,16 +16,16 @@ jobs:
       with:
         workspaces: "src-tauri -> target"
 
-    - name: Lint Rust code
-      working-directory: src-tauri
-      run: cargo clippy
-
     - name: Check formatting of Rust code
       working-directory: src-tauri
       run: cargo fmt --all -- --check
 
     - name: Check JS, CSS, JSON using Biome
       run: npx @biomejs/biome ci
+
+    - name: Lint Rust code
+      working-directory: src-tauri
+      run: cargo clippy
 
     - name: Install dependencies
       run: npm install
