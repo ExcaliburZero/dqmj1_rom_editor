@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+* Added support for the Japanese release of DQMJ1. (#6)
+
 ### Changed
 * Made various misc improvements to GitHub Actions builds. (#3, #5)
     * Cache Rust dependencies
