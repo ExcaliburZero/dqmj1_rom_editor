@@ -9,7 +9,23 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v6
+
+    - name: Cache Rust dependencies
+      uses: Swatinem/rust-cache@v2
+      with:
+        workspaces: "src-tauri -> target"
+
+    - name: Check formatting of Rust code
+      working-directory: src-tauri
+      run: cargo fmt --all -- --check
+
+    - name: Check JS, CSS, JSON using Biome
+      run: npx @biomejs/biome ci
+
+    - name: Lint Rust code
+      working-directory: src-tauri
+      run: cargo clippy
 
     - name: Install dependencies
       run: npm install

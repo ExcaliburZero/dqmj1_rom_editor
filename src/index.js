@@ -7,88 +7,92 @@ let selectedModLi = null;
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 async function unpackRom() {
-  console.log("Prompting user to choose rom file");
-  const romFilepath = await open({ multiple: false, directory: false, filters: [{ name: "Nintendo DS ROM", extensions: ["nds"] }] });
+    console.log("Prompting user to choose rom file");
+    const romFilepath = await open({
+        multiple: false,
+        directory: false,
+        filters: [{ name: "Nintendo DS ROM", extensions: ["nds"] }],
+    });
 
-  const options = { romFilepath: romFilepath, tempDirectory: tempDirectory };
-  console.log(`Unpacking rom: ${JSON.stringify(options)}`);
-  await invoke("unpack_rom", options);
-  console.log("Finished unpacking rom");
+    const options = { romFilepath: romFilepath, tempDirectory: tempDirectory };
+    console.log(`Unpacking rom: ${JSON.stringify(options)}`);
+    await invoke("unpack_rom", options);
+    console.log("Finished unpacking rom");
 }
 
-function selectMod(modName, tag) {
-  tag.classList = "selected";
+function selectMod(tag) {
+    tag.classList = "selected";
 
-  if (selectedModLi !== null) {
-    selectedModLi.classList = ""
-  }
+    if (selectedModLi !== null) {
+        selectedModLi.classList = "";
+    }
 
-  selectedModLi = tag;
+    selectedModLi = tag;
 }
 
 async function updateModList() {
-  const modsUl = document.getElementById("mod-list");
+    const modsUl = document.getElementById("mod-list");
 
-  modsUl.innerHTML = "";
+    modsUl.innerHTML = "";
 
-  const mods = await invoke("get_mods", {});
+    const mods = await invoke("get_mods", {});
 
-  let firstModLi = null;
-  for (const mod of mods) {
-    const modLi = document.createElement("li");
-    modLi.innerText = mod;
+    let firstModLi = null;
+    for (const mod of mods) {
+        const modLi = document.createElement("li");
+        modLi.innerText = mod;
 
-    modsUl.appendChild(modLi);
+        modsUl.appendChild(modLi);
 
-    modLi.addEventListener("click", () => {
-      selectMod(modLi.innerHTML, modLi)
-    });
+        modLi.addEventListener("click", () => {
+            selectMod(modLi);
+        });
 
-    if (firstModLi === null) {
-      firstModLi = modLi;
+        if (firstModLi === null) {
+            firstModLi = modLi;
+        }
     }
-  }
 
-  selectMod(firstModLi.innerHTML, firstModLi);
+    selectMod(firstModLi);
 
-  console.log(mods)
+    console.log(mods);
 }
 
 async function loadMod(modName) {
-  const options = { modName: modName };
-  console.log(`Loading mod: ${JSON.stringify(options)}`);
-  await invoke("load_mod", options);
-  console.log("Finished loading mod");
+    const options = { modName: modName };
+    console.log(`Loading mod: ${JSON.stringify(options)}`);
+    await invoke("load_mod", options);
+    console.log("Finished loading mod");
 }
 
 async function openEditor() {
-  const modName = selectedModLi.innerHTML;
+    const modName = selectedModLi.innerHTML;
 
-  await unpackRom();
-  await loadMod(modName);
+    await unpackRom();
+    await loadMod(modName);
 
-  window.location.href = `editor.html?modName=${encodeURIComponent(modName)}`;
+    window.location.href = `editor.html?modName=${encodeURIComponent(modName)}`;
 }
 
 async function createNewMod() {
-  const modName = prompt("Enter the name for the new mod:");
+    const modName = prompt("Enter the name for the new mod:");
 
-  const options = { modName: modName };
-  await invoke("create_mod", options);
+    const options = { modName: modName };
+    await invoke("create_mod", options);
 
-  updateModList();
+    updateModList();
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  document.querySelector("#rom-select-button").addEventListener("click", (e) => {
-    e.preventDefault();
-    openEditor();
-  });
+    document.querySelector("#rom-select-button").addEventListener("click", (e) => {
+        e.preventDefault();
+        openEditor();
+    });
 
-  document.querySelector("#create-new-mod").addEventListener("click", (e) => {
-    e.preventDefault();
-    createNewMod();
-  });
+    document.querySelector("#create-new-mod").addEventListener("click", (e) => {
+        e.preventDefault();
+        createNewMod();
+    });
 
-  updateModList();
+    updateModList();
 });
