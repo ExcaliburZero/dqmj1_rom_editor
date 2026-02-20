@@ -2,7 +2,8 @@ name: Build
 
 on: [push, pull_request]
 
-permissions: {}
+permissions:
+  id-token: write
 
 jobs:
 
@@ -29,6 +30,9 @@ jobs:
       with:
         workspaces: "src-tauri -> target"
 
+    - name: Install cargo-llvm-cov
+      uses: taiki-e/install-action@cargo-llvm-cov
+
     - name: Check formatting of Rust code
       working-directory: src-tauri
       run: cargo fmt --all -- --check
@@ -39,6 +43,17 @@ jobs:
     - name: Lint Rust code
       working-directory: src-tauri
       run: cargo clippy
+
+    - name: Test Rust code
+      working-directory: src-tauri
+      run: cargo llvm-cov --all-features --lcov --output-path target/lcov.info
+
+    - name: Upload code coverage to Qlty
+      if: matrix.os == 'ubuntu-latest'
+      uses: qltysh/qlty-action/coverage@main
+      with:
+        oidc: true
+        files: src-tauri/target/lcov.info
 
     - name: Install dependencies
       run: npm install

@@ -83,3 +83,26 @@ impl CharacterEncoding {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::dqmj1_rom::{regions::Region, strings::encoding::CharacterEncoding};
+    use rstest::rstest;
+
+    #[rstest]
+    #[case(Region::NorthAmerica, &[0xFF], "")]
+    #[case(Region::Japan, &[0xFF], "")]
+    #[case(Region::NorthAmerica, &[0xFF, 0x00, 0x00, 0x00], "")]
+    #[case(Region::Japan, &[0xFF, 0x00, 0x00, 0x00], "")]
+    #[case(Region::NorthAmerica, &[0x01, 0x02, 0x03, 0xFF], "123")]
+    #[case(Region::Japan, &[0x01, 0x02, 0x03, 0xFF], "123")]
+    #[case(Region::NorthAmerica, &[0x25, 0x026, 0xFF], "ab")]
+    #[case(Region::Japan, &[0x25, 0x26, 0xFF], "ぁい")]
+    #[case(Region::Japan, &[0xE0, 0x00, 0xFF], "引")] // multi-byte kanji
+    #[case(Region::Japan, &[0xF0, 0xFF], "[0xF0]")] // Unknown character
+    fn read_string(#[case] region: Region, #[case] bytes: &[u8], #[case] expected: &str) {
+        let encoding = CharacterEncoding::get(region);
+
+        assert_eq!(encoding.read_string(bytes), expected);
+    }
+}
