@@ -31,7 +31,9 @@ jobs:
         workspaces: "src-tauri -> target"
 
     - name: Install cargo-llvm-cov
-      uses: taiki-e/install-action@cargo-llvm-cov
+      uses: taiki-e/install-action@71b48393496777ee11188c07a34d48b048a985cd # v2.68.5
+      with:
+        tool: cargo-llvm-cov
 
     - name: Check formatting of Rust code
       working-directory: src-tauri
@@ -50,7 +52,7 @@ jobs:
 
     - name: Upload code coverage to Qlty
       if: matrix.os == 'ubuntu-latest'
-      uses: qltysh/qlty-action/coverage@main
+      uses: qltysh/qlty-action/coverage@a19242102d17e497f437d7466aa01b528537e899 # v2.2.0
       with:
         oidc: true
         files: src-tauri/target/lcov.info
