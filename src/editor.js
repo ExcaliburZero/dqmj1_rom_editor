@@ -6,6 +6,7 @@ const modName = url.searchParams.get("modName");
 
 let encounters = null;
 let skillSets = null;
+let skillSetsRegion = null;
 let stringTables = null;
 
 let currentEncounterId = 48; // starter Dracky
@@ -266,6 +267,8 @@ async function showSkillSets() {
     const select = document.getElementById("skill-sets-select");
     select.innerHTML = "";
 
+    console.log(skillSets);
+
     let i = 0;
     for (const _skillSet of skillSets.entries) {
         const option = document.createElement("option");
@@ -412,7 +415,14 @@ async function getSkillSets() {
     if (skillSets === null) {
         const options = {};
         console.log(`Getting skill sets: ${JSON.stringify(options)}`);
-        skillSets = await invoke("get_skill_tbl", options);
+        const response = await invoke("get_skill_tbl", options);
+
+        for (const [region, data] of Object.entries(response)) {
+            skillSetsRegion = region;
+            skillSets = data;
+        }
+
+        console.log(skillSetsRegion);
         console.log(skillSets);
     }
 }
@@ -439,7 +449,7 @@ function padToDigits(number, numDigits) {
 
 async function syncFiles() {
     await invoke("set_btl_enmy_prm", { btlEnmyPrm: encounters });
-    await invoke("set_skill_tbl", { skillTbl: skillSets });
+    await invoke("set_skill_tbl", { skillTbl: { [skillSetsRegion]: skillSets } });
 }
 
 async function savePatchedRom() {
