@@ -24,8 +24,8 @@ tauri-plugin-dialog = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 serde_norway = "0.9"
-ds-rom = "0.6"
+ds-rom = "0.7"
 binrw = "0.15"
 
 [dev-dependencies]
-rstest = "0.18"
+rstest = "0.26"
