@@ -142,13 +142,11 @@ function setupEncounterSpecies() {
     const speciesSelect = document.getElementById("encounters-species");
 
     const numSpecies = stringTables.species_names.length;
+    const innerHTML = [];
     for (let i = 0; i < numSpecies; i++) {
-        const option = document.createElement("option");
-        option.value = i;
-        option.innerHTML = `${stringTables.species_names[i]} (${i})`;
-
-        speciesSelect.appendChild(option);
+        innerHTML.push(`<option value="${i}">${stringTables.species_names[i]} (${i})</option>`);
     }
+    speciesSelect.innerHTML = innerHTML.join("");
 
     speciesSelect.addEventListener("change", () => {
         encounters.entries[currentEncounterId].species_id = parseInt(speciesSelect.value);
@@ -159,13 +157,11 @@ function setupItemDrop(i) {
     const itemDropItem = document.getElementById(`encounters-item-drop-${i}-item`);
 
     const numItems = stringTables.item_names.length;
+    const innerHTML = [];
     for (let i = 0; i < numItems; i++) {
-        const option = document.createElement("option");
-        option.value = i;
-        option.innerHTML = `${stringTables.item_names[i]} (${i})`;
-
-        itemDropItem.appendChild(option);
+        innerHTML.push(`<option value="${i}">${stringTables.item_names[i]} (${i})</option>`);
     }
+    itemDropItem.innerHTML = innerHTML.join("");
 
     itemDropItem.addEventListener("change", () => {
         encounters.entries[currentEncounterId].item_drops[i - 1].item_id = parseInt(
@@ -178,13 +174,11 @@ function setupSkillForEncounter(i) {
     const skill = document.getElementById(`encounters-skill-${i}`);
 
     const numSkills = stringTables.skill_names.length;
+    const innerHTML = [];
     for (let i = 0; i < numSkills; i++) {
-        const option = document.createElement("option");
-        option.value = i;
-        option.innerHTML = `${stringTables.skill_names[i]} (${i})`;
-
-        skill.appendChild(option);
+        innerHTML.push(`<option value="${i}">${stringTables.skill_names[i]} (${i})</option>`);
     }
+    skill.innerHTML = innerHTML.join("");
 
     skill.addEventListener("change", () => {
         encounters.entries[currentEncounterId].skills[i - 1].skill_id = parseInt(skill.value);
@@ -195,13 +189,11 @@ function setupSkillSet(i) {
     const skillSet = document.getElementById(`encounters-skill-set-${i}`);
 
     const numSkills = stringTables.skill_set_names.length;
+    const innerHTML = [];
     for (let i = 0; i < numSkills; i++) {
-        const option = document.createElement("option");
-        option.value = i;
-        option.innerHTML = `${stringTables.skill_set_names[i]} (${i})`;
-
-        skillSet.appendChild(option);
+        innerHTML.push(`<option value="${i}">${stringTables.skill_set_names[i]} (${i})</option>`);
     }
+    skillSet.innerHTML = innerHTML.join("");
 
     skillSet.addEventListener("change", () => {
         encounters.entries[currentEncounterId].skill_set_ids[i - 1] = parseInt(skillSet.value);
@@ -340,13 +332,11 @@ function setupSpecies(i) {
     const species = document.getElementById(`skill-sets-species-${i}`);
 
     const numSpecies = stringTables.species_names.length;
+    const innerHTML = [];
     for (let i = 0; i < numSpecies; i++) {
-        const option = document.createElement("option");
-        option.value = i;
-        option.innerHTML = `${stringTables.species_names[i]} (${i})`;
-
-        species.appendChild(option);
+        innerHTML.push(`<option value="${i}">${stringTables.species_names[i]} (${i})</option>`);
     }
+    species.innerHTML = innerHTML.join("");
 
     species.addEventListener("change", () => {
         skillSets.entries[currentSkillSetId].species_ids[i - 1] = parseInt(species.value);
@@ -357,19 +347,16 @@ function setupSkillForSkillSet(i, j) {
     const skill = document.getElementById(`skill-sets-skill-${i}-${j}`);
 
     const numSkills = stringTables.skill_names.length;
+    const innerHTML = [];
     for (let i = 0; i < numSkills; i++) {
-        const option = document.createElement("option");
-        option.value = i;
-
         let label = `${stringTables.skill_names[i]} (${i})`;
         if (i === 0) {
             label = "";
         }
 
-        option.innerHTML = label;
-
-        skill.appendChild(option);
+        innerHTML.push(`<option value="${i}">${label}</option>`);
     }
+    skill.innerHTML = innerHTML.join("");
 
     skill.addEventListener("change", () => {
         skillSets.entries[currentSkillSetId].skills[i - 1].skill_ids[j - 1] = parseInt(skill.value);
@@ -386,19 +373,16 @@ function setupTraitForSkillSet(i, j) {
     const trait = document.getElementById(`skill-sets-trait-${i}-${j}`);
 
     const numTraits = stringTables.trait_names.length;
+    const innerHTML = [];
     for (let i = 0; i < numTraits; i++) {
-        const option = document.createElement("option");
-        option.value = i;
-
         let label = `${stringTables.trait_names[i]} (${i})`;
         if (i === 0) {
             label = "";
         }
 
-        option.innerHTML = label;
-
-        trait.appendChild(option);
+        innerHTML.push(`<option value="${i}">${label}</option>`);
     }
+    trait.innerHTML = innerHTML.join("");
 
     trait.addEventListener("change", () => {
         skillSets.entries[currentSkillSetId].traits[i - 1].trait_ids[j - 1] = parseInt(trait.value);
