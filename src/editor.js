@@ -7,6 +7,8 @@ const modName = url.searchParams.get("modName");
 let encounters = null;
 let skillSets = null;
 let skillSetsRegion = null;
+let items = null;
+let itemsRegion = null;
 let stringTables = null;
 
 let currentEncounterId = 48; // starter Dracky
@@ -16,6 +18,8 @@ let currentPageNavigation = null;
 
 async function setupPages() {
     await getStringTables();
+
+    await getItems();
 
     setupEncounters();
     setupSkillSets();
@@ -408,6 +412,22 @@ async function getSkillSets() {
 
         console.log(skillSetsRegion);
         console.log(skillSets);
+    }
+}
+
+async function getItems() {
+    if (items === null) {
+        const options = {};
+        console.log(`Getting items: ${JSON.stringify(options)}`);
+        const response = await invoke("get_item_tbl", options);
+
+        for (const [region, data] of Object.entries(response)) {
+            itemsRegion = region;
+            items = data;
+        }
+
+        console.log(itemsRegion);
+        console.log(items);
     }
 }
 
