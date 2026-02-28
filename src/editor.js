@@ -13,6 +13,7 @@ let stringTables = null;
 
 let currentEncounterId = 48; // starter Dracky
 let currentSkillSetId = 58; // Dark Knight
+let currentItemId = 1; // medicinal herb
 let currentPage = null;
 let currentPageNavigation = null;
 
@@ -23,6 +24,7 @@ async function setupPages() {
 
     setupEncounters();
     setupSkillSets();
+    setupItems();
 }
 
 function setupEncounters() {
@@ -399,6 +401,117 @@ function populateTraitForSkillSet(i, j) {
     trait.value = skillSets.entries[currentSkillSetId].traits[i - 1].trait_ids[j - 1];
 }
 
+async function showItems() {
+    console.log("Showing items");
+
+    currentPage = document.getElementById("items-page");
+    currentPageNavigation = document.getElementById("navigation-items");
+
+    currentPage.style.display = "block";
+    currentPageNavigation.classList = "selected";
+
+    await getItems();
+    await getStringTables();
+
+    const select = document.getElementById("items-select");
+    select.innerHTML = "";
+
+    console.log(items);
+
+    let i = 0;
+    for (const _item of items.entries) {
+        const option = document.createElement("option");
+        select.appendChild(option);
+
+        option.text = `${stringTables.item_names[i]} (${padToDigits(i, 3)})`;
+        option.value = i;
+
+        i++;
+    }
+
+    select.value = currentItemId;
+    showItem(currentItemId);
+}
+
+function showItem(itemId) {
+    const item = items.entries[itemId];
+    console.log(item);
+
+    currentItemId = itemId;
+
+    document.getElementById("items-item-id").innerHTML = itemId;
+    document.getElementById("items-category").value = item.category;
+    document.getElementById("items-effect").value = item.effect;
+}
+
+function setupItems() {
+    setupItemCategories();
+    setupItemEffects();
+}
+
+function setupItemCategories() {
+    const categorySelect = document.getElementById("items-category");
+
+    const options = [
+        [0, "Usable item"],
+        [1, "Key item"],
+        [2, "Sword"],
+        [3, "Spear"],
+        [4, "Axe"],
+        [5, "Hammer"],
+        [6, "Whip"],
+        [7, "Claws"],
+        [8, "Staff"],
+    ];
+
+    const innerHTML = [];
+    for (const [num, description] of options) {
+        innerHTML.push(`<option value="${num}">${description} (${num})</option>`);
+    }
+    categorySelect.innerHTML = innerHTML.join("");
+}
+
+function setupItemEffects() {
+    const effectSelect = document.getElementById("items-effect");
+
+    const options = [
+        [0, "Unknown"], // likely just dummy default value
+        [1, "Restore HP"],
+        [2, "Restore MP"],
+        [3, "Revive ally"],
+        [4, "Cure poison"],
+        [5, "Cure paralysis"],
+        [6, "Cure all status effects"],
+        [7, "Seal enemy magic"],
+        [8, "Increase ally attack"],
+        [9, "Increase ally magic resistance"],
+        [10, "Increase ally breath resistance"],
+        // 11 = ???
+        [12, "Increase skill points"],
+        [13, "Increase max HP"],
+        [14, "Increase max MP"],
+        [15, "Increase attack"],
+        [16, "Increase defense"],
+        [17, "Increase agility"],
+        [18, "Increase wisdom"],
+        [19, "Teleport to scoutpost"],
+        [20, "Teleport out of dungeon"],
+        [21, "Discount gold purchases"],
+        [22, "None"],
+        [23, "Equipment"],
+        [24, "Guarantee next battle polarity"],
+        [25, "Key item with impact"],
+        [26, "Skill set book"],
+        [27, "Player skill book"],
+    ];
+
+    const innerHTML = [];
+    for (const [num, description] of options) {
+        innerHTML.push(`<option value="${num}">${description} (${num})</option>`);
+    }
+    effectSelect.innerHTML = innerHTML.join("");
+}
+
 async function getSkillSets() {
     if (skillSets === null) {
         const options = {};
@@ -499,6 +612,8 @@ async function showPage(pageName) {
         showEncounters();
     } else if (pageName === "skill-sets") {
         showSkillSets();
+    } else if (pageName === "items") {
+        showItems();
     }
 }
 
@@ -516,6 +631,12 @@ window.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
 
         showPage("skill-sets");
+    });
+
+    document.querySelector("#navigation-items").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        showPage("items");
     });
 
     document.querySelector("#encounters-select").addEventListener("change", (e) => {
@@ -540,6 +661,18 @@ window.addEventListener("DOMContentLoaded", () => {
 
         const id = parseInt(value.substring(0, 3));
         showSkillSet(id);
+    });
+
+    document.querySelector("#items-select").addEventListener("change", (e) => {
+        e.preventDefault();
+
+        const select = document.getElementById("items-select");
+        const value = select.value;
+
+        console.log(value);
+
+        const id = parseInt(value.substring(0, 3));
+        showItem(id);
     });
 
     document.querySelector("#save-mod").addEventListener("click", (e) => {

@@ -6,13 +6,13 @@ use serde_big_array::BigArray;
 #[brw(little)]
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Item {
-    category: u8, // 0=?, 1=?, 2+ = equipment?
+    category: u8, // 0=usable item, 1=key item, 2+ = equipment?
     unknown_ab: [u8; 3],
-    restore_stat: u8,
-    can_revive: u8,
+    effect: u8, // 1=restore hp, 2=restore mp, 3=revive, 4=cure poison, 5=cure paralysis, 6=cure all status effects, ...
+    unknown_abb: u8,
     restore_min: u8,
     restore_max: u8,
-    unknown_b: u8,
+    subcategory: u8,
     weapon_type: u8, // 0 through 6
     unknown_c: [u8; 6],
     buy_value: u32,
