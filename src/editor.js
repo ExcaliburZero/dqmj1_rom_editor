@@ -441,11 +441,23 @@ function showItem(itemId) {
 
     document.getElementById("items-item-id").innerHTML = itemId;
     document.getElementById("items-category").value = item.category;
+    document.getElementById("items-subcategory").value = item.subcategory;
     document.getElementById("items-effect").value = item.effect;
+    document.getElementById("items-buy").value = item.buy_value;
+    document.getElementById("items-sell").value = item.sell_value;
+    document.getElementById("items-restore-min").value = item.restore_min;
+    document.getElementById("items-restore-max").value = item.restore_max;
+    document.getElementById("items-max-hp").value = item.max_hp_increase;
+    document.getElementById("items-max-mp").value = item.max_mp_increase;
+    document.getElementById("items-attack").value = item.attack_increase;
+    document.getElementById("items-defense").value = item.defense_increase;
+    document.getElementById("items-agility").value = item.agility_increase;
+    document.getElementById("items-wisdom").value = item.wisdom_increase;
 }
 
 function setupItems() {
     setupItemCategories();
+    setupItemSubcategories();
     setupItemEffects();
 }
 
@@ -454,7 +466,7 @@ function setupItemCategories() {
 
     const options = [
         [0, "Usable item"],
-        [1, "Key item"],
+        [1, "Non-usable item"],
         [2, "Sword"],
         [3, "Spear"],
         [4, "Axe"],
@@ -471,6 +483,28 @@ function setupItemCategories() {
     categorySelect.innerHTML = innerHTML.join("");
 }
 
+function setupItemSubcategories() {
+    const subcategorySelect = document.getElementById("items-subcategory");
+
+    const options = [
+        [0, "Cure status"],
+        [1, "Heal ally"],
+        //  2 = ???
+        [3, "Buff ally"],
+        [4, "Debuff enemy"],
+        [5, "Increase stat"],
+        //  6 = ???
+        [7, "Equipment"],
+        [8, "Key item"],
+    ];
+
+    const innerHTML = [];
+    for (const [num, description] of options) {
+        innerHTML.push(`<option value="${num}">${description} (${num})</option>`);
+    }
+    subcategorySelect.innerHTML = innerHTML.join("");
+}
+
 function setupItemEffects() {
     const effectSelect = document.getElementById("items-effect");
 
@@ -482,10 +516,10 @@ function setupItemEffects() {
         [4, "Cure poison"],
         [5, "Cure paralysis"],
         [6, "Cure all status effects"],
-        [7, "Seal enemy magic"],
-        [8, "Increase ally attack"],
-        [9, "Increase ally magic resistance"],
-        [10, "Increase ally breath resistance"],
+        [7, "Seal magic"],
+        [8, "Increase attack temporarily"],
+        [9, "Increase magic resistance"],
+        [10, "Increase breath resistance"],
         // 11 = ???
         [12, "Increase skill points"],
         [13, "Increase max HP"],

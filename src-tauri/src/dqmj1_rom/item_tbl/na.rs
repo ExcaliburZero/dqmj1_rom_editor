@@ -24,8 +24,10 @@ pub struct Item {
     wisdom_increase: u8,
     max_hp_increase: u8,
     max_mp_increase: u8,
+    unknown_e: [u8; 12],
+    item_id: u8,
     #[serde(with = "BigArray")]
-    unknown: [u8; 76],
+    unknown: [u8; 63],
 }
 
 #[binrw]
