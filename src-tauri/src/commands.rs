@@ -10,9 +10,12 @@ use binrw::{BinRead, BinWriterExt};
 use ds_rom::rom::{raw, Rom, RomLoadOptions};
 use tauri::Manager;
 
-use crate::dqmj1_rom::{
-    btl_enmy_prm::BtlEnmyPrm, regions::Region, skill_tbl::SkillTblWithRegion,
-    string_tables::StringTables,
+use crate::{
+    dqmj1_rom::{
+        btl_enmy_prm::BtlEnmyPrm, regions::Region, skill_tbl::SkillTblWithRegion,
+        string_tables::StringTables,
+    },
+    export_to_spreadsheets::AllData,
 };
 
 const MOD_FILES: [&str; 2] = ["files/BtlEnmyPrm.bin", "files/SkillTbl.bin"];
@@ -195,4 +198,19 @@ pub fn create_mod(app: tauri::AppHandle, mod_name: &str) {
 
     fs::remove_dir_all(mod_directory).unwrap();
     get_mod_directory(&app, mod_name);
+}
+
+#[tauri::command]
+pub fn export_to_spreadsheets(
+    directory: &str,
+    btl_enmy_prm: BtlEnmyPrm,
+    skill_tbl: SkillTblWithRegion,
+    string_tables: StringTables,
+) {
+    let all_data = AllData {
+        btl_enmy_prm,
+        skill_tbl,
+        string_tables,
+    };
+    all_data.write_spreadsheets(Path::new(directory));
 }
