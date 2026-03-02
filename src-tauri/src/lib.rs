@@ -1,6 +1,7 @@
 use crate::commands::{
     create_mod, export_to_spreadsheets, get_btl_enmy_prm, get_mods, get_skill_tbl,
-    get_string_tables, load_mod, pack_rom, save_mod, set_btl_enmy_prm, set_skill_tbl, unpack_rom,
+    get_string_tables, get_tokugi_data_tbl, load_mod, pack_rom, save_mod, set_btl_enmy_prm,
+    set_skill_tbl, unpack_rom,
 };
 
 pub mod commands;
@@ -25,6 +26,7 @@ pub fn run() {
             set_btl_enmy_prm,
             get_skill_tbl,
             set_skill_tbl,
+            get_tokugi_data_tbl,
             get_string_tables
         ])
         .run(tauri::generate_context!())

@@ -7,6 +7,7 @@ const modName = url.searchParams.get("modName");
 let encounters = null;
 let skillSets = null;
 let skillSetsRegion = null;
+let skills = null;
 let stringTables = null;
 
 let currentEncounterId = 48; // starter Dracky
@@ -411,6 +412,14 @@ async function getSkillSets() {
     }
 }
 
+async function getSkills() {
+    if (skills === null) {
+        const options = {};
+        console.log(`Getting skills: ${JSON.stringify(options)}`);
+        skills = await invoke("get_tokugi_data_tbl", options);
+    }
+}
+
 async function getStringTables() {
     if (stringTables !== null) {
         return;
@@ -441,6 +450,7 @@ async function saveCsv() {
 
     await getEncounters();
     await getSkillSets();
+    await getSkills();
     await getStringTables();
 
     // TODO: could do concurrently with user using the save dialog
@@ -451,7 +461,7 @@ async function saveCsv() {
         directory: true,
     });
 
-    const options = { directory: directory, btlEnmyPrm: encounters, skillTbl: { [skillSetsRegion]: skillSets }, stringTables: stringTables };
+    const options = { directory: directory, btlEnmyPrm: encounters, skillTbl: { [skillSetsRegion]: skillSets }, tokugiDataTbl: skills, stringTables: stringTables };
     console.log(`Exporting CSVs: ${JSON.stringify(options)}`);
     await invoke("export_to_spreadsheets", options);
     console.log("Finished exporting CSVs");
