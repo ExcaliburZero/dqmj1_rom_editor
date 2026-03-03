@@ -81,10 +81,11 @@ struct Skill {
     pub min_wisdom: u16,
     pub max_wisdom: u16,
     pub variation: u16,
-    pub max_damage: u16,
     pub unknown_c: String,
-    pub value_ptr: u32,
+    pub max_damage: u16,
     pub unknown_d: String,
+    pub value_ptr: u32,
+    pub unknown_e: String,
 }
 
 impl Skill {
@@ -116,16 +117,22 @@ impl Skill {
             min_wisdom: tokugi_data_tbl.min_wisdom,
             max_wisdom: tokugi_data_tbl.max_wisdom,
             variation: tokugi_data_tbl.variation,
-            max_damage: tokugi_data_tbl.max_damage,
             unknown_c: tokugi_data_tbl
                 .unknown_c
                 .iter()
                 .map(|v| v.to_string())
                 .collect::<Vec<_>>()
                 .join(","),
-            value_ptr: tokugi_data_tbl.value_ptr,
+            max_damage: tokugi_data_tbl.max_damage,
             unknown_d: tokugi_data_tbl
                 .unknown_d
+                .iter()
+                .map(|v| v.to_string())
+                .collect::<Vec<_>>()
+                .join(","),
+            value_ptr: tokugi_data_tbl.value_ptr,
+            unknown_e: tokugi_data_tbl
+                .unknown_e
                 .iter()
                 .map(|v| v.to_string())
                 .collect::<Vec<_>>()

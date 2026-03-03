@@ -16,10 +16,11 @@ pub struct Tokugi {
     pub min_wisdom: u16,
     pub max_wisdom: u16,
     pub variation: u16,
+    pub unknown_c: [u8; 2],
     pub max_damage: u16,
-    pub unknown_c: [u8; 4],
+    pub unknown_d: [u8; 2],
     pub value_ptr: u32,
-    pub unknown_d: [u8; 12],
+    pub unknown_e: [u8; 12],
 }
 
 #[binrw]
