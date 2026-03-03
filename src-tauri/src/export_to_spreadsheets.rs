@@ -72,17 +72,19 @@ struct Skill {
     pub skill_id: usize,
     pub skill_name: String,
     pub unknown_a: String,
-    pub range_lower_damage_a: u16,
-    pub range_upper_damage_a: u16,
-    pub range_lower_damage_b: u16,
-    pub range_upper_damage_b: u16,
+    pub mp_cost: u16,
+    pub unknown_b: String,
+    pub enemy_range_lower_damage: u16,
+    pub enemy_range_upper_damage: u16,
+    pub ally_range_lower_damage: u16,
+    pub ally_range_upper_damage: u16,
     pub min_wisdom: u16,
     pub max_wisdom: u16,
     pub variation: u16,
     pub max_damage: u16,
-    pub unknown_b: String,
-    pub value_ptr: u32,
     pub unknown_c: String,
+    pub value_ptr: u32,
+    pub unknown_d: String,
 }
 
 impl Skill {
@@ -100,23 +102,30 @@ impl Skill {
                 .map(|v| v.to_string())
                 .collect::<Vec<_>>()
                 .join(","),
-            range_lower_damage_a: tokugi_data_tbl.range_lower_damage_a,
-            range_upper_damage_a: tokugi_data_tbl.range_upper_damage_a,
-            range_lower_damage_b: tokugi_data_tbl.range_lower_damage_b,
-            range_upper_damage_b: tokugi_data_tbl.range_upper_damage_b,
-            min_wisdom: tokugi_data_tbl.min_wisdom,
-            max_wisdom: tokugi_data_tbl.max_wisdom,
-            variation: tokugi_data_tbl.variation,
-            max_damage: tokugi_data_tbl.max_damage,
+            mp_cost: tokugi_data_tbl.mp_cost,
             unknown_b: tokugi_data_tbl
                 .unknown_b
                 .iter()
                 .map(|v| v.to_string())
                 .collect::<Vec<_>>()
                 .join(","),
-            value_ptr: tokugi_data_tbl.value_ptr,
+            enemy_range_lower_damage: tokugi_data_tbl.enemy_range_lower_damage,
+            enemy_range_upper_damage: tokugi_data_tbl.enemy_range_upper_damage,
+            ally_range_lower_damage: tokugi_data_tbl.ally_range_lower_damage,
+            ally_range_upper_damage: tokugi_data_tbl.ally_range_upper_damage,
+            min_wisdom: tokugi_data_tbl.min_wisdom,
+            max_wisdom: tokugi_data_tbl.max_wisdom,
+            variation: tokugi_data_tbl.variation,
+            max_damage: tokugi_data_tbl.max_damage,
             unknown_c: tokugi_data_tbl
                 .unknown_c
+                .iter()
+                .map(|v| v.to_string())
+                .collect::<Vec<_>>()
+                .join(","),
+            value_ptr: tokugi_data_tbl.value_ptr,
+            unknown_d: tokugi_data_tbl
+                .unknown_d
                 .iter()
                 .map(|v| v.to_string())
                 .collect::<Vec<_>>()
