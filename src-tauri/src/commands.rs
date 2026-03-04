@@ -10,9 +10,12 @@ use binrw::{BinRead, BinWriterExt};
 use ds_rom::rom::{raw, Rom, RomLoadOptions};
 use tauri::Manager;
 
-use crate::dqmj1_rom::{
-    btl_enmy_prm::BtlEnmyPrm, regions::Region, skill_tbl::SkillTblWithRegion,
-    string_tables::StringTables,
+use crate::{
+    dqmj1_rom::{
+        btl_enmy_prm::BtlEnmyPrm, regions::Region, skill_tbl::SkillTblWithRegion,
+        string_tables::StringTables, tokugi_data_tbl::TokugiDataTbl,
+    },
+    export_to_spreadsheets::AllData,
 };
 
 const MOD_FILES: [&str; 2] = ["files/BtlEnmyPrm.bin", "files/SkillTbl.bin"];
@@ -145,6 +148,17 @@ pub fn set_skill_tbl(app: tauri::AppHandle, skill_tbl: SkillTblWithRegion) {
 }
 
 #[tauri::command]
+pub fn get_tokugi_data_tbl(app: tauri::AppHandle) -> TokugiDataTbl {
+    let temp_directory = get_temp_directory(&app);
+
+    let filepath = temp_directory.join("files").join("TokugiDataTbl.bin");
+    println!("Reading TokugiDataTbl from: {filepath:?}");
+    let file_data = fs::read(filepath).unwrap();
+
+    TokugiDataTbl::read(&mut Cursor::new(file_data)).unwrap()
+}
+
+#[tauri::command]
 pub fn get_string_tables(app: tauri::AppHandle) -> StringTables {
     let temp_directory = get_temp_directory(&app);
     let region = get_region(&temp_directory);
@@ -195,4 +209,21 @@ pub fn create_mod(app: tauri::AppHandle, mod_name: &str) {
 
     fs::remove_dir_all(mod_directory).unwrap();
     get_mod_directory(&app, mod_name);
+}
+
+#[tauri::command]
+pub fn export_to_spreadsheets(
+    directory: &str,
+    btl_enmy_prm: BtlEnmyPrm,
+    skill_tbl: SkillTblWithRegion,
+    tokugi_data_tbl: TokugiDataTbl,
+    string_tables: StringTables,
+) {
+    let all_data = AllData {
+        btl_enmy_prm,
+        skill_tbl,
+        tokugi_data_tbl,
+        string_tables,
+    };
+    all_data.write_spreadsheets(Path::new(directory));
 }
