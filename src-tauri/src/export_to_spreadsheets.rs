@@ -74,6 +74,8 @@ struct Skill {
     pub unknown_a: String,
     pub mp_cost: u16,
     pub unknown_b: String,
+    pub target: u8,
+    pub unknown_c: u8,
     pub enemy_range_lower_damage: u16,
     pub enemy_range_upper_damage: u16,
     pub ally_range_lower_damage: u16,
@@ -81,10 +83,10 @@ struct Skill {
     pub min_wisdom: u16,
     pub max_wisdom: u16,
     pub variation: u16,
-    pub unknown_c: String,
-    pub max_damage: u16,
+    pub element: u8,
     pub unknown_d: String,
     pub value_ptr: u32,
+    pub max_damage: u16,
     pub unknown_e: String,
 }
 
@@ -104,6 +106,7 @@ impl Skill {
                 .collect::<Vec<_>>()
                 .join(","),
             mp_cost: tokugi_data_tbl.mp_cost,
+            target: tokugi_data_tbl.target,
             unknown_b: tokugi_data_tbl
                 .unknown_b
                 .iter()
@@ -117,22 +120,18 @@ impl Skill {
             min_wisdom: tokugi_data_tbl.min_wisdom,
             max_wisdom: tokugi_data_tbl.max_wisdom,
             variation: tokugi_data_tbl.variation,
-            unknown_c: tokugi_data_tbl
-                .unknown_c
-                .iter()
-                .map(|v| v.to_string())
-                .collect::<Vec<_>>()
-                .join(","),
+            unknown_c: tokugi_data_tbl.unknown_c,
             max_damage: tokugi_data_tbl.max_damage,
-            unknown_d: tokugi_data_tbl
-                .unknown_d
-                .iter()
-                .map(|v| v.to_string())
-                .collect::<Vec<_>>()
-                .join(","),
+            element: tokugi_data_tbl.element,
             value_ptr: tokugi_data_tbl.value_ptr,
             unknown_e: tokugi_data_tbl
                 .unknown_e
+                .iter()
+                .map(|v| v.to_string())
+                .collect::<Vec<_>>()
+                .join(","),
+            unknown_d: tokugi_data_tbl
+                .unknown_d
                 .iter()
                 .map(|v| v.to_string())
                 .collect::<Vec<_>>()

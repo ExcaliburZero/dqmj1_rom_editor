@@ -8,7 +8,9 @@ use serde_big_array::BigArray;
 pub struct Tokugi {
     pub unknown_a: [u8; 2],
     pub mp_cost: u16,
-    pub unknown_b: [u8; 4], // TODO: separate byte 3 as "target" (single, multiple, ???, ???)
+    pub unknown_b: [u8; 2],
+    pub target: u8,
+    pub unknown_c: u8,
     pub enemy_range_lower_damage: u16,
     pub enemy_range_upper_damage: u16,
     pub ally_range_lower_damage: u16,
@@ -16,11 +18,11 @@ pub struct Tokugi {
     pub min_wisdom: u16,
     pub max_wisdom: u16,
     pub variation: u16,
-    pub unknown_c: [u8; 2],
-    pub max_damage: u16,
-    pub unknown_d: [u8; 2],
+    pub element: u8,
+    pub unknown_d: [u8; 5],
     pub value_ptr: u32,
-    pub unknown_e: [u8; 12],
+    pub max_damage: u16,
+    pub unknown_e: [u8; 10],
 }
 
 #[binrw]
