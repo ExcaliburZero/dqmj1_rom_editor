@@ -1,5 +1,5 @@
 const { invoke } = window.__TAURI__.core;
-const { save } = window.__TAURI__.dialog;
+const { save, open } = window.__TAURI__.dialog;
 
 const url = new URL(window.location.toLocaleString());
 const modName = url.searchParams.get("modName");
@@ -7,6 +7,7 @@ const modName = url.searchParams.get("modName");
 let encounters = null;
 let skillSets = null;
 let skillSetsRegion = null;
+let skills = null;
 let stringTables = null;
 
 let currentEncounterId = 48; // starter Dracky
@@ -411,6 +412,14 @@ async function getSkillSets() {
     }
 }
 
+async function getSkills() {
+    if (skills === null) {
+        const options = {};
+        console.log(`Getting skills: ${JSON.stringify(options)}`);
+        skills = await invoke("get_tokugi_data_tbl", options);
+    }
+}
+
 async function getStringTables() {
     if (stringTables !== null) {
         return;
@@ -434,6 +443,34 @@ function padToDigits(number, numDigits) {
 async function syncFiles() {
     await invoke("set_btl_enmy_prm", { btlEnmyPrm: encounters });
     await invoke("set_skill_tbl", { skillTbl: { [skillSetsRegion]: skillSets } });
+}
+
+async function saveCsv() {
+    console.log(encounters);
+
+    await getEncounters();
+    await getSkillSets();
+    await getSkills();
+    await getStringTables();
+
+    // TODO: could do concurrently with user using the save dialog
+    await syncFiles();
+
+    const directory = await open({
+        multiple: false,
+        directory: true,
+    });
+
+    const options = {
+        directory: directory,
+        btlEnmyPrm: encounters,
+        skillTbl: { [skillSetsRegion]: skillSets },
+        tokugiDataTbl: skills,
+        stringTables: stringTables,
+    };
+    console.log(`Exporting CSVs: ${JSON.stringify(options)}`);
+    await invoke("export_to_spreadsheets", options);
+    console.log("Finished exporting CSVs");
 }
 
 async function savePatchedRom() {
@@ -520,6 +557,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
         const id = parseInt(value.substring(0, 3));
         showSkillSet(id);
+    });
+
+    document.querySelector("#save-csv").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        saveCsv();
     });
 
     document.querySelector("#save-mod").addEventListener("click", (e) => {

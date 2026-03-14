@@ -3,3 +3,4 @@ pub mod regions;
 pub mod skill_tbl;
 pub mod string_tables;
 pub mod strings;
+pub mod tokugi_data_tbl;
