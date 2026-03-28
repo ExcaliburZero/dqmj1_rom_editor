@@ -451,7 +451,12 @@ async function saveCsv() {
         directory: true,
     });
 
-    const options = { directory: directory, btlEnmyPrm: encounters, skillTbl: { [skillSetsRegion]: skillSets }, stringTables: stringTables };
+    const options = {
+        directory: directory,
+        btlEnmyPrm: encounters,
+        skillTbl: { [skillSetsRegion]: skillSets },
+        stringTables: stringTables,
+    };
     console.log(`Exporting CSVs: ${JSON.stringify(options)}`);
     await invoke("export_to_spreadsheets", options);
     console.log("Finished exporting CSVs");
