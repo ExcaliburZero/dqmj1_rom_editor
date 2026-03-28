@@ -1,5 +1,5 @@
 const { invoke } = window.__TAURI__.core;
-const { save } = window.__TAURI__.dialog;
+const { save, open } = window.__TAURI__.dialog;
 
 const url = new URL(window.location.toLocaleString());
 const modName = url.searchParams.get("modName");
@@ -436,6 +436,32 @@ async function syncFiles() {
     await invoke("set_skill_tbl", { skillTbl: { [skillSetsRegion]: skillSets } });
 }
 
+async function saveCsv() {
+    console.log(encounters);
+
+    await getEncounters();
+    await getSkillSets();
+    await getStringTables();
+
+    // TODO: could do concurrently with user using the save dialog
+    await syncFiles();
+
+    const directory = await open({
+        multiple: false,
+        directory: true,
+    });
+
+    const options = {
+        directory: directory,
+        btlEnmyPrm: encounters,
+        skillTbl: { [skillSetsRegion]: skillSets },
+        stringTables: stringTables,
+    };
+    console.log(`Exporting CSVs: ${JSON.stringify(options)}`);
+    await invoke("export_to_spreadsheets", options);
+    console.log("Finished exporting CSVs");
+}
+
 async function savePatchedRom() {
     console.log(encounters);
 
@@ -520,6 +546,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
         const id = parseInt(value.substring(0, 3));
         showSkillSet(id);
+    });
+
+    document.querySelector("#save-csv").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        saveCsv();
     });
 
     document.querySelector("#save-mod").addEventListener("click", (e) => {

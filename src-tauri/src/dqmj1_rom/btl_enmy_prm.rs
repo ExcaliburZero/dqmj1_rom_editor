@@ -26,9 +26,9 @@ pub struct BtlEnmyPrmEntry {
     pub skills: [EnemySkill; 6],
     pub item_drops: [ItemDrop; 2],
     pub gold: u16,
-    pub unknown_b: [u8; 2],
+    pub unknown_b: [u8; 2], // Note: set to 0 for all entries in-game
     pub exp: u16,
-    pub unknown_c: [u8; 2],
+    pub unknown_c: [u8; 2], // Note: set to 0 for all entries in-game
     pub level: u8,
     pub unknown_d: u8,
     pub unknown_e: u8,

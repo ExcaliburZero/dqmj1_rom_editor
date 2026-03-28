@@ -39,7 +39,16 @@ h1 {
   display: block;
 }
 
-#top-buttons-div {
+#top-buttons-table {
+  width: 100%;
+}
+
+#top-buttons-left {
+  text-align: left;
+  padding-left: 8px;
+}
+
+#top-buttons-right {
   text-align: right;
 }
 
