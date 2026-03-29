@@ -6,14 +6,21 @@ use std::{
     time::Instant,
 };
 
-use binrw::{BinRead, BinWriterExt};
+use binrw::{io::BufReader, BinRead, BinWriterExt};
 use ds_rom::rom::{raw, Rom, RomLoadOptions};
 use tauri::Manager;
 
 use crate::{
     dqmj1_rom::{
-        btl_enmy_prm::BtlEnmyPrm, regions::Region, skill_tbl::SkillTblWithRegion,
+        btl_enmy_prm::BtlEnmyPrm,
+        events::{
+            ast::EventScript,
+            binary::{Evt, Opcode},
+        },
+        regions::Region,
+        skill_tbl::SkillTblWithRegion,
         string_tables::StringTables,
+        strings::encoding::CharacterEncoding,
     },
     export_to_spreadsheets::AllData,
 };
@@ -73,10 +80,24 @@ pub fn unpack_rom(app: tauri::AppHandle, rom_filepath: &str) {
 
     let raw_rom = raw::Rom::from_file(rom_filepath).unwrap();
     let rom = Rom::extract(&raw_rom).unwrap();
-    rom.save(temp_directory, None).unwrap();
+    rom.save(&temp_directory, None).unwrap();
 
     let elapsed = now.elapsed();
     println!("Unpacked ROM in: {elapsed:?}");
+
+    // TODO: remove all code below, this is just for testing
+    let region = get_region(&temp_directory);
+
+    let filepath = temp_directory.join("files").join("demo001.evt");
+    let mut reader = BufReader::new(File::open(filepath).unwrap());
+    let evt = Evt::read(&mut reader).unwrap();
+    println!("{:?}", evt);
+
+    let character_encoding = CharacterEncoding::get(region);
+    //let opcodes = Opcode::multiple_from_csv("src-tauri/src/dqmj1_rom/events/opcodes.csv");
+    let opcodes = Opcode::multiple_from_csv("src-tauri\\src\\dqmj1_rom\\events\\opcodes.csv");
+    let event_script = EventScript::from_evt(&character_encoding, &opcodes, &evt);
+    println!("{:?}", event_script);
 }
 
 #[tauri::command]

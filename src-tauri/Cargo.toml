@@ -28,6 +28,8 @@ serde-big-array = "0.5"
 csv = "1.4"
 ds-rom = "0.7"
 binrw = "0.15"
+logos = "0.16.1"
+chumsky = "0.12.0"
 
 [dev-dependencies]
 rstest = "0.26"
