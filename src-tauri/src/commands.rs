@@ -98,6 +98,9 @@ pub fn unpack_rom(app: tauri::AppHandle, rom_filepath: &str) {
     let opcodes = Opcode::multiple_from_csv("src-tauri\\src\\dqmj1_rom\\events\\opcodes.csv");
     let event_script = EventScript::from_evt(&character_encoding, &opcodes, &evt);
     println!("{:?}", event_script);
+
+    let mut file = std::fs::File::create("demo001.evt.dqmj1_script").unwrap();
+    event_script.write_dqmj1_script(&mut file).unwrap();
 }
 
 #[tauri::command]

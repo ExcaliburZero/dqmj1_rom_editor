@@ -1,3 +1,5 @@
+use std::io::{self, Write};
+
 use crate::dqmj1_rom::{
     events::binary::{ArgumentKind, Evt, Opcode},
     strings::encoding::CharacterEncoding,
@@ -19,6 +21,15 @@ impl ValueLocation {
             2 => ValueLocation::Constant,
             3 => ValueLocation::Pool3,
             _ => panic!("Unrecognized value location id: {}", value),
+        }
+    }
+
+    pub fn to_string(&self) -> String {
+        match self {
+            ValueLocation::Pool0 => "Pool_0".to_string(),
+            ValueLocation::Pool1 => "Pool_1".to_string(),
+            ValueLocation::Constant => "Const".to_string(),
+            ValueLocation::Pool3 => "Pool_3".to_string(),
         }
     }
 }
@@ -120,7 +131,7 @@ impl EventScript {
                     let value = u32::from_le_bytes(
                         raw_arguments[current..(current + 4)].try_into().unwrap(),
                     );
-                    let label = format!("0x:{:x}", value);
+                    let label = format!("0x{:x}", value);
 
                     arguments.push(Arg::Label(label));
                     current += 4;
@@ -131,5 +142,50 @@ impl EventScript {
         assert!(current == raw_arguments.len());
 
         arguments
+    }
+
+    pub fn write_dqmj1_script<W: Write>(&self, writer: &mut W) -> io::Result<()> {
+        writeln!(writer, ".data:")?;
+        writeln!(writer, "    {}", EventScript::bytes_to_literal(&self.data))?;
+
+        writeln!(writer, ".code:")?;
+        for instruction in self.instructions.iter() {
+            // TODO: labels
+            write!(writer, "    {:<12}", instruction.opcode)?;
+
+            for arg in instruction.args.iter() {
+                let string = match arg {
+                    Arg::Float(f) => EventScript::format_f32(*f),
+                    Arg::Label(label) => label.to_string(), // TODO: map to correct location
+                    Arg::ValueLocation(location) => location.to_string(), // TODO: map to correct location
+                    Arg::StringLit(string) => format!("\"{}\"", string), // TODO: map to correct location
+                    Arg::Bytes(bytes) => EventScript::bytes_to_literal(bytes),
+                };
+
+                write!(writer, " {}", string)?;
+            }
+
+            writer.write_all("\n".as_bytes())?;
+        }
+
+        Ok(())
+    }
+
+    fn bytes_to_literal(bytes: &[u8]) -> String {
+        let mut parts = vec!["b\"".to_string()];
+        for byte in bytes {
+            parts.push(format!("\\x{:02x}", byte));
+        }
+        parts.push("\"\n".to_string());
+
+        parts.join("")
+    }
+
+    fn format_f32(f: f32) -> String {
+        if f.fract() == 0.0 && f.abs() < 1e10 {
+            format!("{:.1}", f) // "1.0", "30.0", "124.0"
+        } else {
+            format!("{:e}", f) // "1.401298464324817e-45"
+        }
     }
 }
