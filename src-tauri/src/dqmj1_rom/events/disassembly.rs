@@ -49,6 +49,7 @@ pub enum Arg {
 pub struct InstructionDestinations {
     pub normal: Option<InstructionOffset>,
     pub jump: Option<InstructionOffset>,
+    pub fork: Option<InstructionOffset>,
 }
 
 #[derive(Debug, Clone)]
@@ -60,22 +61,41 @@ pub struct DecodedInstruction<'a> {
 
 impl DecodedInstruction<'_> {
     pub fn get_destinations(&self, offset: InstructionOffset) -> InstructionDestinations {
-        if let Some(Arg::InstructionLocation(destination)) = self.args.first() {
+        if self.opcode.id == 0x02 {
+            InstructionDestinations {
+                normal: None,
+                jump: None,
+                fork: None,
+            }
+        } else if self.opcode.id == 0x0A {
+            if let Arg::InstructionLocation(fork_dest) = self.args.first().unwrap() {
+                InstructionDestinations {
+                    normal: Some(self.next_offset(offset)),
+                    jump: None,
+                    fork: Some(*fork_dest + EVT_INSTRUCTIONS_BASE_OFFSET),
+                }
+            } else {
+                panic!();
+            }
+        } else if let Some(Arg::InstructionLocation(destination)) = self.args.first() {
             if self.opcode.id == 0x0C {
                 InstructionDestinations {
                     normal: None,
                     jump: Some(*destination + EVT_INSTRUCTIONS_BASE_OFFSET),
+                    fork: None,
                 }
             } else {
                 InstructionDestinations {
                     normal: Some(self.next_offset(offset)),
                     jump: Some(*destination + EVT_INSTRUCTIONS_BASE_OFFSET),
+                    fork: None,
                 }
             }
         } else {
             InstructionDestinations {
                 normal: Some(self.next_offset(offset)),
                 jump: None,
+                fork: None,
             }
         }
     }

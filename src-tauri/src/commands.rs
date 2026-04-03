@@ -102,11 +102,18 @@ pub fn unpack_rom(app: tauri::AppHandle, rom_filepath: &str) {
     let cfg = ControlFlowGraph::from_instructions(&disassembled_evt.instructions);
     //println!("{:?}", cfg);
 
+    let dot = Dot::with_attr_getters(
+        &cfg.graph,
+        &[Config::NodeNoLabel, Config::EdgeNoLabel],
+        &|_, _| String::new(),
+        &|_, (_, weight)| format!("label = \"{}\"", weight),
+    );
+
     let mut file = std::fs::File::create("demo001.evt.dot").unwrap();
     writeln!(
         file,
         "{:?}",
-        Dot::with_config(&cfg.graph, &[Config::EdgeNoLabel])
+        dot //Dot::with_config(&cfg.graph, &[Config::EdgeNoLabel])
     )
     .unwrap();
 
