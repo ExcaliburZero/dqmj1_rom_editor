@@ -1,7 +1,12 @@
-use std::io::{self, Write};
+/*use std::{
+    collections::BTreeMap,
+    io::{self, Write},
+};
+
+use serde::Deserialize;
 
 use crate::dqmj1_rom::{
-    events::binary::{ArgumentKind, Evt, Opcode},
+    events::binary::{Evt, InstructionOffset},
     strings::encoding::CharacterEncoding,
 };
 
@@ -44,16 +49,22 @@ pub enum Arg {
 }
 
 #[derive(Debug, Clone)]
-pub struct Instruction {
+pub struct DecodedInstruction {
     pub label: Option<String>,
     pub opcode: String,
     pub args: Vec<Arg>,
 }
 
+impl DecodedInstruction {
+    pub fn does_jump(&self) -> bool {
+        self.args.len() > 0 && matches!(self.args.iter().next().unwrap(), Arg::Label(_))
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct EventScript {
     pub data: Vec<u8>,
-    pub instructions: Vec<Instruction>,
+    pub instructions: BTreeMap<InstructionOffset, DecodedInstruction>,
 }
 
 impl EventScript {
@@ -66,18 +77,21 @@ impl EventScript {
 
         // TODO: find labels, implement as a separate pass?
 
-        let mut instructions = vec![];
-        for instruction in evt.instructions.iter() {
+        let mut instructions = BTreeMap::new();
+        for (offset, instruction) in evt.get_instructions_by_offset() {
             let opcode = &opcodes[instruction.opcode as usize];
 
             let args =
                 EventScript::parse_arguments(character_encoding, opcode, &instruction.arguments);
 
-            instructions.push(Instruction {
-                label: None,
-                opcode: opcode.name.clone(),
-                args,
-            });
+            instructions.insert(
+                offset,
+                DecodedInstruction {
+                    label: None,
+                    opcode: opcode.name.clone(),
+                    args,
+                },
+            );
         }
 
         EventScript {
@@ -144,12 +158,12 @@ impl EventScript {
         arguments
     }
 
-    pub fn write_dqmj1_script<W: Write>(&self, writer: &mut W) -> io::Result<()> {
+    /*pub fn write_dqmj1_script<W: Write>(&self, writer: &mut W) -> io::Result<()> {
         writeln!(writer, ".data:")?;
         writeln!(writer, "    {}", EventScript::bytes_to_literal(&self.data))?;
 
         writeln!(writer, ".code:")?;
-        for instruction in self.instructions.iter() {
+        for (_, instruction) in self.instructions.iter() {
             // TODO: labels
             write!(writer, "    {:<12}", instruction.opcode)?;
 
@@ -169,7 +183,7 @@ impl EventScript {
         }
 
         Ok(())
-    }
+    }*/
 
     fn bytes_to_literal(bytes: &[u8]) -> String {
         let mut parts = vec!["b\"".to_string()];
@@ -189,3 +203,79 @@ impl EventScript {
         }
     }
 }
+
+pub enum ArgumentKind {
+    Bytes,
+    U32,
+    Dqmj1String,
+    AsciiString,
+    InstructionLocation,
+    ValueLocation,
+}
+
+impl ArgumentKind {
+    pub fn from_string(string: &str) -> ArgumentKind {
+        match string {
+            "Bytes" => ArgumentKind::Bytes,
+            "U32" => ArgumentKind::U32,
+            "String" => ArgumentKind::Dqmj1String,
+            "AsciiString" => ArgumentKind::AsciiString,
+            "InstructionLocation" => ArgumentKind::InstructionLocation,
+            "ValueLocation" => ArgumentKind::ValueLocation,
+            _ => panic!(),
+        }
+    }
+}
+pub struct Opcode {
+    pub id: u8,
+    pub name: String,
+    pub arguments: Vec<ArgumentKind>,
+}
+
+#[derive(Debug, Deserialize)]
+struct OpcodeRecord {
+    #[serde(rename = "Id")]
+    pub id: String,
+    #[serde(rename = "Name")]
+    pub name: String,
+    #[serde(rename = "Arguments")]
+    pub arguments: String,
+    #[serde(rename = "Notes")]
+    pub _notes: Option<String>,
+}
+
+impl OpcodeRecord {
+    pub fn get_id_u8(&self) -> u8 {
+        u8::from_str_radix(&self.id[2..], 16).unwrap()
+    }
+
+    pub fn get_arguments(&self) -> Vec<ArgumentKind> {
+        if self.arguments == "[]" {
+            return vec![];
+        }
+
+        let parts = self.arguments[1..self.arguments.len() - 1].split(", ");
+        parts.map(ArgumentKind::from_string).collect()
+    }
+}
+
+impl Opcode {
+    pub fn multiple_from_csv(filepath: &str) -> Vec<Opcode> {
+        //let contents = std::fs::read_to_string(filepath)
+        //    .unwrap_or_else(|_| panic!("opcodes file not found: {}", filepath));
+        let contents = include_bytes!("opcodes.csv");
+
+        let mut reader = csv::Reader::from_reader(&contents[..]);
+
+        reader
+            .deserialize::<OpcodeRecord>()
+            .map(|record| record.unwrap())
+            .map(|record| Opcode {
+                id: record.get_id_u8(),
+                name: record.name.clone(),
+                arguments: record.get_arguments(),
+            })
+            .collect()
+    }
+}
+*/

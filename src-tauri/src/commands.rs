@@ -1,21 +1,23 @@
 use std::{
     collections::BTreeMap,
     fs::{self, File},
-    io::Cursor,
+    io::{Cursor, Write},
     path::{Path, PathBuf},
     time::Instant,
 };
 
 use binrw::{io::BufReader, BinRead, BinWriterExt};
 use ds_rom::rom::{raw, Rom, RomLoadOptions};
+use petgraph::dot::{Config, Dot};
 use tauri::Manager;
 
 use crate::{
     dqmj1_rom::{
         btl_enmy_prm::BtlEnmyPrm,
         events::{
-            ast::EventScript,
-            binary::{Evt, Opcode},
+            binary::Evt,
+            cfg::ControlFlowGraph,
+            disassembly::{DisassembledEvt, Opcode},
         },
         regions::Region,
         skill_tbl::SkillTblWithRegion,
@@ -94,13 +96,28 @@ pub fn unpack_rom(app: tauri::AppHandle, rom_filepath: &str) {
     println!("{:?}", evt);
 
     let character_encoding = CharacterEncoding::get(region);
+    let opcodes = Opcode::multiple_from_csv("src-tauri\\src\\dqmj1_rom\\events\\opcodes.csv");
+    let disassembled_evt = DisassembledEvt::from_evt(&evt, &character_encoding, &opcodes);
+    //println!("{:?}", disassembled_evt);
+    let cfg = ControlFlowGraph::from_instructions(&disassembled_evt.instructions);
+    //println!("{:?}", cfg);
+
+    let mut file = std::fs::File::create("demo001.evt.dot").unwrap();
+    writeln!(
+        file,
+        "{:?}",
+        Dot::with_config(&cfg.graph, &[Config::EdgeNoLabel])
+    )
+    .unwrap();
+
+    /*let character_encoding = CharacterEncoding::get(region);
     //let opcodes = Opcode::multiple_from_csv("src-tauri/src/dqmj1_rom/events/opcodes.csv");
     let opcodes = Opcode::multiple_from_csv("src-tauri\\src\\dqmj1_rom\\events\\opcodes.csv");
     let event_script = EventScript::from_evt(&character_encoding, &opcodes, &evt);
     println!("{:?}", event_script);
 
     let mut file = std::fs::File::create("demo001.evt.dqmj1_script").unwrap();
-    event_script.write_dqmj1_script(&mut file).unwrap();
+    event_script.write_dqmj1_script(&mut file).unwrap();*/
 }
 
 #[tauri::command]
