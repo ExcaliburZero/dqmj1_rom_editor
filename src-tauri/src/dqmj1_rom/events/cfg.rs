@@ -116,18 +116,19 @@ impl ControlFlowGraph<'_> {
                 .replace("{", "{\\n")
                 .replace("\"", "\\\"");
 
-            let label = format!("({})\\n", offset)
-                + &block
-                    .instructions
-                    .iter()
-                    .map(|instruction| {
-                        format!("{} {:?}", instruction.opcode.name, instruction.args)
-                    })
-                    .collect::<Vec<String>>()
-                    .join("\\n")
-                    .replace("\"", "\\\"");
+            /*let label = format!("({})\\n", offset)
+            + &block
+                .instructions
+                .iter()
+                .map(|instruction| {
+                    format!("{} {:?}", instruction.opcode.name, instruction.args)
+                })
+                .collect::<Vec<String>>()
+                .join("\\n")
+                .replace("\"", "\\\"");*/
             //.replace("[", "\\[")
             //.replace("]", "\\]");
+            let label = format!("({})\\n", offset);
 
             node_indices.insert(*offset, graph.add_node(label));
         }

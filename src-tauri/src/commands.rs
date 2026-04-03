@@ -90,7 +90,7 @@ pub fn unpack_rom(app: tauri::AppHandle, rom_filepath: &str) {
     // TODO: remove all code below, this is just for testing
     let region = get_region(&temp_directory);
 
-    let filepath = temp_directory.join("files").join("demo001.evt");
+    let filepath = temp_directory.join("files").join("f020.evt");
     let mut reader = BufReader::new(File::open(filepath).unwrap());
     let evt = Evt::read(&mut reader).unwrap();
     println!("{:?}", evt);
@@ -109,7 +109,7 @@ pub fn unpack_rom(app: tauri::AppHandle, rom_filepath: &str) {
         &|_, (_, weight)| format!("label = \"{}\"", weight),
     );
 
-    let mut file = std::fs::File::create("demo001.evt.dot").unwrap();
+    let mut file = std::fs::File::create("f020.evt.dot").unwrap();
     writeln!(
         file,
         "{:?}",
