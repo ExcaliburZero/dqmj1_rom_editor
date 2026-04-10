@@ -10,7 +10,7 @@ Id,Name,Arguments,Inputs,Outputs,Notes
 0x08,UNUSED_0x08,[Bytes],[],[],
 0x09,JumpKeepBackPointer,[InstructionLocation],[],[],Isn’t this basically a function call?
 0x0A,StartEvent,"[InstructionLocation, U32]",[arg_0],[],
-0x0B,Cmd_0x0B,"[ValueLocation, U32]",[value_arg_0],[],
+0x0B,Sleep,"[ValueLocation, U32]",[value_arg_0],[],
 0x0C,Jump,[InstructionLocation],[arg_0],[],
 0x0D,JumpIfFalse,[InstructionLocation],"[flag, arg_0]",[],"TODO: confirm this is indeed a ""true"" check. Which commands change that flag/value?"
 0x0E,JumpIfTrue,[InstructionLocation],"[flag, arg_0]",[],"TODO: confirm this is indeed a ""true"" check. Which commands change that flag/value?"
@@ -193,7 +193,7 @@ Id,Name,Arguments,Inputs,Outputs,Notes
 0xBF,Cmd_0xBF,[Bytes],[Pool_1[0]],[Pool_1[0]],TODO: figure out arguments
 0xC0,Cmd_0xC0,[Bytes],"[Pool_1[0], Pool_1[1]]",[],TODO: figure out arguments
 0xC1,Cmd_0xC1,[Bytes],"[Pool_1[0], Pool_1[1]]",[],TODO: figure out arguments
-0xC2,GetNumPlayerMonsters,[Bytes],[],[Pool_1[0]],TODO: figure out arguments
+0xC2,GetNumPlayerMonsters,[],[],[Pool_1[0]],
 0xC3,Cmd_0xC3,[Bytes],[Pool_1[0]],[],TODO: figure out arguments
 0xC4,Cmd_0xC4,[Bytes],[],[Pool_1[0]],TODO: figure out arguments
 0xC5,Cmd_0xC5,[Bytes],[],[Pool_1[0]],TODO: figure out arguments
@@ -249,7 +249,7 @@ Id,Name,Arguments,Inputs,Outputs,Notes
 0xF7,Cmd_0xF7,[Bytes],[],[Pool_1[0]],TODO: figure out arguments
 0xF8,Cmd_0xF8,[Bytes],"[Pool_1[0], Pool_1[1]]",[],TODO: figure out arguments
 0xF9,Cmd_0xF9,[Bytes],[],[Pool_1[0]],TODO: figure out arguments
-0xFA,Cmd_0xFA,[Bytes],[],[Pool_1[0]],"TODO: figure out arguments, Related to player’s skill library"
+0xFA,GetNumSkillsInLibrary,[],[],[Pool_1[0]],"TODO: figure out arguments, Related to player’s skill library"
 0xFB,Cmd_0xFB,[Bytes],[Pool_1[0]],[],TODO: figure out arguments
 0xFC,Cmd_0xFC,[Bytes],[],[],TODO: figure out arguments
 0xFD,Cmd_0xFD,[Bytes],[],[],TODO: figure out arguments
