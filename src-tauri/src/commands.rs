@@ -16,7 +16,6 @@ use crate::{
         btl_enmy_prm::BtlEnmyPrm,
         events::{
             binary::Evt,
-            cfg::ControlFlowGraph,
             disassembly::{DisassembledEvt, Opcode},
         },
         regions::Region,
@@ -90,16 +89,20 @@ pub fn unpack_rom(app: tauri::AppHandle, rom_filepath: &str) {
     // TODO: remove all code below, this is just for testing
     let region = get_region(&temp_directory);
 
-    let filepath = temp_directory.join("files").join("f020.evt");
+    let filepath = temp_directory.join("files").join("demo001.evt");
     let mut reader = BufReader::new(File::open(filepath).unwrap());
     let evt = Evt::read(&mut reader).unwrap();
     println!("{:?}", evt);
 
     let character_encoding = CharacterEncoding::get(region);
-    let opcodes = Opcode::multiple_from_csv("src-tauri\\src\\dqmj1_rom\\events\\opcodes.csv");
+    let opcodes = Opcode::get(); //("src-tauri\\src\\dqmj1_rom\\events\\opcodes.csv");
     let disassembled_evt = DisassembledEvt::from_evt(&evt, &character_encoding, &opcodes);
+
+    let mut file = std::fs::File::create("demo001.evt.dqmj1_script").unwrap();
+    disassembled_evt.write_asm(&mut file).unwrap();
+
     //println!("{:?}", disassembled_evt);
-    let cfg = ControlFlowGraph::from_instructions(&disassembled_evt.instructions);
+    /*let cfg = ControlFlowGraph::from_instructions(&disassembled_evt.instructions);
     //println!("{:?}", cfg);
 
     let dot = Dot::with_attr_getters(
@@ -115,7 +118,7 @@ pub fn unpack_rom(app: tauri::AppHandle, rom_filepath: &str) {
         "{:?}",
         dot //Dot::with_config(&cfg.graph, &[Config::EdgeNoLabel])
     )
-    .unwrap();
+    .unwrap();*/
 
     /*let character_encoding = CharacterEncoding::get(region);
     //let opcodes = Opcode::multiple_from_csv("src-tauri/src/dqmj1_rom/events/opcodes.csv");

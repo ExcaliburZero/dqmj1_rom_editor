@@ -1,18 +1,14 @@
 use std::{
-    collections::{BTreeMap, BTreeSet},
+    collections::BTreeMap,
     io::{self, Write},
 };
 
 use serde::Deserialize;
 
-use crate::dqmj1_rom::{events::binary::Evt, strings::encoding::CharacterEncoding};
-
-const NOP0: u8 = 0x00;
-const EXIT: u8 = 0x02;
-const START_EVENT: u8 = 0x08;
-const JUMP: u8 = 0x0C;
-
-pub type Label = String;
+use crate::dqmj1_rom::{
+    events::binary::{Evt, InstructionOffset, EVT_INSTRUCTIONS_BASE_OFFSET},
+    strings::encoding::CharacterEncoding,
+};
 
 #[derive(Debug, Clone, Copy)]
 pub enum ValueLocation {
@@ -33,7 +29,7 @@ impl ValueLocation {
         }
     }
 
-    pub fn to_asm_string(&self) -> String {
+    pub fn to_string(&self) -> String {
         match self {
             ValueLocation::Pool0 => "Pool_0".to_string(),
             ValueLocation::Pool1 => "Pool_1".to_string(),
@@ -48,70 +44,74 @@ pub enum Arg {
     Float(f32),
     Bytes(Vec<u8>),
     StringLit(String),
-    JumpDestination(Label),
+    InstructionLocation(InstructionOffset),
     ValueLocation(ValueLocation),
 }
 
 #[derive(Debug)]
 pub struct InstructionDestinations {
-    pub normal: bool,
-    pub jump: Option<Label>,
-    pub fork: Option<Label>,
+    pub normal: Option<InstructionOffset>,
+    pub jump: Option<InstructionOffset>,
+    pub fork: Option<InstructionOffset>,
 }
 
 #[derive(Debug, Clone)]
 pub struct DecodedInstruction<'a> {
     pub opcode: &'a Opcode,
     pub args: Vec<Arg>,
-    pub label: Option<String>,
+    pub size: usize,
 }
 
 impl DecodedInstruction<'_> {
-    pub fn get_destinations(&self) -> InstructionDestinations {
-        if self.opcode.id == EXIT {
+    pub fn get_destinations(&self, offset: InstructionOffset) -> InstructionDestinations {
+        if self.opcode.id == 0x02 {
             InstructionDestinations {
-                normal: false,
+                normal: None,
                 jump: None,
                 fork: None,
             }
-        } else if self.opcode.id == START_EVENT {
-            if let Arg::JumpDestination(fork_dest) = self.args.first().unwrap() {
+        } else if self.opcode.id == 0x0A {
+            if let Arg::InstructionLocation(fork_dest) = self.args.first().unwrap() {
                 InstructionDestinations {
-                    normal: true,
+                    normal: Some(self.next_offset(offset)),
                     jump: None,
-                    fork: Some(fork_dest.clone()),
+                    fork: Some(*fork_dest + EVT_INSTRUCTIONS_BASE_OFFSET),
                 }
             } else {
                 panic!();
             }
-        } else if let Some(Arg::JumpDestination(destination)) = self.args.first() {
-            if self.opcode.id == JUMP {
+        } else if let Some(Arg::InstructionLocation(destination)) = self.args.first() {
+            if self.opcode.id == 0x0C {
                 InstructionDestinations {
-                    normal: false,
-                    jump: Some(destination.clone()),
+                    normal: None,
+                    jump: Some(*destination + EVT_INSTRUCTIONS_BASE_OFFSET),
                     fork: None,
                 }
             } else {
                 InstructionDestinations {
-                    normal: true,
-                    jump: Some(destination.clone()),
+                    normal: Some(self.next_offset(offset)),
+                    jump: Some(*destination + EVT_INSTRUCTIONS_BASE_OFFSET),
                     fork: None,
                 }
             }
         } else {
             InstructionDestinations {
-                normal: true,
+                normal: Some(self.next_offset(offset)),
                 jump: None,
                 fork: None,
             }
         }
+    }
+
+    pub fn next_offset(&self, offset: InstructionOffset) -> InstructionOffset {
+        offset + self.size
     }
 }
 
 #[derive(Debug)]
 pub struct DisassembledEvt<'a> {
     pub data: [u8; 0x1000],
-    pub instructions: BTreeMap<Label, DecodedInstruction<'a>>,
+    pub instructions: BTreeMap<InstructionOffset, DecodedInstruction<'a>>,
 }
 
 impl DisassembledEvt<'_> {
@@ -120,10 +120,9 @@ impl DisassembledEvt<'_> {
         character_encoding: &CharacterEncoding,
         opcodes: &'a [Opcode],
     ) -> DisassembledEvt<'a> {
-        // Decode instructions
         let mut instructions = BTreeMap::new();
         for (offset, instruction) in evt.get_instructions_by_offset() {
-            //let size = instruction.length as usize;
+            let size = instruction.length as usize;
             let opcode = &opcodes[instruction.opcode as usize];
 
             let args = DisassembledEvt::parse_arguments(
@@ -132,34 +131,7 @@ impl DisassembledEvt<'_> {
                 opcode,
             );
 
-            instructions.insert(
-                offset.to_string(),
-                DecodedInstruction {
-                    opcode,
-                    args,
-                    label: None,
-                },
-            );
-        }
-
-        // Find labels
-        let mut labels = BTreeSet::new();
-        for (_, instruction) in instructions.iter() {
-            let destinations = instruction.get_destinations();
-            if let Some(jump_dest) = destinations.jump {
-                labels.insert(jump_dest);
-            }
-
-            if let Some(fork_dest) = destinations.fork {
-                labels.insert(fork_dest);
-            }
-        }
-
-        // Mark instructions that have labels
-        for (label, instruction) in instructions.iter_mut() {
-            if labels.contains(label) {
-                instruction.label = Some(label.clone());
-            }
+            instructions.insert(offset, DecodedInstruction { opcode, args, size });
         }
 
         DisassembledEvt {
@@ -214,7 +186,7 @@ impl DisassembledEvt<'_> {
                         raw_arguments[current..(current + 4)].try_into().unwrap(),
                     );
 
-                    arguments.push(Arg::JumpDestination(value.to_string()));
+                    arguments.push(Arg::InstructionLocation(value as InstructionOffset));
                     current += 4;
                 }
             }
@@ -223,61 +195,6 @@ impl DisassembledEvt<'_> {
         assert!(current == raw_arguments.len());
 
         arguments
-    }
-
-    pub fn write_asm<W: Write>(&self, writer: &mut W) -> io::Result<()> {
-        // TODO: implement
-        writeln!(writer, ".data:")?;
-        writeln!(writer, "    {}", Self::bytes_to_literal(&self.data))?;
-
-        writeln!(writer, ".code:")?;
-        self.write_instructions(writer)?;
-
-        Ok(())
-    }
-
-    pub fn write_instructions<W: Write>(&self, writer: &mut W) -> io::Result<()> {
-        for (_, instruction) in self.instructions.iter() {
-            if let Some(label) = &instruction.label {
-                writeln!(writer, "  {}:", label)?;
-            }
-
-            write!(writer, "    {:<12}", instruction.opcode.name)?;
-
-            for arg in instruction.args.iter() {
-                let string = match arg {
-                    Arg::Float(f) => Self::format_f32(*f),
-                    Arg::JumpDestination(label) => label.to_string(),
-                    Arg::ValueLocation(location) => location.to_asm_string(),
-                    Arg::StringLit(string) => format!("\"{}\"", string),
-                    Arg::Bytes(bytes) => Self::bytes_to_literal(bytes),
-                };
-
-                write!(writer, " {}", string)?;
-            }
-
-            writer.write_all("\n".as_bytes())?;
-        }
-
-        Ok(())
-    }
-
-    fn bytes_to_literal(bytes: &[u8]) -> String {
-        let mut parts = vec!["b\"".to_string()];
-        for byte in bytes {
-            parts.push(format!("\\x{:02x}", byte));
-        }
-        parts.push("\"\n".to_string());
-
-        parts.join("")
-    }
-
-    fn format_f32(f: f32) -> String {
-        if f.fract() == 0.0 && f.abs() < 1e10 {
-            format!("{:.1}", f) // "1.0", "30.0", "124.0"
-        } else {
-            format!("{:e}", f) // "1.401298464324817e-45"
-        }
     }
 }
 
@@ -340,7 +257,9 @@ impl OpcodeRecord {
 }
 
 impl Opcode {
-    pub fn get() -> Vec<Opcode> {
+    pub fn multiple_from_csv(filepath: &str) -> Vec<Opcode> {
+        //let contents = std::fs::read_to_string(filepath)
+        //    .unwrap_or_else(|_| panic!("opcodes file not found: {}", filepath));
         let contents = include_bytes!("opcodes.csv");
 
         let mut reader = csv::Reader::from_reader(&contents[..]);
@@ -354,75 +273,5 @@ impl Opcode {
                 arguments: record.get_arguments(),
             })
             .collect()
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    fn instructions_as_string(script: &DisassembledEvt) -> String {
-        let mut buf = Vec::new();
-        script.write_instructions(&mut buf).unwrap();
-        String::from_utf8(buf).unwrap()
-    }
-
-    #[test]
-    fn test_write_instructions_empty() {
-        let script = DisassembledEvt {
-            data: [0u8; 0x1000],
-            instructions: BTreeMap::from([]),
-        };
-
-        assert_eq!(instructions_as_string(&script), "");
-    }
-
-    #[test]
-    fn test_write_instructions_single_instruction() {
-        let opcodes = Opcode::get();
-        let script = DisassembledEvt {
-            data: [0u8; 0x1000],
-            instructions: BTreeMap::from([(
-                "0".to_string(),
-                DecodedInstruction {
-                    opcode: &opcodes[EXIT as usize],
-                    args: vec![],
-                    label: None,
-                },
-            )]),
-        };
-
-        assert_eq!(instructions_as_string(&script), "    Exit        \n");
-    }
-
-    #[test]
-    fn test_write_instructions_multiple_instructions() {
-        let opcodes = Opcode::get();
-        let script = DisassembledEvt {
-            data: [0u8; 0x1000],
-            instructions: BTreeMap::from([
-                (
-                    "0".to_string(),
-                    DecodedInstruction {
-                        opcode: &opcodes[NOP0 as usize],
-                        args: vec![],
-                        label: None,
-                    },
-                ),
-                (
-                    "4".to_string(),
-                    DecodedInstruction {
-                        opcode: &opcodes[EXIT as usize],
-                        args: vec![],
-                        label: None,
-                    },
-                ),
-            ]),
-        };
-
-        assert_eq!(
-            instructions_as_string(&script),
-            "    Nop0        \n    Exit        \n"
-        );
     }
 }

@@ -1,8 +1,11 @@
-use std::collections::{BTreeMap, BTreeSet};
+/*use std::collections::{BTreeMap, BTreeSet};
 
 use petgraph::graph::DiGraph;
 
-use crate::dqmj1_rom::events::{binary::InstructionOffset, disassembly::DecodedInstruction};
+use crate::dqmj1_rom::events::{
+    binary::{InstructionOffset, EVT_INSTRUCTIONS_BASE_OFFSET},
+    disassembly_old2::DecodedInstruction,
+};
 
 #[derive(Debug)]
 pub struct CfgBlock<'a> {
@@ -128,7 +131,7 @@ impl ControlFlowGraph<'_> {
                 .replace("\"", "\\\"");*/
             //.replace("[", "\\[")
             //.replace("]", "\\]");
-            let label = format!("({})\\n", offset);
+            let label = format!("({:x})\\n", offset - EVT_INSTRUCTIONS_BASE_OFFSET);
 
             node_indices.insert(*offset, graph.add_node(label));
         }
@@ -152,3 +155,4 @@ impl ControlFlowGraph<'_> {
         ControlFlowGraph { blocks, graph }
     }
 }
+*/
