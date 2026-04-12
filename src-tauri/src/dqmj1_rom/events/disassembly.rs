@@ -11,7 +11,7 @@ use crate::dqmj1_rom::{
 };
 
 const EXIT: u8 = 0x02;
-const START_EVENT: u8 = 0x08;
+const START_EVENT: u8 = 0x0A;
 const JUMP: u8 = 0x0C;
 
 pub type Label = String;
@@ -493,6 +493,23 @@ mod tests {
         assert_eq!(
             instructions_as_string(&script),
             r#"    NopAA        b"\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c"
+"#
+        );
+    }
+
+    #[test]
+    fn test_write_instructions_start_event() {
+        let opcodes = Opcode::get();
+        let script = read_evt_from_file_and_disassemble("test/data/start_event.evt", &opcodes);
+
+        assert_eq!(
+            instructions_as_string(&script),
+            r#"    Nop0        
+    StartEvent   36 1.0
+    Exit         1.0
+  36:
+    Nop0        
+    Exit         1.0
 "#
         );
     }
