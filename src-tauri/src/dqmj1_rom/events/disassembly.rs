@@ -515,6 +515,24 @@ mod tests {
     }
 
     #[test]
+    fn test_write_instructions_jump_if() {
+        let opcodes = Opcode::get();
+        let script = read_evt_from_file_and_disassemble("test/data/jump_if.evt", &opcodes);
+
+        assert_eq!(
+            instructions_as_string(&script),
+            r#"    SetU32       Pool_0 0.0 Const 42.0
+    FloatsEq     Pool_0 0.0 Const 6.0
+    JumpIfTrue   72
+    Exit         1.0
+  72:
+    Nop0        
+    Exit         1.0
+"#
+        );
+    }
+
+    #[test]
     fn test_from_evt_no_instructions() {
         let opcodes = Opcode::get();
         let actual = read_evt_from_file_and_disassemble("test/data/no_instructions.evt", &opcodes);
