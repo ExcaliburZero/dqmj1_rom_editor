@@ -5,7 +5,10 @@ use std::{
 
 use serde::Deserialize;
 
-use crate::dqmj1_rom::{events::binary::Evt, strings::encoding::CharacterEncoding};
+use crate::dqmj1_rom::{
+    events::binary::{Evt, EVT_INSTRUCTIONS_BASE_OFFSET},
+    strings::encoding::CharacterEncoding,
+};
 
 const NOP0: u8 = 0x00;
 const EXIT: u8 = 0x02;
@@ -14,7 +17,7 @@ const JUMP: u8 = 0x0C;
 
 pub type Label = String;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum ValueLocation {
     Pool0,
     Pool1,
@@ -43,7 +46,7 @@ impl ValueLocation {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Arg {
     Float(f32),
     Bytes(Vec<u8>),
@@ -52,6 +55,8 @@ pub enum Arg {
     ValueLocation(ValueLocation),
 }
 
+impl Eq for Arg {} // Note: needed since f32 does not support Eq
+
 #[derive(Debug)]
 pub struct InstructionDestinations {
     pub normal: bool,
@@ -59,7 +64,7 @@ pub struct InstructionDestinations {
     pub fork: Option<Label>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct DecodedInstruction<'a> {
     pub opcode: &'a Opcode,
     pub args: Vec<Arg>,
@@ -108,7 +113,7 @@ impl DecodedInstruction<'_> {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 pub struct DisassembledEvt<'a> {
     pub data: [u8; 0x1000],
     pub instructions: BTreeMap<Label, DecodedInstruction<'a>>,
@@ -133,7 +138,7 @@ impl DisassembledEvt<'_> {
             );
 
             instructions.insert(
-                offset.to_string(),
+                (offset - EVT_INSTRUCTIONS_BASE_OFFSET).to_string(),
                 DecodedInstruction {
                     opcode,
                     args,
@@ -281,7 +286,7 @@ impl DisassembledEvt<'_> {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 pub enum ArgumentKind {
     Bytes,
     U32,
@@ -305,7 +310,7 @@ impl ArgumentKind {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 pub struct Opcode {
     pub id: u8,
     pub name: String,
@@ -359,12 +364,30 @@ impl Opcode {
 
 #[cfg(test)]
 mod tests {
+    use std::fs::File;
+
+    use binrw::BinRead;
+
+    use crate::dqmj1_rom::regions::Region;
+
     use super::*;
 
     fn instructions_as_string(script: &DisassembledEvt) -> String {
         let mut buf = Vec::new();
         script.write_instructions(&mut buf).unwrap();
         String::from_utf8(buf).unwrap()
+    }
+
+    fn read_evt_from_file_and_disassemble<'a>(
+        filepath: &str,
+        opcodes: &'a [Opcode],
+    ) -> DisassembledEvt<'a> {
+        let mut reader = File::open(filepath).unwrap();
+        let evt = Evt::read(&mut reader).unwrap();
+
+        let character_encoding = CharacterEncoding::get(Region::NorthAmerica);
+
+        DisassembledEvt::from_evt(&evt, &character_encoding, opcodes)
     }
 
     #[test]
@@ -424,5 +447,58 @@ mod tests {
             instructions_as_string(&script),
             "    Nop0        \n    Exit        \n"
         );
+    }
+
+    #[test]
+    fn test_from_evt_no_instructions() {
+        let opcodes = Opcode::get();
+        let actual = read_evt_from_file_and_disassemble("test/data/no_instructions.evt", &opcodes);
+
+        let expected = DisassembledEvt {
+            data: [0xFFu8; 0x1000],
+            instructions: BTreeMap::new(),
+        };
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_from_evt_only_exit() {
+        let opcodes = Opcode::get();
+        let actual = read_evt_from_file_and_disassemble("test/data/only_exit.evt", &opcodes);
+
+        let expected = DisassembledEvt {
+            data: [0xFFu8; 0x1000],
+            instructions: BTreeMap::from([(
+                "0".to_string(),
+                DecodedInstruction {
+                    opcode: &opcodes[EXIT as usize],
+                    args: vec![Arg::Float(0.0)],
+                    label: None,
+                },
+            )]),
+        };
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_from_evt_jump_to_self() {
+        let opcodes = Opcode::get();
+        let actual = read_evt_from_file_and_disassemble("test/data/jump_to_self.evt", &opcodes);
+
+        let expected = DisassembledEvt {
+            data: [0xFFu8; 0x1000],
+            instructions: BTreeMap::from([(
+                "0".to_string(),
+                DecodedInstruction {
+                    opcode: &opcodes[JUMP as usize],
+                    args: vec![Arg::JumpDestination("0".to_string())],
+                    label: Some("0".to_string()),
+                },
+            )]),
+        };
+
+        assert_eq!(actual, expected);
     }
 }
