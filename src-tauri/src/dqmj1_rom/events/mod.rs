@@ -1,3 +1,4 @@
+pub mod assembly;
 pub mod binary;
 pub mod cfg;
 pub mod disassembly;
