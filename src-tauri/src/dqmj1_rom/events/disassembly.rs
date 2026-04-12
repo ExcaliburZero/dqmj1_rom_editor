@@ -486,6 +486,18 @@ mod tests {
     }
 
     #[test]
+    fn test_write_instructions_with_bytes() {
+        let opcodes = Opcode::get();
+        let script = read_evt_from_file_and_disassemble("test/data/nopaa_bytes.evt", &opcodes);
+
+        assert_eq!(
+            instructions_as_string(&script),
+            r#"    NopAA        b"\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c"
+"#
+        );
+    }
+
+    #[test]
     fn test_from_evt_no_instructions() {
         let opcodes = Opcode::get();
         let actual = read_evt_from_file_and_disassemble("test/data/no_instructions.evt", &opcodes);
