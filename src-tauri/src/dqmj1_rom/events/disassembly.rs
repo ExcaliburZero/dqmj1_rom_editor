@@ -192,7 +192,9 @@ impl DisassembledEvt<'_> {
                     current += raw_arguments.len() - current; // Note: assumes no further args
                 }
                 ArgumentKind::AsciiString => {
-                    let string = std::str::from_utf8(&raw_arguments[current..]).unwrap();
+                    let string = std::str::from_utf8(&raw_arguments[current..])
+                        .unwrap()
+                        .trim_end_matches('\0');
 
                     arguments.push(Arg::StringLit(string.to_string()));
                     current += raw_arguments.len() - current; // Note: assumes no further args
@@ -363,8 +365,8 @@ impl Opcode {
 
 #[cfg(test)]
 mod tests {
-    #[cfg(test)]
-    use pretty_assertions::assert_eq;
+    //#[cfg(test)]
+    //use pretty_assertions::assert_eq;
 
     use std::fs::File;
 
@@ -452,6 +454,17 @@ mod tests {
     ShowDialog  
     EndDialog   
 "
+        );
+    }
+
+    #[test]
+    fn test_write_instructions_with_ascii_string() {
+        let opcodes = Opcode::get();
+        let script = read_evt_from_file_and_disassemble("test/data/load_pos.evt", &opcodes);
+
+        assert_eq!(
+            instructions_as_string(&script),
+            "    LoadPos      \"demo001.pos\"\n"
         );
     }
 
