@@ -1,5 +1,5 @@
 use std::{
-    collections::{BTreeMap, BTreeSet},
+    collections::BTreeSet,
     io::{self, Write},
 };
 
@@ -10,7 +10,6 @@ use crate::dqmj1_rom::{
     strings::encoding::CharacterEncoding,
 };
 
-const NOP0: u8 = 0x00;
 const EXIT: u8 = 0x02;
 const START_EVENT: u8 = 0x08;
 const JUMP: u8 = 0x0C;
@@ -116,7 +115,7 @@ impl DecodedInstruction<'_> {
 #[derive(Debug, Eq, PartialEq)]
 pub struct DisassembledEvt<'a> {
     pub data: [u8; 0x1000],
-    pub instructions: BTreeMap<Label, DecodedInstruction<'a>>,
+    pub instructions: Vec<(Label, DecodedInstruction<'a>)>,
 }
 
 impl DisassembledEvt<'_> {
@@ -126,7 +125,7 @@ impl DisassembledEvt<'_> {
         opcodes: &'a [Opcode],
     ) -> DisassembledEvt<'a> {
         // Decode instructions
-        let mut instructions = BTreeMap::new();
+        let mut instructions = vec![];
         for (offset, instruction) in evt.get_instructions_by_offset() {
             //let size = instruction.length as usize;
             let opcode = &opcodes[instruction.opcode as usize];
@@ -137,14 +136,14 @@ impl DisassembledEvt<'_> {
                 opcode,
             );
 
-            instructions.insert(
+            instructions.push((
                 (offset - EVT_INSTRUCTIONS_BASE_OFFSET).to_string(),
                 DecodedInstruction {
                     opcode,
                     args,
                     label: None,
                 },
-            );
+            ));
         }
 
         // Find labels
@@ -364,6 +363,9 @@ impl Opcode {
 
 #[cfg(test)]
 mod tests {
+    #[cfg(test)]
+    use pretty_assertions::assert_eq;
+
     use std::fs::File;
 
     use binrw::BinRead;
@@ -371,6 +373,13 @@ mod tests {
     use crate::dqmj1_rom::regions::Region;
 
     use super::*;
+
+    const SETU32: u8 = 0x15;
+    const START_DIALOG: u8 = 0x25;
+    const END_DIALOG: u8 = 0x26;
+    const SHOW_DIALOG: u8 = 0x27;
+    const SET_DIALOG: u8 = 0x29;
+    const SPEAKER_NAME: u8 = 0x2A;
 
     fn instructions_as_string(script: &DisassembledEvt) -> String {
         let mut buf = Vec::new();
@@ -418,13 +427,42 @@ mod tests {
     }
 
     #[test]
+    fn test_write_instructions_with_label() {
+        let opcodes = Opcode::get();
+        let script = read_evt_from_file_and_disassemble("test/data/jump_to_self.evt", &opcodes);
+
+        assert_eq!(
+            instructions_as_string(&script),
+            "  0:\n    Jump         0\n"
+        );
+    }
+
+    #[test]
+    fn test_write_instructions_variety_of_instructions() {
+        let opcodes = Opcode::get();
+        let script = read_evt_from_file_and_disassemble("test/data/dialog.evt", &opcodes);
+
+        assert_eq!(
+            instructions_as_string(&script),
+            "    SetU32       Pool_0 0.0 Const 0.0
+    StartDialog 
+    SpeakerName  \"Alice\"
+    SetDialog    \"[0xEA]BAD APPLE\"
+    SetU32       Pool_0 0.0 Const 1.0
+    ShowDialog  
+    EndDialog   
+"
+        );
+    }
+
+    #[test]
     fn test_from_evt_no_instructions() {
         let opcodes = Opcode::get();
         let actual = read_evt_from_file_and_disassemble("test/data/no_instructions.evt", &opcodes);
 
         let expected = DisassembledEvt {
             data: [0xFFu8; 0x1000],
-            instructions: BTreeMap::new(),
+            instructions: vec![],
         };
 
         assert_eq!(actual, expected);
@@ -437,14 +475,14 @@ mod tests {
 
         let expected = DisassembledEvt {
             data: [0xFFu8; 0x1000],
-            instructions: BTreeMap::from([(
+            instructions: vec![(
                 "0".to_string(),
                 DecodedInstruction {
                     opcode: &opcodes[EXIT as usize],
                     args: vec![Arg::Float(0.0)],
                     label: None,
                 },
-            )]),
+            )],
         };
 
         assert_eq!(actual, expected);
@@ -457,16 +495,100 @@ mod tests {
 
         let expected = DisassembledEvt {
             data: [0xFFu8; 0x1000],
-            instructions: BTreeMap::from([(
+            instructions: vec![(
                 "0".to_string(),
                 DecodedInstruction {
                     opcode: &opcodes[JUMP as usize],
                     args: vec![Arg::JumpDestination("0".to_string())],
                     label: Some("0".to_string()),
                 },
-            )]),
+            )],
         };
 
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_from_evt_dialog() {
+        use self::ValueLocation::*;
+        use Arg::*;
+
+        let opcodes = Opcode::get();
+        let actual = read_evt_from_file_and_disassemble("test/data/dialog.evt", &opcodes);
+
+        let expected = DisassembledEvt {
+            data: [0xFFu8; 0x1000],
+            instructions: vec![
+                (
+                    "0".to_string(),
+                    DecodedInstruction {
+                        opcode: &opcodes[SETU32 as usize],
+                        args: vec![
+                            ValueLocation(Pool0),
+                            Float(0.0),
+                            ValueLocation(Constant),
+                            Float(0.0),
+                        ],
+                        label: None,
+                    },
+                ),
+                (
+                    "24".to_string(),
+                    DecodedInstruction {
+                        opcode: &opcodes[START_DIALOG as usize],
+                        args: vec![],
+                        label: None,
+                    },
+                ),
+                (
+                    "32".to_string(),
+                    DecodedInstruction {
+                        opcode: &opcodes[SPEAKER_NAME as usize],
+                        args: vec![StringLit("Alice".to_string())],
+                        label: None,
+                    },
+                ),
+                (
+                    "48".to_string(),
+                    DecodedInstruction {
+                        opcode: &opcodes[SET_DIALOG as usize],
+                        args: vec![StringLit("[0xEA]BAD APPLE".to_string())],
+                        label: None,
+                    },
+                ),
+                (
+                    "68".to_string(),
+                    DecodedInstruction {
+                        opcode: &opcodes[SETU32 as usize],
+                        args: vec![
+                            ValueLocation(Pool0),
+                            Float(0.0),
+                            ValueLocation(Constant),
+                            Float(1.0),
+                        ],
+                        label: None,
+                    },
+                ),
+                (
+                    "92".to_string(),
+                    DecodedInstruction {
+                        opcode: &opcodes[SHOW_DIALOG as usize],
+                        args: vec![],
+                        label: None,
+                    },
+                ),
+                (
+                    "100".to_string(),
+                    DecodedInstruction {
+                        opcode: &opcodes[END_DIALOG as usize],
+                        args: vec![],
+                        label: None,
+                    },
+                ),
+            ],
+        };
+
+        assert_eq!(actual.instructions, expected.instructions);
+        //assert_eq!(actual, expected);
     }
 }
