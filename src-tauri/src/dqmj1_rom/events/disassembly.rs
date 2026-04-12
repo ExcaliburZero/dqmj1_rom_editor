@@ -273,7 +273,7 @@ impl DisassembledEvt<'_> {
         for byte in bytes {
             parts.push(format!("\\x{:02x}", byte));
         }
-        parts.push("\"\n".to_string());
+        parts.push("\"".to_string());
 
         parts.join("")
     }
@@ -399,6 +399,23 @@ mod tests {
         let character_encoding = CharacterEncoding::get(Region::NorthAmerica);
 
         DisassembledEvt::from_evt(&evt, &character_encoding, opcodes)
+    }
+
+    #[test]
+    fn test_bytes_to_literal_empty() {
+        let bytes = vec![];
+
+        assert_eq!(DisassembledEvt::bytes_to_literal(&bytes), r#"b"""#)
+    }
+
+    #[test]
+    fn test_bytes_to_literal_simple() {
+        let bytes = vec![0x00, 0x01, 0x02, 0x03, 0x04];
+
+        assert_eq!(
+            DisassembledEvt::bytes_to_literal(&bytes),
+            r#"b"\x00\x01\x02\x03\x04""#
+        )
     }
 
     #[test]
