@@ -192,7 +192,10 @@ impl DisassembledEvt<'_> {
                     current += raw_arguments.len() - current; // Note: assumes no further args
                 }
                 ArgumentKind::AsciiString => {
-                    let string = std::str::from_utf8(&raw_arguments[current..])
+                    let relevant_bytes =
+                        raw_arguments[current..].split(|&b| b == 0).next().unwrap();
+                    assert!(!relevant_bytes.is_empty());
+                    let string = std::str::from_utf8(relevant_bytes)
                         .unwrap()
                         .trim_end_matches('\0');
 

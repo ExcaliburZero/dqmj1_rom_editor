@@ -8,7 +8,9 @@ use std::{
 
 use binrw::{io::BufReader, BinRead, BinWriterExt};
 use ds_rom::rom::{raw, Rom, RomLoadOptions};
+use glob::glob;
 use petgraph::dot::{Config, Dot};
+use rayon::prelude::*;
 use tauri::Manager;
 
 use crate::{
@@ -73,6 +75,31 @@ fn get_region(directory: &Path) -> Region {
     Region::from_game_code(header_data.get("gamecode").unwrap()).unwrap()
 }
 
+fn disassemble_evt(region: &Region, filepath: &PathBuf) {
+    println!("{:?}", filepath);
+
+    //let filepath = temp_directory.join("files").join("demo001.evt");
+    let raw_bytes = std::fs::read(&filepath).unwrap();
+    if raw_bytes.is_empty() {
+        // Skips dummy.evt
+        return;
+    }
+
+    let mut reader = BufReader::new(Cursor::new(raw_bytes));
+    let evt = Evt::read(&mut reader).unwrap();
+
+    let character_encoding = CharacterEncoding::get(*region);
+    let opcodes = Opcode::get(); //("src-tauri\\src\\dqmj1_rom\\events\\opcodes.csv");
+    let disassembled_evt = DisassembledEvt::from_evt(&evt, &character_encoding, &opcodes);
+
+    let mut file = std::fs::File::create(format!(
+        "{}.dqmj1_script",
+        filepath.file_name().unwrap().to_str().unwrap()
+    ))
+    .unwrap();
+    disassembled_evt.write_asm(&mut file).unwrap();
+}
+
 #[tauri::command]
 pub fn unpack_rom(app: tauri::AppHandle, rom_filepath: &str) {
     let temp_directory = get_temp_directory(&app);
@@ -89,17 +116,16 @@ pub fn unpack_rom(app: tauri::AppHandle, rom_filepath: &str) {
     // TODO: remove all code below, this is just for testing
     let region = get_region(&temp_directory);
 
-    let filepath = temp_directory.join("files").join("demo001.evt");
-    let mut reader = BufReader::new(File::open(filepath).unwrap());
-    let evt = Evt::read(&mut reader).unwrap();
-    println!("{:?}", evt);
+    let filepaths: Vec<_> = glob(temp_directory.join("files").join("*.evt").to_str().unwrap())
+        .unwrap()
+        .collect();
+    //for filepath in filepaths {}
 
-    let character_encoding = CharacterEncoding::get(region);
-    let opcodes = Opcode::get(); //("src-tauri\\src\\dqmj1_rom\\events\\opcodes.csv");
-    let disassembled_evt = DisassembledEvt::from_evt(&evt, &character_encoding, &opcodes);
-
-    let mut file = std::fs::File::create("demo001.evt.dqmj1_script").unwrap();
-    disassembled_evt.write_asm(&mut file).unwrap();
+    let _: Vec<_> = filepaths
+        .par_iter()
+        .map(|fp| fp.as_ref().unwrap().clone())
+        .map(|fp| disassemble_evt(&region, &fp))
+        .collect();
 
     //println!("{:?}", disassembled_evt);
     /*let cfg = ControlFlowGraph::from_instructions(&disassembled_evt.instructions);
