@@ -392,10 +392,8 @@ mod tests {
 
     #[test]
     fn test_write_instructions_empty() {
-        let script = DisassembledEvt {
-            data: [0u8; 0x1000],
-            instructions: BTreeMap::from([]),
-        };
+        let opcodes = Opcode::get();
+        let script = read_evt_from_file_and_disassemble("test/data/no_instructions.evt", &opcodes);
 
         assert_eq!(instructions_as_string(&script), "");
     }
@@ -403,49 +401,19 @@ mod tests {
     #[test]
     fn test_write_instructions_single_instruction() {
         let opcodes = Opcode::get();
-        let script = DisassembledEvt {
-            data: [0u8; 0x1000],
-            instructions: BTreeMap::from([(
-                "0".to_string(),
-                DecodedInstruction {
-                    opcode: &opcodes[EXIT as usize],
-                    args: vec![],
-                    label: None,
-                },
-            )]),
-        };
+        let script = read_evt_from_file_and_disassemble("test/data/only_exit.evt", &opcodes);
 
-        assert_eq!(instructions_as_string(&script), "    Exit        \n");
+        assert_eq!(instructions_as_string(&script), "    Exit         0.0\n");
     }
 
     #[test]
     fn test_write_instructions_multiple_instructions() {
         let opcodes = Opcode::get();
-        let script = DisassembledEvt {
-            data: [0u8; 0x1000],
-            instructions: BTreeMap::from([
-                (
-                    "0".to_string(),
-                    DecodedInstruction {
-                        opcode: &opcodes[NOP0 as usize],
-                        args: vec![],
-                        label: None,
-                    },
-                ),
-                (
-                    "4".to_string(),
-                    DecodedInstruction {
-                        opcode: &opcodes[EXIT as usize],
-                        args: vec![],
-                        label: None,
-                    },
-                ),
-            ]),
-        };
+        let script = read_evt_from_file_and_disassemble("test/data/nop_then_exit.evt", &opcodes);
 
         assert_eq!(
             instructions_as_string(&script),
-            "    Nop0        \n    Exit        \n"
+            "    Nop0        \n    Exit         0.0\n"
         );
     }
 
