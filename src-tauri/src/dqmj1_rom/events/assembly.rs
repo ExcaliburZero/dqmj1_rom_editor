@@ -70,31 +70,6 @@ fn lex_byte_string(lex: &mut logos::Lexer<AssemblyToken>) -> Option<Vec<u8>> {
     }
 }
 
-fn parse_byte_string(s: &str) -> Result<Vec<u8>, String> {
-    if !s.len().is_multiple_of(4) {
-        return Err(format!(
-            "Byte string length must be evenly divisible by 4, actual length: {}",
-            s.len()
-        )
-        .to_string());
-    }
-
-    let mut bytes = vec![];
-    for chunk in s.chars().collect::<Vec<_>>().chunks(4) {
-        if chunk[0..2] != ['\\', 'x'] {
-            return Err(format!(
-                "All bytes must start with \"\\x\", found byte that starts with: \"{}\"",
-                chunk[0..2].iter().collect::<String>()
-            )
-            .to_string());
-        }
-
-        bytes.push(u8::from_str_radix(&chunk[2..4].iter().collect::<String>(), 16).unwrap());
-    }
-
-    Ok(bytes)
-}
-
 pub fn parse_dqmj1_asm<'a>(contents: &str, opcodes: &'a [Opcode]) -> DisassembledEvt<'a> {
     //let tokens: Vec<_> = AssemblyToken::lexer(contents).collect();
 
@@ -198,7 +173,7 @@ fn parse_data_section(data: Vec<u8>) -> [u8; 0x1000] {
 mod tests {
     use rstest::rstest;
 
-    use crate::dqmj1_rom::events::assembly::{parse_byte_string, AssemblyToken};
+    use crate::dqmj1_rom::events::assembly::AssemblyToken;
     use crate::dqmj1_rom::events::assembly::{parse_dqmj1_asm, AssemblyToken::*};
     use crate::dqmj1_rom::events::disassembly::{Arg, DecodedInstruction, DisassembledEvt, Opcode};
 
@@ -209,17 +184,6 @@ mod tests {
         let contents = std::fs::read_to_string(filepath).unwrap();
 
         parse_dqmj1_asm(&contents, opcodes)
-    }
-
-    #[rstest]
-    #[case(r#"\x00"#, vec![0x00])]
-    #[case(r#"\xA1"#, vec![0xA1])]
-    #[case(r#"\xa1"#, vec![0xA1])]
-    #[case(r#"\xA1\x00\x12"#, vec![0xA1, 0x00, 0x12])]
-    fn test_parse_byte_string(#[case] string: &str, #[case] expected: Vec<u8>) {
-        let actual = parse_byte_string(string).unwrap();
-
-        assert_eq!(actual, expected);
     }
 
     #[rstest]
