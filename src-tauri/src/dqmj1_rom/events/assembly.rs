@@ -1,6 +1,12 @@
+use chumsky::prelude::*;
 use logos::Logos;
 
+use crate::dqmj1_rom::events::disassembly::{
+    Arg, DecodedInstruction, DisassembledEvt, Opcode, ValueLocation,
+};
+
 #[derive(Logos, Debug, Clone, PartialEq)]
+#[logos(skip r"[ \t\r]+")] // skip whitespace
 pub enum AssemblyToken {
     #[token(".data:")]
     DataSection,
@@ -11,23 +17,57 @@ pub enum AssemblyToken {
     #[token(":")]
     Colon,
 
-    #[regex(r"-?[0-9]+", |lex| lex.slice().parse::<u32>().ok())]
+    #[regex(r"[0-9]+", |lex| lex.slice().parse::<u32>().ok())]
     Int(u32),
 
     #[regex(r"-?[0-9]+\.[0-9]+(?:e[+-]?[0-9]+)?", |lex| lex.slice().parse::<f32>().ok())]
     Float(f32),
 
-    #[regex(r"[a-zA-Z_][a-zA-Z0-9_\.]+", |lex| lex.slice().to_owned())]
+    #[regex(r"(Pool_0)|(Pool_1)|(Const)|(Pool3)", |lex| lex.slice().to_owned(), priority = 3)]
+    ValueLocation(String),
+
+    #[regex(r"[a-zA-Z_][a-zA-Z0-9_\.]+", |lex| lex.slice().to_owned(), priority = 2)]
     Ident(String),
 
     #[regex(r#""[^"]*""#, |lex| lex.slice()[1..lex.slice().len()-1].to_owned())]
     StringLit(String),
 
-    #[regex(r#"b"(\\x[0-9a-fA-F][0-9a-fA-F])*""#, |lex| {
-        let inner = &lex.slice()[2..lex.slice().len()-1]; // strip b" and "
-        parse_byte_string(inner).ok()
-    })]
+    #[token("b\"", lex_byte_string)]
     ByteString(Vec<u8>),
+
+    #[token("\n")]
+    Newline,
+}
+
+impl Eq for AssemblyToken {} // Note: Needed since Float contains an f32
+
+fn lex_byte_string(lex: &mut logos::Lexer<AssemblyToken>) -> Option<Vec<u8>> {
+    let remainder = lex.remainder();
+    let mut bytes = Vec::new();
+    let mut chars = remainder.char_indices();
+
+    loop {
+        match chars.next() {
+            // Closing quote
+            Some((i, '"')) => {
+                lex.bump(i + 1);
+                return Some(bytes);
+            }
+            // Byte (ex. \xA0)
+            Some((_, '\\')) => {
+                match chars.next() {
+                    Some((_, 'x')) => {
+                        let hi = chars.next()?.1.to_digit(16)? as u8;
+                        let lo = chars.next()?.1.to_digit(16)? as u8;
+                        bytes.push((hi << 4) | lo);
+                    }
+                    _ => return None, // unexpected escape
+                }
+            }
+            // Unexpected end of input or bad char
+            _ => return None,
+        }
+    }
 }
 
 fn parse_byte_string(s: &str) -> Result<Vec<u8>, String> {
@@ -55,12 +95,121 @@ fn parse_byte_string(s: &str) -> Result<Vec<u8>, String> {
     Ok(bytes)
 }
 
+pub fn parse_dqmj1_asm<'a>(contents: &str, opcodes: &'a [Opcode]) -> DisassembledEvt<'a> {
+    //let tokens: Vec<_> = AssemblyToken::lexer(contents).collect();
+
+    let tokens: Vec<AssemblyToken> = AssemblyToken::lexer(contents).map(|t| t.unwrap()).collect();
+    //.filter_map(|t| t.ok())
+
+    let result = get_parser(opcodes).parse(&tokens).unwrap();
+    result
+}
+
+pub fn get_parser<'a, 'src>(
+    opcodes: &'a [Opcode],
+) -> impl Parser<'src, &'src [AssemblyToken], DisassembledEvt<'a>> {
+    let int = select! { AssemblyToken::Int(int) => int };
+    let float = select! { AssemblyToken::Float(float) => float };
+    let ident = select! { AssemblyToken::Ident(string) => string };
+    let string_lit = select! { AssemblyToken::StringLit(string) => string };
+    let byte_string = select! { AssemblyToken::ByteString(bytes) => bytes };
+    let value_location = select! { AssemblyToken::ValueLocation(string) => ValueLocation::from_asm_string(&string).unwrap() };
+
+    let label = choice((
+        select! { AssemblyToken::Ident(string) => string },
+        select! { AssemblyToken::Int(int) => int.to_string() },
+    ))
+    .then(just(AssemblyToken::Colon))
+    .then(just(AssemblyToken::Newline))
+    .map(|((label, _), _)| label);
+
+    let newline = just(AssemblyToken::Newline);
+
+    let argument = choice((
+        int.map(|int| Arg::Float(int as f32)),
+        float.map(Arg::Float),
+        ident.map(Arg::JumpDestination),
+        string_lit.map(Arg::StringLit),
+        byte_string.map(Arg::Bytes),
+        value_location.map(Arg::ValueLocation),
+    ));
+
+    let instruction = label.or_not().then(
+        ident
+            .then(argument.repeated().collect::<Vec<_>>())
+            .map(|(name, args)| parse_instruction(opcodes, &name, args)),
+    );
+
+    let data_section = just(AssemblyToken::DataSection)
+        .then(newline.clone().then(byte_string))
+        .map(|(_, (_, data))| parse_data_section(data));
+    let code_section = just(AssemblyToken::CodeSection)
+        .then(
+            newline
+                .clone()
+                .then(instruction)
+                .repeated()
+                .collect::<Vec<_>>(),
+        )
+        .map(|(_, entries)| {
+            entries
+                .iter()
+                .map(|(_, (label, instruction))| {
+                    let mut new_instruction = instruction.clone();
+                    new_instruction.label = label.clone();
+                    (label.clone(), new_instruction)
+                })
+                .collect::<Vec<_>>()
+        });
+
+    data_section
+        .then(newline.then(code_section))
+        .map(|(data, (_, code))| DisassembledEvt {
+            data,
+            instructions: code,
+        })
+}
+
+fn parse_instruction<'a>(
+    opcodes: &'a [Opcode],
+    name: &str,
+    args: Vec<Arg>,
+) -> DecodedInstruction<'a> {
+    let mut matching_opcode = None;
+    for opcode in opcodes.iter() {
+        if opcode.name == name {
+            matching_opcode = Some(opcode);
+            break;
+        }
+    }
+
+    DecodedInstruction {
+        opcode: matching_opcode.unwrap(),
+        args,
+        label: None,
+    }
+}
+
+fn parse_data_section(data: Vec<u8>) -> [u8; 0x1000] {
+    data.try_into().unwrap()
+}
+
 #[cfg(test)]
 mod tests {
     use rstest::rstest;
 
-    use crate::dqmj1_rom::events::assembly::AssemblyToken::*;
     use crate::dqmj1_rom::events::assembly::{parse_byte_string, AssemblyToken};
+    use crate::dqmj1_rom::events::assembly::{parse_dqmj1_asm, AssemblyToken::*};
+    use crate::dqmj1_rom::events::disassembly::{Arg, DecodedInstruction, DisassembledEvt, Opcode};
+
+    const EXIT: u8 = 0x02;
+    const JUMP: u8 = 0x0C;
+
+    fn parse_dqmj1_asm_for_test<'a>(filepath: &str, opcodes: &'a [Opcode]) -> DisassembledEvt<'a> {
+        let contents = std::fs::read_to_string(filepath).unwrap();
+
+        parse_dqmj1_asm(&contents, opcodes)
+    }
 
     #[rstest]
     #[case(r#"\x00"#, vec![0x00])]
@@ -86,9 +235,9 @@ mod tests {
     #[case(r#"b"\x00\xA1""#, vec![ByteString(vec![0x00, 0xA1])])]
     #[case("FloatsEq     Pool_0 8.0 Const 5.0", vec![
         Ident("FloatsEq".to_string()),
-        Ident("Pool_0".to_string()),
+        ValueLocation("Pool_0".to_string()),
         Float(8.0),
-        Ident("Const".to_string()),
+        ValueLocation("Const".to_string()),
         Float(5.0)
     ])]
     #[case("100:", vec![Int(100), Colon])]
@@ -100,5 +249,52 @@ mod tests {
             .collect();
 
         assert_eq!(tokens, expected);
+    }
+
+    #[test]
+    fn test_parse_dqmj1_asm_no_instructions() {
+        let opcodes = Opcode::get();
+        let actual = parse_dqmj1_asm_for_test("test/data/no_instructions.dqmj1_asm", &opcodes);
+
+        let expected = vec![];
+
+        assert_eq!(actual.data, [0x00; 0x1000]);
+        assert_eq!(actual.instructions, expected);
+    }
+
+    #[test]
+    fn test_parse_dqmj1_asm_single_instruction() {
+        let opcodes = Opcode::get();
+        let actual = parse_dqmj1_asm_for_test("test/data/only_exit.dqmj1_asm", &opcodes);
+
+        let expected = vec![(
+            None,
+            DecodedInstruction {
+                opcode: &opcodes[EXIT as usize],
+                args: vec![Arg::Float(0.0)],
+                label: None,
+            },
+        )];
+
+        assert_eq!(actual.data, [0x00; 0x1000]);
+        assert_eq!(actual.instructions, expected);
+    }
+
+    #[test]
+    fn test_parse_dqmj1_asm_with_label() {
+        let opcodes = Opcode::get();
+        let actual = parse_dqmj1_asm_for_test("test/data/jump_to_self.dqmj1_asm", &opcodes);
+
+        let expected = vec![(
+            Some("0".to_string()),
+            DecodedInstruction {
+                opcode: &opcodes[JUMP as usize],
+                args: vec![Arg::JumpDestination("0".to_string())],
+                label: Some("0".to_string()),
+            },
+        )];
+
+        assert_eq!(actual.data, [0x00; 0x1000]);
+        assert_eq!(actual.instructions, expected);
     }
 }

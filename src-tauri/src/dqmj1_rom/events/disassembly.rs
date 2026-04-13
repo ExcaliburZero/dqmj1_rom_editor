@@ -43,6 +43,16 @@ impl ValueLocation {
             ValueLocation::Pool3 => "Pool_3".to_string(),
         }
     }
+
+    pub fn from_asm_string(string: &str) -> Option<ValueLocation> {
+        match string {
+            "Pool_0" => Some(ValueLocation::Pool0),
+            "Pool_1" => Some(ValueLocation::Pool1),
+            "Const" => Some(ValueLocation::Constant),
+            "Pool_3" => Some(ValueLocation::Pool3),
+            _ => None,
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -115,7 +125,7 @@ impl DecodedInstruction<'_> {
 #[derive(Debug, Eq, PartialEq)]
 pub struct DisassembledEvt<'a> {
     pub data: [u8; 0x1000],
-    pub instructions: Vec<(Label, DecodedInstruction<'a>)>,
+    pub instructions: Vec<(Option<Label>, DecodedInstruction<'a>)>,
 }
 
 impl DisassembledEvt<'_> {
@@ -137,7 +147,7 @@ impl DisassembledEvt<'_> {
             );
 
             instructions.push((
-                (offset - EVT_INSTRUCTIONS_BASE_OFFSET).to_string(),
+                Some((offset - EVT_INSTRUCTIONS_BASE_OFFSET).to_string()),
                 DecodedInstruction {
                     opcode,
                     args,
@@ -161,6 +171,7 @@ impl DisassembledEvt<'_> {
 
         // Mark instructions that have labels
         for (label, instruction) in instructions.iter_mut() {
+            let label = label.as_ref().unwrap();
             if labels.contains(label) {
                 instruction.label = Some(label.clone());
             }
@@ -556,7 +567,7 @@ mod tests {
         let expected = DisassembledEvt {
             data: [0xFFu8; 0x1000],
             instructions: vec![(
-                "0".to_string(),
+                Some("0".to_string()),
                 DecodedInstruction {
                     opcode: &opcodes[EXIT as usize],
                     args: vec![Arg::Float(0.0)],
@@ -576,7 +587,7 @@ mod tests {
         let expected = DisassembledEvt {
             data: [0xFFu8; 0x1000],
             instructions: vec![(
-                "0".to_string(),
+                Some("0".to_string()),
                 DecodedInstruction {
                     opcode: &opcodes[JUMP as usize],
                     args: vec![Arg::JumpDestination("0".to_string())],
@@ -600,7 +611,7 @@ mod tests {
             data: [0xFFu8; 0x1000],
             instructions: vec![
                 (
-                    "0".to_string(),
+                    Some("0".to_string()),
                     DecodedInstruction {
                         opcode: &opcodes[SETU32 as usize],
                         args: vec![
@@ -613,7 +624,7 @@ mod tests {
                     },
                 ),
                 (
-                    "24".to_string(),
+                    Some("24".to_string()),
                     DecodedInstruction {
                         opcode: &opcodes[START_DIALOG as usize],
                         args: vec![],
@@ -621,7 +632,7 @@ mod tests {
                     },
                 ),
                 (
-                    "32".to_string(),
+                    Some("32".to_string()),
                     DecodedInstruction {
                         opcode: &opcodes[SPEAKER_NAME as usize],
                         args: vec![StringLit("Alice".to_string())],
@@ -629,7 +640,7 @@ mod tests {
                     },
                 ),
                 (
-                    "48".to_string(),
+                    Some("48".to_string()),
                     DecodedInstruction {
                         opcode: &opcodes[SET_DIALOG as usize],
                         args: vec![StringLit("[0xEA]BAD APPLE".to_string())],
@@ -637,7 +648,7 @@ mod tests {
                     },
                 ),
                 (
-                    "68".to_string(),
+                    Some("68".to_string()),
                     DecodedInstruction {
                         opcode: &opcodes[SETU32 as usize],
                         args: vec![
@@ -650,7 +661,7 @@ mod tests {
                     },
                 ),
                 (
-                    "92".to_string(),
+                    Some("92".to_string()),
                     DecodedInstruction {
                         opcode: &opcodes[SHOW_DIALOG as usize],
                         args: vec![],
@@ -658,7 +669,7 @@ mod tests {
                     },
                 ),
                 (
-                    "100".to_string(),
+                    Some("100".to_string()),
                     DecodedInstruction {
                         opcode: &opcodes[END_DIALOG as usize],
                         args: vec![],
