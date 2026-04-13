@@ -286,11 +286,11 @@ mod tests {
         let actual = parse_dqmj1_asm_for_test("test/data/jump_to_self.dqmj1_asm", &opcodes);
 
         let expected = vec![(
-            Some("0".to_string()),
+            Some("l0".to_string()),
             DecodedInstruction {
                 opcode: &opcodes[JUMP as usize],
-                args: vec![Arg::JumpDestination("0".to_string())],
-                label: Some("0".to_string()),
+                args: vec![Arg::JumpDestination("l0".to_string())],
+                label: Some("l0".to_string()),
             },
         )];
 
