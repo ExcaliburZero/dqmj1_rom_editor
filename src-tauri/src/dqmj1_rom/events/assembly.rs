@@ -101,6 +101,8 @@ pub fn get_parser<'a, 'src>(
     .map(|((label, _), _)| label);
 
     let newline = just(AssemblyToken::Newline);
+    let zero_or_more_newlines = newline.clone().repeated();
+    let one_or_more_newlines = newline.clone().repeated().at_least(1);
 
     let argument = choice((
         int.map(|int| Arg::Float(int as f32)),
@@ -118,27 +120,17 @@ pub fn get_parser<'a, 'src>(
     );
 
     let data_section = just(AssemblyToken::DataSection)
-        .then(
-            newline
-                .clone()
-                .repeated()
-                .at_least(1)
-                .collect::<Vec<_>>()
-                .then(byte_string),
-        )
+        .then(one_or_more_newlines.clone().then(byte_string))
         .map(|(_, (_, data))| parse_data_section(data));
     let code_section = just(AssemblyToken::CodeSection)
         .then(
-            newline
+            one_or_more_newlines
                 .clone()
-                .repeated()
-                .at_least(1)
-                .collect::<Vec<_>>()
                 .then(instruction)
                 .repeated()
                 .collect::<Vec<_>>(),
         )
-        .then(newline.clone().repeated())
+        .then(zero_or_more_newlines.clone())
         .map(|((_, entries), _)| {
             entries
                 .iter()
@@ -150,20 +142,8 @@ pub fn get_parser<'a, 'src>(
                 .collect::<Vec<_>>()
         });
 
-    newline
-        .clone()
-        .repeated()
-        .collect::<Vec<_>>()
-        .then(
-            data_section.then(
-                newline
-                    .clone()
-                    .repeated()
-                    .at_least(1)
-                    .collect::<Vec<_>>()
-                    .then(code_section),
-            ),
-        )
+    zero_or_more_newlines
+        .then(data_section.then(one_or_more_newlines.clone().then(code_section)))
         .map(|(_, (data, (_, code)))| DisassembledEvt {
             data,
             instructions: code,
