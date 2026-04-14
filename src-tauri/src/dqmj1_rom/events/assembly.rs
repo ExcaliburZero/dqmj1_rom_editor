@@ -175,10 +175,19 @@ mod tests {
 
     use crate::dqmj1_rom::events::assembly::AssemblyToken;
     use crate::dqmj1_rom::events::assembly::{parse_dqmj1_asm, AssemblyToken::*};
-    use crate::dqmj1_rom::events::disassembly::{Arg, DecodedInstruction, DisassembledEvt, Opcode};
+    use crate::dqmj1_rom::events::disassembly::{
+        Arg, DecodedInstruction, DisassembledEvt, Opcode, ValueLocation,
+    };
 
     const EXIT: u8 = 0x02;
     const JUMP: u8 = 0x0C;
+    const SETU32: u8 = 0x15;
+    const START_DIALOG: u8 = 0x25;
+    const END_DIALOG: u8 = 0x26;
+    const SHOW_DIALOG: u8 = 0x27;
+    const SET_DIALOG: u8 = 0x29;
+    const SPEAKER_NAME: u8 = 0x2A;
+    const LOAD_POS: u8 = 0x99;
 
     fn parse_dqmj1_asm_for_test<'a>(filepath: &str, opcodes: &'a [Opcode]) -> DisassembledEvt<'a> {
         let contents = std::fs::read_to_string(filepath).unwrap();
@@ -257,6 +266,102 @@ mod tests {
                 label: Some("l0".to_string()),
             },
         )];
+
+        assert_eq!(actual.data, [0x00; 0x1000]);
+        assert_eq!(actual.instructions, expected);
+    }
+
+    #[test]
+    fn test_parse_dqmj1_asm_with_ascii_string_literal() {
+        let opcodes = Opcode::get();
+        let actual = parse_dqmj1_asm_for_test("test/data/load_pos.dqmj1_asm", &opcodes);
+
+        let expected = vec![(
+            None,
+            DecodedInstruction {
+                opcode: &opcodes[LOAD_POS as usize],
+                args: vec![Arg::StringLit("demo001.pos".to_string())],
+                label: None,
+            },
+        )];
+
+        assert_eq!(actual.data, [0x00; 0x1000]);
+        assert_eq!(actual.instructions, expected);
+    }
+
+    #[test]
+    fn test_parse_dqmj1_asm_dialog() {
+        let opcodes = Opcode::get();
+        let actual = parse_dqmj1_asm_for_test("test/data/dialog.dqmj1_asm", &opcodes);
+
+        let expected = vec![
+            (
+                None,
+                DecodedInstruction {
+                    opcode: &opcodes[SETU32 as usize],
+                    args: vec![
+                        Arg::ValueLocation(ValueLocation::Pool0),
+                        Arg::Float(0.0),
+                        Arg::ValueLocation(ValueLocation::Constant),
+                        Arg::Float(0.0),
+                    ],
+                    label: None,
+                },
+            ),
+            (
+                None,
+                DecodedInstruction {
+                    opcode: &opcodes[START_DIALOG as usize],
+                    args: vec![],
+                    label: None,
+                },
+            ),
+            (
+                None,
+                DecodedInstruction {
+                    opcode: &opcodes[SPEAKER_NAME as usize],
+                    args: vec![Arg::StringLit("Alice".to_string())],
+                    label: None,
+                },
+            ),
+            (
+                None,
+                DecodedInstruction {
+                    opcode: &opcodes[SET_DIALOG as usize],
+                    args: vec![Arg::StringLit("[0xEA]BAD APPLE".to_string())],
+                    label: None,
+                },
+            ),
+            (
+                None,
+                DecodedInstruction {
+                    opcode: &opcodes[SETU32 as usize],
+                    args: vec![
+                        Arg::ValueLocation(ValueLocation::Pool0),
+                        Arg::Float(0.0),
+                        Arg::ValueLocation(ValueLocation::Constant),
+                        Arg::Float(1.0),
+                    ],
+                    label: None,
+                },
+            ),
+            (
+                None,
+                DecodedInstruction {
+                    opcode: &opcodes[SHOW_DIALOG as usize],
+                    args: vec![],
+                    label: None,
+                },
+            ),
+            (
+                None,
+                DecodedInstruction {
+                    opcode: &opcodes[END_DIALOG as usize],
+                    args: vec![],
+                    label: None,
+                },
+            ),
+        ];
 
         assert_eq!(actual.data, [0x00; 0x1000]);
         assert_eq!(actual.instructions, expected);
