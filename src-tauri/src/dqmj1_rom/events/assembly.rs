@@ -76,6 +76,8 @@ pub fn parse_dqmj1_asm<'a>(contents: &str, opcodes: &'a [Opcode]) -> Disassemble
     let tokens: Vec<AssemblyToken> = AssemblyToken::lexer(contents).map(|t| t.unwrap()).collect();
     //.filter_map(|t| t.ok())
 
+    println!("{:?}", tokens);
+
     let result = get_parser(opcodes).parse(&tokens).unwrap();
     result
 }
@@ -116,17 +118,28 @@ pub fn get_parser<'a, 'src>(
     );
 
     let data_section = just(AssemblyToken::DataSection)
-        .then(newline.clone().then(byte_string))
+        .then(
+            newline
+                .clone()
+                .repeated()
+                .at_least(1)
+                .collect::<Vec<_>>()
+                .then(byte_string),
+        )
         .map(|(_, (_, data))| parse_data_section(data));
     let code_section = just(AssemblyToken::CodeSection)
         .then(
             newline
                 .clone()
+                .repeated()
+                .at_least(1)
+                .collect::<Vec<_>>()
                 .then(instruction)
                 .repeated()
                 .collect::<Vec<_>>(),
         )
-        .map(|(_, entries)| {
+        .then(newline.clone().repeated())
+        .map(|((_, entries), _)| {
             entries
                 .iter()
                 .map(|(_, (label, instruction))| {
@@ -137,9 +150,21 @@ pub fn get_parser<'a, 'src>(
                 .collect::<Vec<_>>()
         });
 
-    data_section
-        .then(newline.then(code_section))
-        .map(|(data, (_, code))| DisassembledEvt {
+    newline
+        .clone()
+        .repeated()
+        .collect::<Vec<_>>()
+        .then(
+            data_section.then(
+                newline
+                    .clone()
+                    .repeated()
+                    .at_least(1)
+                    .collect::<Vec<_>>()
+                    .then(code_section),
+            ),
+        )
+        .map(|(_, (data, (_, code)))| DisassembledEvt {
             data,
             instructions: code,
         })
@@ -362,6 +387,24 @@ mod tests {
                 },
             ),
         ];
+
+        assert_eq!(actual.data, [0x00; 0x1000]);
+        assert_eq!(actual.instructions, expected);
+    }
+
+    #[test]
+    fn test_parse_dqmj1_asm_unnecessary_newlines() {
+        let opcodes = Opcode::get();
+        let actual = parse_dqmj1_asm_for_test("test/data/unnecessary_newlines.dqmj1_asm", &opcodes);
+
+        let expected = vec![(
+            None,
+            DecodedInstruction {
+                opcode: &opcodes[EXIT as usize],
+                args: vec![Arg::Float(0.0)],
+                label: None,
+            },
+        )];
 
         assert_eq!(actual.data, [0x00; 0x1000]);
         assert_eq!(actual.instructions, expected);
