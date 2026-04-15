@@ -17,10 +17,10 @@ pub enum AssemblyToken {
     #[token(":")]
     Colon,
 
-    #[regex(r"[0-9]+", |lex| lex.slice().parse::<u32>().ok())]
+    #[regex(r"[0-9]+", |lex| lex.slice().parse::<u32>().ok(), priority = 2)]
     Int(u32),
 
-    #[regex(r"-?[0-9]+\.[0-9]+(?:e[+-]?[0-9]+)?", |lex| lex.slice().parse::<f32>().ok())]
+    #[regex(r"-?[0-9]+(?:\.[0-9]+)?(?:e[+-]?[0-9]+)?", |lex| lex.slice().parse::<f32>().ok(), priority = 1)]
     Float(f32),
 
     #[regex(r"(Pool_0)|(Pool_1)|(Const)|(Pool3)", |lex| lex.slice().to_owned(), priority = 3)]
