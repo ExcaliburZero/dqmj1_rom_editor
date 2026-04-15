@@ -3,7 +3,7 @@ use std::collections::BTreeMap;
 use binrw::binrw;
 
 pub const EVT_INSTRUCTIONS_BASE_OFFSET: usize = 0x1000 + 4;
-pub const EVT_MAGIC: u32 = 0x53435200;
+pub const EVT_MAGIC: u32 = 0x00524353;
 
 #[binrw]
 #[brw(little)]
