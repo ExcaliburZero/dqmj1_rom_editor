@@ -1,12 +1,12 @@
 use std::{
-    collections::BTreeSet,
+    collections::{BTreeMap, BTreeSet},
     io::{self, Write},
 };
 
 use serde::Deserialize;
 
 use crate::dqmj1_rom::{
-    events::binary::{Evt, EVT_INSTRUCTIONS_BASE_OFFSET},
+    events::binary::{Evt, RawInstruction, EVT_INSTRUCTIONS_BASE_OFFSET, EVT_MAGIC},
     strings::encoding::CharacterEncoding,
 };
 
@@ -32,6 +32,15 @@ impl ValueLocation {
             2 => ValueLocation::Constant,
             3 => ValueLocation::Pool3,
             _ => panic!("Unrecognized value location id: {}", value),
+        }
+    }
+
+    pub fn to_u32(&self) -> u32 {
+        match self {
+            ValueLocation::Pool0 => 0,
+            ValueLocation::Pool1 => 1,
+            ValueLocation::Constant => 2,
+            ValueLocation::Pool3 => 3,
         }
     }
 
@@ -120,6 +129,47 @@ impl DecodedInstruction<'_> {
             }
         }
     }
+
+    pub fn get_raw_size_bytes(&self, character_encoding: &CharacterEncoding) -> usize {
+        let header_size = 8; // opcode + length
+
+        let mut args_size = 0;
+        for (arg, arg_kind) in self.args.iter().zip(self.opcode.arguments.iter()) {
+            args_size += match arg {
+                Arg::Float(_) => 4,
+                Arg::JumpDestination(_) => 4,
+                Arg::ValueLocation(_) => 4,
+                Arg::Bytes(bytes) => bytes.len(),
+                Arg::StringLit(string) => match arg_kind {
+                    ArgumentKind::AsciiString => Self::round_up_to_multiple_of_4(string.len() + 1), // characters + null terminator
+                    ArgumentKind::Dqmj1String => {
+                        let encoded_string = character_encoding.encode_string(string);
+                        println!(
+                            "{} => {:?} = {} -> {}",
+                            string,
+                            encoded_string,
+                            encoded_string.len(),
+                            Self::round_up_to_multiple_of_4(encoded_string.len())
+                        );
+                        Self::round_up_to_multiple_of_4(encoded_string.len())
+                    }
+                    _ => panic!(),
+                },
+            };
+        }
+
+        assert_eq!(args_size % 4, 0);
+
+        header_size + args_size
+    }
+
+    fn round_up_to_multiple_of_4(value: usize) -> usize {
+        if value.is_multiple_of(4) {
+            value
+        } else {
+            (value / 4) * 4 + 4
+        }
+    }
 }
 
 #[derive(Debug, Eq, PartialEq)]
@@ -179,6 +229,74 @@ impl DisassembledEvt<'_> {
 
         DisassembledEvt {
             data: evt.data,
+            instructions,
+        }
+    }
+
+    pub fn to_evt(&self, character_encoding: &CharacterEncoding) -> Evt {
+        // Find byte offsets for each label
+        let mut i = 0;
+        let mut label_to_offset = BTreeMap::new();
+        for (label, instruction) in self.instructions.iter() {
+            if let Some(label) = label {
+                label_to_offset.insert(label.clone(), i);
+            }
+
+            let size = instruction.get_raw_size_bytes(character_encoding);
+            i += size;
+        }
+
+        // Create instructions
+        let mut instructions = vec![];
+        for (_, instruction) in self.instructions.iter() {
+            let mut arguments = vec![];
+            for (arg, arg_kind) in instruction
+                .args
+                .iter()
+                .zip(instruction.opcode.arguments.iter())
+            {
+                match arg {
+                    Arg::Float(float) => arguments.extend_from_slice(&float.to_le_bytes()),
+                    Arg::JumpDestination(label) => arguments.extend_from_slice(
+                        &((*label_to_offset.get(label).unwrap()) as u32).to_le_bytes(),
+                    ),
+                    Arg::ValueLocation(location) => {
+                        arguments.extend_from_slice(&location.to_u32().to_le_bytes())
+                    }
+                    Arg::Bytes(bytes) => arguments.extend_from_slice(bytes),
+                    Arg::StringLit(string) => {
+                        let mut bytes: Vec<u8> = match arg_kind {
+                            ArgumentKind::AsciiString => {
+                                let mut bytes: Vec<u8> = string.bytes().collect();
+                                bytes.push(0x00);
+                                bytes
+                            } // characters + null terminator
+                            ArgumentKind::Dqmj1String => character_encoding.encode_string(string),
+                            _ => panic!(),
+                        };
+
+                        // Pad to multiple of 4 bytes
+                        let remainder = bytes.len() % 4;
+                        if remainder != 0 {
+                            bytes.resize(bytes.len() + (4 - remainder), 0xCC);
+                        }
+
+                        arguments.extend_from_slice(&bytes);
+                    }
+                };
+            }
+
+            let size = instruction.get_raw_size_bytes(character_encoding);
+            instructions.push(RawInstruction {
+                opcode: instruction.opcode.id as u32,
+                length: size as u32,
+                arguments,
+            });
+        }
+
+        Evt {
+            magic: EVT_MAGIC,
+            data: self.data,
             instructions,
         }
     }
@@ -379,12 +497,13 @@ impl Opcode {
 
 #[cfg(test)]
 mod tests {
-    //#[cfg(test)]
-    //use pretty_assertions::assert_eq;
+    #[cfg(test)]
+    use pretty_assertions::assert_eq;
 
     use std::fs::File;
 
     use binrw::BinRead;
+    use rstest::rstest;
 
     use crate::dqmj1_rom::regions::Region;
 
@@ -401,6 +520,11 @@ mod tests {
         let mut buf = Vec::new();
         script.write_instructions(&mut buf).unwrap();
         String::from_utf8(buf).unwrap()
+    }
+
+    fn read_evt_from_file(filepath: &str) -> Evt {
+        let mut reader = File::open(filepath).unwrap();
+        Evt::read(&mut reader).unwrap()
     }
 
     fn read_evt_from_file_and_disassemble<'a>(
@@ -681,5 +805,24 @@ mod tests {
 
         assert_eq!(actual.instructions, expected.instructions);
         //assert_eq!(actual, expected);
+    }
+
+    #[rstest]
+    #[case("test/data/no_instructions.evt")]
+    #[case("test/data/only_exit.evt")]
+    #[case("test/data/load_pos.evt")]
+    #[case("test/data/nopaa_bytes.evt")]
+    #[case("test/data/dialog.evt")]
+    fn test_decode_encode(#[case] filepath: &str) {
+        let evt = read_evt_from_file(filepath);
+
+        let opcodes = Opcode::get();
+        let character_encoding = CharacterEncoding::get(Region::NorthAmerica);
+
+        let decoded = DisassembledEvt::from_evt(&evt, &character_encoding, &opcodes);
+        let encoded = decoded.to_evt(&character_encoding);
+
+        assert_eq!(encoded.data, evt.data);
+        assert_eq!(encoded.instructions, evt.instructions);
     }
 }
