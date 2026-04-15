@@ -813,6 +813,9 @@ mod tests {
     #[case("test/data/load_pos.evt")]
     #[case("test/data/nopaa_bytes.evt")]
     #[case("test/data/dialog.evt")]
+    #[case("test/data/jump_to_self.evt")]
+    #[case("test/data/jump_if.evt")]
+    #[case("test/data/start_event.evt")]
     fn test_decode_encode(#[case] filepath: &str) {
         let evt = read_evt_from_file(filepath);
 
