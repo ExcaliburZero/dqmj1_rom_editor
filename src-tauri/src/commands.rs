@@ -8,11 +8,20 @@ use std::{
 
 use binrw::{BinRead, BinWriterExt};
 use ds_rom::rom::{raw, Rom, RomLoadOptions};
+use rayon::iter::IntoParallelRefIterator;
+use rayon::prelude::*;
 use tauri::Manager;
 
 use crate::dqmj1_rom::{
-    btl_enmy_prm::BtlEnmyPrm, regions::Region, skill_tbl::SkillTblWithRegion,
+    btl_enmy_prm::BtlEnmyPrm,
+    events::{
+        binary::Evt,
+        disassembly::{DisassembledEvt, Opcode},
+    },
+    regions::Region,
+    skill_tbl::SkillTblWithRegion,
     string_tables::StringTables,
+    strings::encoding::CharacterEncoding,
 };
 
 const MOD_FILES: [&str; 2] = ["files/BtlEnmyPrm.bin", "files/SkillTbl.bin"];
@@ -156,17 +165,70 @@ pub fn get_string_tables(app: tauri::AppHandle) -> StringTables {
     StringTables::from_arm9(&file_data, region)
 }
 
-#[tauri::command]
-pub fn get_event_files_list(app: tauri::AppHandle) -> Vec<String> {
-    let temp_directory = get_temp_directory(&app);
-
+fn get_event_files(temp_directory: &Path) -> Vec<PathBuf> {
     fs::read_dir(temp_directory.join("files"))
         .unwrap()
         .map(|entry| entry.unwrap().path())
         .filter(|path| path.is_file())
         .filter(|path| path.extension().is_some_and(|extension| extension == "evt"))
+        .collect()
+}
+
+#[tauri::command]
+pub fn get_event_files_list(app: tauri::AppHandle) -> Vec<String> {
+    let temp_directory = get_temp_directory(&app);
+
+    get_event_files(&temp_directory)
+        .iter()
         .map(|path| path.file_name().unwrap().to_str().unwrap().to_string())
         .collect()
+}
+
+fn disassemble_evt_file(
+    character_encoding: &CharacterEncoding,
+    opcodes: &[Opcode],
+    evt_filepath: &Path,
+    output_filepath: &Path,
+) {
+    println!("{:?} -> {:?}", evt_filepath, output_filepath);
+
+    let mut reader = Cursor::new(std::fs::read(evt_filepath).unwrap());
+    if let Ok(evt) = Evt::read(&mut reader) {
+        let disassembled = DisassembledEvt::from_evt(&evt, character_encoding, opcodes);
+
+        let mut file = File::create(output_filepath).unwrap();
+        disassembled.write_asm(&mut file).unwrap();
+    } else {
+        println!("Failed to parse evt file: {:?}", evt_filepath);
+    }
+}
+
+#[tauri::command]
+pub fn export_events(app: tauri::AppHandle, output_directory: String) {
+    let output_directory = Path::new(&output_directory);
+    let temp_directory = get_temp_directory(&app);
+
+    let region = get_region(&temp_directory);
+    let character_encoding = CharacterEncoding::get(region);
+
+    let opcodes = Opcode::get();
+
+    get_event_files(&temp_directory)
+        .par_iter()
+        .for_each(|evt_filepath: &PathBuf| {
+            let output_filepath = output_directory.join(
+                evt_filepath
+                    .with_extension("evt.dqmj1_asm")
+                    .file_name()
+                    .unwrap(),
+            );
+            disassemble_evt_file(
+                &character_encoding,
+                &opcodes,
+                evt_filepath,
+                &output_filepath,
+            );
+        });
 }
 
 #[tauri::command]

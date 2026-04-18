@@ -1,5 +1,5 @@
 const { invoke } = window.__TAURI__.core;
-const { save } = window.__TAURI__.dialog;
+const { save, open } = window.__TAURI__.dialog;
 
 const url = new URL(window.location.toLocaleString());
 const modName = url.searchParams.get("modName");
@@ -446,6 +446,19 @@ function populateEventsTable() {
     eventsTable.innerHTML = innerHTML.join("");
 }
 
+async function exportEvents() {
+    const outputDirectory = await open({
+        multiple: false,
+        directory: true,
+        title: "Select a Directory",
+    });
+
+    const options = { outputDirectory: outputDirectory };
+    console.log(`Exporting events: ${JSON.stringify(options)}`);
+    await invoke("export_events", options);
+    console.log("Finished exporting events");
+}
+
 async function getStringTables() {
     if (stringTables !== null) {
         return;
@@ -575,6 +588,12 @@ window.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
 
         savePatchedRom();
+    });
+
+    document.querySelector("#export-events").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        exportEvents();
     });
 
     document.addEventListener("keydown", async (e) => {
