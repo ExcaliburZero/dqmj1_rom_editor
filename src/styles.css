@@ -39,6 +39,14 @@ h1 {
   display: block;
 }
 
+#events-files-table {
+  width: 500px;
+
+  max-height: 500px;
+  overflow-y: scroll;
+  display: block;
+}
+
 #top-buttons-div {
   text-align: right;
 }

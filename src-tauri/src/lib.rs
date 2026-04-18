@@ -1,6 +1,6 @@
 use crate::commands::{
-    create_mod, get_btl_enmy_prm, get_mods, get_skill_tbl, get_string_tables, load_mod, pack_rom,
-    save_mod, set_btl_enmy_prm, set_skill_tbl, unpack_rom,
+    create_mod, get_btl_enmy_prm, get_event_files_list, get_mods, get_skill_tbl, get_string_tables,
+    load_mod, pack_rom, save_mod, set_btl_enmy_prm, set_skill_tbl, unpack_rom,
 };
 
 pub mod commands;
@@ -23,7 +23,8 @@ pub fn run() {
             set_btl_enmy_prm,
             get_skill_tbl,
             set_skill_tbl,
-            get_string_tables
+            get_string_tables,
+            get_event_files_list
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

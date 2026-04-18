@@ -157,6 +157,19 @@ pub fn get_string_tables(app: tauri::AppHandle) -> StringTables {
 }
 
 #[tauri::command]
+pub fn get_event_files_list(app: tauri::AppHandle) -> Vec<String> {
+    let temp_directory = get_temp_directory(&app);
+
+    fs::read_dir(temp_directory.join("files"))
+        .unwrap()
+        .map(|entry| entry.unwrap().path())
+        .filter(|path| path.is_file())
+        .filter(|path| path.extension().is_some_and(|extension| extension == "evt"))
+        .map(|path| path.file_name().unwrap().to_str().unwrap().to_string())
+        .collect()
+}
+
+#[tauri::command]
 pub fn get_mods(app: tauri::AppHandle) -> Vec<String> {
     get_mod_names(&app)
 }

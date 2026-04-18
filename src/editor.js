@@ -7,6 +7,7 @@ const modName = url.searchParams.get("modName");
 let encounters = null;
 let skillSets = null;
 let skillSetsRegion = null;
+let events = null;
 let stringTables = null;
 
 let currentEncounterId = 48; // starter Dracky
@@ -411,6 +412,40 @@ async function getSkillSets() {
     }
 }
 
+async function showEvents() {
+    console.log("Showing events");
+
+    currentPage = document.getElementById("events-page");
+    currentPageNavigation = document.getElementById("navigation-events");
+
+    currentPage.style.display = "block";
+    currentPageNavigation.classList = "selected";
+
+    await getEvents();
+
+    populateEventsTable();
+}
+
+async function getEvents() {
+    if (events === null) {
+        const options = {};
+        console.log(`Getting events: ${JSON.stringify(options)}`);
+        events = await invoke("get_event_files_list", options);
+    }
+}
+
+function populateEventsTable() {
+    const eventsTable = document.getElementById("events-files-table");
+    eventsTable.innerHTML = "";
+
+    const innerHTML = ["<tr><th>Filename</th></tr>"];
+    for (const eventFile of events) {
+        innerHTML.push(`<tr><td>${eventFile}</td></tr>`);
+    }
+
+    eventsTable.innerHTML = innerHTML.join("");
+}
+
 async function getStringTables() {
     if (stringTables !== null) {
         return;
@@ -479,6 +514,8 @@ async function showPage(pageName) {
         showEncounters();
     } else if (pageName === "skill-sets") {
         showSkillSets();
+    } else if (pageName === "events") {
+        showEvents();
     }
 }
 
@@ -496,6 +533,12 @@ window.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
 
         showPage("skill-sets");
+    });
+
+    document.querySelector("#navigation-events").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        showPage("events");
     });
 
     document.querySelector("#encounters-select").addEventListener("change", (e) => {
