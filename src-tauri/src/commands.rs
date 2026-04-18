@@ -6,7 +6,7 @@ use std::{
     time::Instant,
 };
 
-use binrw::{BinRead, BinWriterExt};
+use binrw::{BinRead, BinWrite, BinWriterExt};
 use ds_rom::rom::{raw, Rom, RomLoadOptions};
 use rayon::iter::IntoParallelRefIterator;
 use rayon::prelude::*;
@@ -15,6 +15,7 @@ use tauri::Manager;
 use crate::dqmj1_rom::{
     btl_enmy_prm::BtlEnmyPrm,
     events::{
+        assembly::parse_dqmj1_asm,
         binary::Evt,
         disassembly::{DisassembledEvt, Opcode},
     },
@@ -229,6 +230,54 @@ pub fn export_events(app: tauri::AppHandle, output_directory: String) {
                 &output_filepath,
             );
         });
+}
+
+fn assemble_event_asm_file(
+    character_encoding: &CharacterEncoding,
+    opcodes: &[Opcode],
+    asm_filepath: &Path,
+    output_filepath: &Path,
+) {
+    println!("{:?} -> {:?}", asm_filepath, output_filepath);
+
+    let contents = std::fs::read_to_string(asm_filepath).unwrap();
+    let disassembled = parse_dqmj1_asm(&contents, opcodes);
+    let evt = disassembled.to_evt(character_encoding);
+
+    let mut file = File::create(output_filepath).unwrap();
+    evt.write_le(&mut file).unwrap();
+}
+
+#[tauri::command]
+pub fn import_events(app: tauri::AppHandle, filepaths: Vec<String>) {
+    // TODO: maybe write to a different dir and move to proper dir if all successful?
+    let temp_directory = get_temp_directory(&app);
+    let output_directory = temp_directory.join("files");
+
+    let region = get_region(&temp_directory);
+    let character_encoding = CharacterEncoding::get(region);
+
+    let opcodes = Opcode::get();
+
+    filepaths.par_iter().for_each(|asm_filepath: &String| {
+        let asm_filepath = Path::new(asm_filepath);
+        let base_name = asm_filepath
+            .file_name()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .split_once(".")
+            .unwrap()
+            .0;
+
+        let output_filepath = output_directory.join(format!("{}.evt", base_name));
+        assemble_event_asm_file(
+            &character_encoding,
+            &opcodes,
+            asm_filepath,
+            &output_filepath,
+        );
+    });
 }
 
 #[tauri::command]

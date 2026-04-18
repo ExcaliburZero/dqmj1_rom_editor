@@ -144,13 +144,6 @@ impl DecodedInstruction<'_> {
                     ArgumentKind::AsciiString => Self::round_up_to_multiple_of_4(string.len() + 1), // characters + null terminator
                     ArgumentKind::Dqmj1String => {
                         let encoded_string = character_encoding.encode_string(string);
-                        println!(
-                            "{} => {:?} = {} -> {}",
-                            string,
-                            encoded_string,
-                            encoded_string.len(),
-                            Self::round_up_to_multiple_of_4(encoded_string.len())
-                        );
                         Self::round_up_to_multiple_of_4(encoded_string.len())
                     }
                     _ => panic!(),

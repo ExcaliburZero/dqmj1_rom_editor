@@ -39,6 +39,10 @@ h1 {
   display: block;
 }
 
+.drag-over {
+  opacity: 0.5;
+}
+
 #events-files-table {
   width: 500px;
 

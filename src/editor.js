@@ -1,5 +1,6 @@
 const { invoke } = window.__TAURI__.core;
 const { save, open } = window.__TAURI__.dialog;
+const { getCurrentWebview } = window.__TAURI__.webview;
 
 const url = new URL(window.location.toLocaleString());
 const modName = url.searchParams.get("modName");
@@ -434,6 +435,12 @@ async function getEvents() {
     }
 }
 
+async function importEvents(filepaths) {
+    const options = { filepaths: filepaths };
+    console.log(`Import event files: ${JSON.stringify(options)}`);
+    await invoke("import_events", options);
+}
+
 function populateEventsTable() {
     const eventsTable = document.getElementById("events-files-table");
     eventsTable.innerHTML = "";
@@ -605,6 +612,21 @@ window.addEventListener("DOMContentLoaded", () => {
             // Export patched ROM - Ctrl+e (or Cmd+e on Mac)
             e.preventDefault();
             savePatchedRom();
+        }
+    });
+
+    const eventsPage = document.getElementById("events-page");
+    getCurrentWebview().onDragDropEvent((event) => {
+        if (event.payload.type === "drop") {
+            const paths = event.payload.paths;
+            importEvents(paths);
+        }
+
+        if (event.payload.type === "enter") {
+            eventsPage.classList.add("drag-over");
+        }
+        if (event.payload.type === "leave" || event.payload.type === "drop") {
+            eventsPage.classList.remove("drag-over");
         }
     });
 });

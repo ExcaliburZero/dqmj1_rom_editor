@@ -76,8 +76,6 @@ pub fn parse_dqmj1_asm<'a>(contents: &str, opcodes: &'a [Opcode]) -> Disassemble
     let tokens: Vec<AssemblyToken> = AssemblyToken::lexer(contents).map(|t| t.unwrap()).collect();
     //.filter_map(|t| t.ok())
 
-    println!("{:?}", tokens);
-
     let result = get_parser(opcodes).parse(&tokens).unwrap();
     result
 }
