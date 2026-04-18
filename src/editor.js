@@ -436,9 +436,14 @@ async function getEvents() {
 }
 
 async function importEvents(filepaths) {
+    const eventResults = document.getElementById("event-results");
+    eventResults.innerHTML = `Importing ${filepaths.length} event files`;
+
     const options = { filepaths: filepaths };
     console.log(`Import event files: ${JSON.stringify(options)}`);
     await invoke("import_events", options);
+
+    eventResults.innerHTML = `Finished importing ${filepaths.length} event files`;
 }
 
 function populateEventsTable() {
