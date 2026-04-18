@@ -25,6 +25,7 @@ use crate::dqmj1_rom::{
     strings::encoding::CharacterEncoding,
 };
 
+// TODO: save event files
 const MOD_FILES: [&str; 2] = ["files/BtlEnmyPrm.bin", "files/SkillTbl.bin"];
 
 fn get_app_directory(app: &tauri::AppHandle) -> PathBuf {
