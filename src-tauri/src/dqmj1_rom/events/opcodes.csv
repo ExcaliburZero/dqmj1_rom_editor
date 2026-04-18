@@ -1,0 +1,257 @@
+Id,Name,Arguments,Inputs,Outputs,Notes
+0x00,Nop0,[],[],[],
+0x01,UNUSED_0x01,[Bytes],[],[],
+0x02,Exit,[U32],[],[],Argument seems to be unused and is always 0x0
+0x03,UNUSED_0x03,[Bytes],[],[],
+0x04,UNUSED_0x04,[Bytes],[],[],
+0x05,UNUSED_0x05,[Bytes],[],[],
+0x06,UNUSED_0x06,[Bytes],[],[],
+0x07,UNUSED_0x07,[Bytes],[],[],
+0x08,UNUSED_0x08,[Bytes],[],[],
+0x09,JumpKeepBackPointer,[InstructionLocation],[],[],Isn’t this basically a function call?
+0x0A,StartEvent,"[InstructionLocation, U32]",[arg_0],[],
+0x0B,Sleep,"[ValueLocation, U32]",[value_arg_0],[],
+0x0C,Jump,[InstructionLocation],[arg_0],[],
+0x0D,JumpIfFalse,[InstructionLocation],"[flag, arg_0]",[],"TODO: confirm this is indeed a ""true"" check. Which commands change that flag/value?"
+0x0E,JumpIfTrue,[InstructionLocation],"[flag, arg_0]",[],"TODO: confirm this is indeed a ""true"" check. Which commands change that flag/value?"
+0x0F,FloatsEq,"[ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1]",[flag],TODO: confirm
+0x10,FloatsNeq,"[ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1]",[flag],TODO: confirm
+0x11,FloatsGreater,"[ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1]",[flag],TODO: confirm
+0x12,FloatsLess,"[ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1]",[flag],TODO: confirm
+0x13,FloatsGreaterEq,"[ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1]",[flag],TODO: confirm
+0x14,FloatsLessEq,"[ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1]",[flag],TODO: confirm
+0x15,SetU32,"[ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1]",[],
+0x16,Cmd_0x16,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1, value_arg_2]",[],
+0x17,Cmd_0x17,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1, value_arg_2]",[],
+0x18,Cmd_0x18,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1, value_arg_2]",[],
+0x19,Cmd_0x19,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1, value_arg_2]",[],
+0x1A,Cmd_0x1A,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1, value_arg_2]",[],
+0x1B,BitAnd,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_1, value_arg_2]",[value_arg_0],TODO: confirm exact functionality
+0x1C,BitOr,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_1, value_arg_2]",[value_arg_0],TODO: confirm exact functionality
+0x1D,BitXor,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_1, value_arg_2]",[value_arg_0],TODO: confirm exact functionality
+0x1E,Cmd_0x1E,[Bytes],[],[],TODO: figure out arguments
+0x1F,Cmd_0x1F,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4]]",[Pool_1[0]],
+0x20,Cmd_0x20,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3]]",[],
+0x21,Cmd_0x21,[],"[Pool_1[0], Pool_1[1]]",[],
+0x22,Cmd_0x22,[],"[Pool_1[0], Pool_1[1]]",[],
+0x23,Cmd_0x23,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4], Pool_1[5], Pool_1[6]]",[Pool_1[0]],Related to field enemy prm
+0x24,Cmd_0x24,[],[],[Pool_1[0]],
+0x25,StartDialog,[],[],[Pool_1[0]],"Maybe if Pool_1[0] == 1, then show text box arrow"
+0x26,EndDialog,[],[],[],
+0x27,ShowDialog,[],[Pool_1[0]],[],
+0x28,RandomNum,[],[Pool_1[0]],[Pool_1[0]],
+0x29,SetDialog,[String],[],[],
+0x2A,SpeakerName,[String],[],[],
+0x2B,Cmd_0x2B,[],[Pool_1[0]],[Pool_1[0]],
+0x2C,Cmd_0x2C,[],[Pool_1[0]],[Pool_1[0]],
+0x2D,Cmd_0x2D,[],[Pool_1[0]],[Pool_1[0]],Something related to strings
+0x2E,Cmd_0x2E,[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",[],
+0x2F,Cmd_0x2F,[],[],[],
+0x30,Cmd_0x30,[],[Pool_1[0]],[Pool_1[0]],
+0x31,Cmd_0x31,[],[Pool_1[0]],[Pool_1[0]],Maybe sin operation
+0x32,Cmd_0x32,[],[Pool_1[0]],[Pool_1[0]],Maybe cos operation
+0x33,Cmd_0x33,[],[Pool_1[0]],[Pool_1[0]],Some type of RAM lookup
+0x34,Cmd_0x34,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],
+0x35,Cmd_0x35,[],[Pool_1[0]],[Pool_1[0]],
+0x36,Cmd_0x36,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],
+0x37,Cmd_0x37,[],[],[],
+0x38,Cmd_0x38,[],[Pool_1[0]],[Pool_1[0]],
+0x39,Cmd_0x39,[],[Pool_1[0]],[Pool_1[0]],Sets some value in RAM and returns the previous value
+0x3A,Cmd_0x3A,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3]]",[],
+0x3B,Cmd_0x3B,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3]]",[],
+0x3C,Cmd_0x3C,[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",[Pool_1[0]],
+0x3D,Cmd_0x3D,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4], Pool_1[5]]",[Pool_1[0]],
+0x3E,Cmd_0x3E,[],[Pool_1[0]],[Pool_1[0]],
+0x3F,Cmd_0x3F,[],[Pool_1[0]],[],
+0x40,Cmd_0x40,[],[Pool_1[0]],[],
+0x41,Cmd_0x41,[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",[],
+0x42,Cmd_0x42,[],[Pool_1[0]],[],
+0x43,Cmd_0x43,"[U32, U32]","[arg_0, arg_1]",[],TODO: confirm args
+0x44,Cmd_0x44,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4], Pool_1[5]]",[],
+0x45,Cmd_0x45,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],
+0x46,Cmd_0x46,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3]]",[],
+0x47,Cmd_0x47,[],[],[Pool_1[0]],
+0x48,Cmd_0x48,[],[Pool_1[0]],[],
+0x49,Cmd_0x49,[],[Pool_1[0]],[],
+0x4A,Cmd_0x4A,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4], Pool_1[5], Pool_1[6]]",[],
+0x4B,Cmd_0x4B,[],[Pool_1[0]],[],
+0x4C,Cmd_0x4C,[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",[],
+0x4D,Cmd_0x4D,[],"[Pool_1[0], Pool_1[1], Pool_1[2]]","[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3]]",Maybe related to spatial data (ex. Position or rotation)
+0x4E,Cmd_0x4E,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],
+0x4F,Cmd_0x4F,[],"[Pool_1[0], Pool_1[1], Pool_1[2]]","[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3]]",Maybe related to spatial data (ex. Position or rotation)
+0x50,Cmd_0x50,[],"[Pool_1[0], Pool_1[1]]",[],
+0x51,Cmd_0x51,[],[Pool_1[0]],[],
+0x52,Cmd_0x52,[],[],[],
+0x53,Cmd_0x53,[],[],[],
+0x54,PromptYesNo,[],[Pool_1[0]],[],
+0x55,GetNumPartyMonsters,[],[],[Pool_1[0]],
+0x56,GetMonsterSpeciesId,[],[Pool_1[0]],[Pool_1[0]],
+0x57,GetItemCount,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],"input[0] is the item id, input[1] determines whether to check in the player’s hand or bag"
+0x58,GivePlayerOneItem,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],"input[0] is the item id, input[1] determines whether to add to the player’s hand or bag"
+0x59,TakePlayerOneItem,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],"input[0] is the item id, input[1] determines whether to remove from the player’s hand or bag"
+0x5A,GetNumDarkoniumX5,[],[],[Pool_1[0]],
+0x5B,IncreaseNumDarkoniumX5,[],[Pool_1[0]],[Pool_1[0]],
+0x5C,Cmd_0x5C,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3]]",[],
+0x5D,GetPlayerGold,[],[],[Pool_1[0]],
+0x5E,GivePlayerGold,[],[Pool_1[0]],[Pool_1[0]],
+0x5F,Cmd_0x5F,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4]]",[Pool_1[0]],
+0x60,Cmd_0x60,[],[Pool_1[0]],[Pool_1[0]],
+0x61,Cmd_0x61,[],"[Pool_1[0], Pool_1[1]]",[],
+0x62,Cmd_0x62,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4]]",[Pool_1[0]],
+0x63,Cmd_0x63,[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",[],
+0x64,Cmd_0x64,[],[],"[Pool_1[0], Pool_1[1]]",
+0x65,HealPlayerMonsters,[],[],[],
+0x66,Cmd_0x66,[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",[],
+0x67,Cmd_0x67,[Bytes],[arg_0],[],TODO: figure out arguments
+0x68,Cmd_0x68,[Bytes],[arg_0],[],TODO: figure out arguments
+0x69,Cmd_0x69,[Bytes],[arg_0],[],TODO: figure out arguments
+0x6A,Cmd_0x6A,[],"[Pool_1[0], Pool_1[1]]",[],Something to do with strings
+0x6B,GetMonsterName,[],"[Pool_1[0], Pool_1[1]]",[],
+0x6C,GetMonsterSpeciesName,[],"[Pool_1[0], Pool_1[1]]",[],
+0x6D,Cmd_0x6D,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4]]",[],
+0x6E,Cmd_0x6E,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4], Pool_1[5]]",[],
+0x6F,Cmd_0x6F,[],[Pool_1[0]],[Pool_1[0]],
+0x70,Cmd_0x70,[],[Pool_1[0]],[Pool_1[0]],
+0x71,DoAnyMonstersNeedHeal,[],[],[Pool_1[0]],
+0x72,Cmd_0x72,[],[Pool_1[0]],[],
+0x73,Cmd_0x73,[],[Pool_1[0]],[Pool_1[0]],Maybe divides the value by 7?
+0x74,Cmd_0x74,[],[Pool_1[0]],[],
+0x75,Cmd_0x75,[],[],[Pool_1[0]],
+0x76,Cmd_0x76,[],"[Pool_1[0], Pool_1[1]]",[],
+0x77,Cmd_0x77,"[U32, U32]","[arg_0, arg_1]",[],
+0x78,Cmd_0x78,[],[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",
+0x79,Cmd_0x79,[],[],[],
+0x7A,Cmd_0x7A,[],[],[],
+0x7B,Cmd_0x7B,[],[],[Pool_1[0]],
+0x7C,Cmd_0x7C,[],[],[Pool_1[0]],Gets some value related to player data
+0x7D,Cmd_0x7D,[],[Pool_1[0]],[Pool_1[0]],Sets the player data that 0x7C gets
+0x7E,Cmd_0x7E,[],[],[Pool_1[0]],
+0x7F,Cmd_0x7F,[],[Pool_1[0]],[],
+0x80,Cmd_0x80,[],[],[],Seems like it just sets a return code that is never used.
+0x81,GetNumMonstersScouted,[],[],[Pool_1[0]],
+0x82,Cmd_0x82,[],[Pool_1[0]],[Pool_1[0]],Seems to do something with the player's monsters' species
+0x83,Cmd_0x83,[],[Pool_1[0]],[Pool_1[0]],Seems to do something with the player's monsters' families
+0x84,Cmd_0x84,[],[Pool_1[0]],[Pool_1[0]],Seems to do something with a monster.
+0x85,Cmd_0x85,[],[],[],
+0x86,LoadMap,[],[Pool_1[0]],[Pool_1[0]],TODO: Confirm exact functionality
+0x87,LoadModelAndAnimations,[],[Pool_1[0]],[Pool_1[0]],
+0x88,Cmd_0x88,[],[Pool_1[0]],[Pool_1[0]],
+0x89,Cmd_0x89,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],
+0x8A,Cmd_0x8A,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3]]","[Pool_1[0], Pool_1[1], Pool_1[2]]",
+0x8B,Cmd_0x8B,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],
+0x8C,Cmd_0x8C,[],"[Pool_1[0], Pool_1[1]]","[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3]]",
+0x8D,Cmd_0x8D,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3]]",[],
+0x8E,Cmd_0x8E,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],
+0x8F,Cmd_0x8F,[],"[Pool_1[0], Pool_1[1], Pool_1[2]]","[Pool_1[0], Pool_1[1], Pool_1[2]]",
+0x90,Cmd_0x90,[],"[Pool_1[0], Pool_1[1], Pool_1[2]]","[Pool_1[0], Pool_1[1], Pool_1[2]]",
+0x91,Cmd_0x91,[],[Pool_1[0]],"[Pool_1[0], Pool_1[1], Pool_1[2]]",
+0x92,Cmd_0x92,[],[Pool_1[0]],"[Pool_1[0], Pool_1[1], Pool_1[2]]",
+0x93,Cmd_0x93,[],"[Pool_1[0], Pool_1[1], Pool_1[2]]","[Pool_1[0], Pool_1[1], Pool_1[2]]",
+0x94,Cmd_0x94,[],"[Pool_1[0], Pool_1[1], Pool_1[2]]","[Pool_1[0], Pool_1[1], Pool_1[2]]",
+0x95,Cmd_0x95,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3]]","[Pool_1[0], Pool_1[1], Pool_1[2]]",
+0x96,Cmd_0x96,[],"[Pool_1[0], Pool_1[1], Pool_1[2]]","[Pool_1[0], Pool_1[1], Pool_1[2]]",
+0x97,Cmd_0x97,[],"[Pool_1[0], Pool_1[1]]","[Pool_1[0], Pool_1[1], Pool_1[2]]",
+0x98,Cmd_0x98,[],"[Pool_1[0], Pool_1[1]]","[Pool_1[0], Pool_1[1], Pool_1[2]]",
+0x99,LoadPos,[AsciiString],[arg_0],[Pool_1[0]],
+0x9A,Cmd_0x9A,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3]]",[],
+0x9B,Cmd_0x9B,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],
+0x9C,Cmd_0x9C,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],
+0x9D,Cmd_0x9D,[],[Pool_1[0]],[Pool_1[0]],
+0x9E,Cmd_0x9E,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4], Pool_1[5]]",[Pool_1[0]],
+0x9F,Cmd_0x9F,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3]]",[Pool_1[0]],
+0xA0,Cmd_0xA0,[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",[Pool_1[0]],
+0xA1,Cmd_0xA1,[],[Pool_1[0]],[Pool_1[0]],
+0xA2,Cmd_0xA2,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],
+0xA3,LoadD16,[AsciiString],[arg_0],[Pool_1[0]],
+0xA4,ShowD16,[],[Pool_1[0]],[],
+0xA5,HideD16,[],[Pool_1[0]],[],
+0xA6,Cmd_0xA6,[],[Pool_1[0]],[Pool_1[0]],
+0xA7,Cmd_0xA7,[],[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",
+0xA8,Cmd_0xA8,[],[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",
+0xA9,Cmd_0xA9,[],[],[],
+0xAA,NopAA,[Bytes],[],[],"Seems to have no effect other than updating the command pointer and setting return value to 0. Can have a value, but does not have to."
+0xAB,Cmd_0xAB,[],[Pool_1[0]],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3]]",Does something with player monsters species'. Maybe the party monsters? Maybe it counts the number that have a matching rank or family (can't tell which).
+0xAC,Cmd_0xAC,[],[Pool_1[0]],[],Sets some player data value
+0xAD,Cmd_0xAD,[],[],[Pool_1[0]],Gets the player data value set by 0xAC
+0xAE,GetNumBattlesWon,[],[],[Pool_1[0]],
+0xAF,Cmd_0xAF,[],[],[Pool_1[0]],Gets some player data value
+0xB0,Cmd_0xB0,[],[],[],Maybe removes a player’s monster?
+0xB1,Cmd_0xB1,[],"[Pool_1[0], Pool_1[1]]",[],
+0xB2,Cmd_0xB2,[],[Pool_1[0]],[],
+0xB3,Cmd_0xB3,[],[],[Pool_1[0]],Clears and returns some player data value
+0xB4,Cmd_0xB4,[],[],[Pool_1[0]],Gets some player data value
+0xB5,PlayerHasRoomInHand,[],[],[Pool_1[0]],
+0xB6,Cmd_0xB6,[],[],[],Doesn't do anything. Does not even update command pointer or return value.
+0xB7,Cmd_0xB7,[],[],[],Doesn't do anything. Does not even update command pointer or return value.
+0xB8,GetNumMonstersInStorage,[],[],[Pool_1[0]],
+0xB9,Cmd_0xB9,[],[],[],
+0xBA,Cmd_0xBA,[Bytes],"[Pool_1[0], Pool_1[1]]",,TODO: figure out arguments
+0xBB,Cmd_0xBB,[],[Pool_1[0]],[],
+0xBC,Cmd_0xBC,[Bytes],[Pool_1[0]],[],TODO: figure out arguments
+0xBD,Cmd_0xBD,[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",[],
+0xBE,Cmd_0xBE,[Bytes],[],[],TODO: figure out arguments
+0xBF,Cmd_0xBF,[Bytes],[Pool_1[0]],[Pool_1[0]],TODO: figure out arguments
+0xC0,Cmd_0xC0,[Bytes],"[Pool_1[0], Pool_1[1]]",[],TODO: figure out arguments
+0xC1,Cmd_0xC1,[Bytes],"[Pool_1[0], Pool_1[1]]",[],TODO: figure out arguments
+0xC2,GetNumPlayerMonsters,[],[],[Pool_1[0]],
+0xC3,Cmd_0xC3,[Bytes],[Pool_1[0]],[],TODO: figure out arguments
+0xC4,Cmd_0xC4,[Bytes],[],[Pool_1[0]],TODO: figure out arguments
+0xC5,Cmd_0xC5,[Bytes],[],[Pool_1[0]],TODO: figure out arguments
+0xC6,Cmd_0xC6,[Bytes],[],[Pool_1[0]],TODO: figure out arguments
+0xC7,Cmd_0xC7,[Bytes],[],[],TODO: figure out arguments
+0xC8,Cmd_0xC8,[Bytes],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],TODO: figure out arguments
+0xC9,Cmd_0xC9,[Bytes],[Pool_1[0]],[],"TODO: figure out arguments, Sets some player data value"
+0xCA,Cmd_0xCA,[Bytes],[Pool_1[0]],[],"TODO: figure out arguments, Sets some player data value"
+0xCB,Cmd_0xCB,[Bytes],[Pool_1[0]],[],"TODO: figure out arguments, Sets some player data value"
+0xCC,Cmd_0xCC,[Bytes],[Pool_1[0]],[],TODO: figure out arguments
+0xCD,Cmd_0xCD,[Bytes],[],[Pool_1[0]],TODO: figure out arguments
+0xCE,Cmd_0xCE,[Bytes],[],[],TODO: figure out arguments
+0xCF,Cmd_0xCF,[Bytes],[],[],"TODO: figure out arguments, Seems to be a nop"
+0xD0,Cmd_0xD0,[Bytes],[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",TODO: figure out arguments
+0xD1,Cmd_0xD1,[Bytes],"[Pool_1[0], Pool_1[1]]",[],TODO: figure out arguments
+0xD2,Cmd_0xD2,[Bytes],[],[],TODO: figure out arguments
+0xD3,Cmd_0xD3,[Bytes],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4], Pool_1[5]]",[],TODO: figure out arguments
+0xD4,Cmd_0xD4,[],[Pool_1[0]],[Pool_1[0]],
+0xD5,Cmd_0xD5,[],[],[],
+0xD6,Cmd_0xD6,[Bytes],"[Pool_1[0], Pool_1[1]]",[],TODO: figure out arguments
+0xD7,Cmd_0xD7,[Bytes],"[Pool_1[0], Pool_1[1]]",[],TODO: figure out arguments
+0xD8,Cmd_0xD8,[Bytes],"[Pool_1[0], Pool_1[1]]",[],TODO: figure out arguments
+0xD9,Cmd_0xD9,[Bytes],[Pool_1[0]],[],"TODO: figure out arguments, Sets some player data value"
+0xDA,Cmd_0xDA,[Bytes],"[Pool_1[0], Pool_1[1]]",[],TODO: figure out arguments
+0xDB,Cmd_0xDB,[Bytes],[Pool_1[0]],[Pool_1[0]],TODO: figure out arguments
+0xDC,Cmd_0xDC,[Bytes],"[Pool_1[0], Pool_1[1]]",[],TODO: figure out arguments
+0xDD,Cmd_0xDD,[Bytes],[],[],TODO: figure out arguments
+0xDE,Cmd_0xDE,[Bytes],[Pool_1[0]],"[Pool_1[0], Pool_1[1]]",TODO: figure out arguments
+0xDF,Cmd_0xDF,[Bytes],"[Pool_1[0], Pool_1[1]]",[],"TODO: figure out arguments, Related to item names"
+0xE0,Cmd_0xE0,[Bytes],"[Pool_1[0], Pool_1[1]]",[],"TODO: figure out arguments, Related to species names"
+0xE1,Cmd_0xE1,[Bytes],[Pool_1[0]],[],"TODO: figure out arguments, Seems to create a monster with the given species id for the player"
+0xE2,Cmd_0xE2,[Bytes],[Pool_1[0]],[Pool_1[0]],TODO: figure out arguments
+0xE3,Cmd_0xE3,[Bytes],[Pool_1[0]],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4], Pool_1[5]]",TODO: figure out arguments
+0xE4,Cmd_0xE4,[Bytes],[],[],TODO: figure out arguments
+0xE5,Cmd_0xE5,[Bytes],[Pool_1[0]],[],TODO: figure out arguments
+0xE6,LoadFldEnmyPrmFile,[Bytes],[],[Pool_1[0]],TODO: figure out arguments
+0xE7,Cmd_0xE7,[Bytes],[Pool_1[0]],[Pool_1[0]],"TODO: figure out arguments, Related to field enemy prm"
+0xE8,Cmd_0xE8,[Bytes],"[Pool_1[0], Pool_1[1], Pool_1[2]]",[],TODO: figure out arguments
+0xE9,ShowCreditsText,[String],[arg_0],[],
+0xEA,Cmd_0xEA,[Bytes],[Pool_1[0]],[],TODO: figure out arguments
+0xEB,Cmd_0xEB,[Bytes],[],[],TODO: figure out arguments
+0xEC,Cmd_0xEC,[Bytes],[],[],TODO: figure out arguments
+0xED,Cmd_0xED,[Bytes],[Pool_1[0]],[],"TODO: figure out arguments, Maybe related to RNG"
+0xEE,Cmd_0xEE,[Bytes],[Pool_1[0]],[],"TODO: figure out arguments, Sets some player data value"
+0xEF,Cmd_0xEF,[Bytes],[Pool_1[0]],[],TODO: figure out arguments
+0xF0,Cmd_0xF0,[],"[Pool_1[0], Pool_1[1]]",[],
+0xF1,Cmd_0xF1,[],"[Pool_1[0], Pool_1[1]]",[],
+0xF2,Cmd_0xF2,[],"[Pool_1[0], Pool_1[1]]",[],
+0xF3,Cmd_0xF3,[],[Pool_1[0]],[],
+0xF4,Cmd_0xF4,[],[],[Pool_1[0]],
+0xF5,Cmd_0xF5,[Bytes],[Pool_1[0]],[],TODO: figure out arguments
+0xF6,Cmd_0xF6,[Bytes],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4], Pool_1[5]]",[],TODO: figure out arguments
+0xF7,Cmd_0xF7,[Bytes],[],[Pool_1[0]],TODO: figure out arguments
+0xF8,Cmd_0xF8,[Bytes],"[Pool_1[0], Pool_1[1]]",[],TODO: figure out arguments
+0xF9,Cmd_0xF9,[Bytes],[],[Pool_1[0]],TODO: figure out arguments
+0xFA,GetNumSkillsInLibrary,[],[],[Pool_1[0]],"TODO: figure out arguments, Related to player’s skill library"
+0xFB,Cmd_0xFB,[Bytes],[Pool_1[0]],[],TODO: figure out arguments
+0xFC,Cmd_0xFC,[Bytes],[],[],TODO: figure out arguments
+0xFD,Cmd_0xFD,[Bytes],[],[],TODO: figure out arguments
+0xFE,Cmd_0xFE,[Bytes],[],[],TODO: figure out arguments
+0xFF,Cmd_0xFF,[Bytes],[],[],TODO: figure out arguments
