@@ -23,7 +23,7 @@ pub enum AssemblyToken {
     #[regex(r"-?[0-9]+(?:\.[0-9]+)?(?:e[+-]?[0-9]+)?", |lex| lex.slice().parse::<f32>().ok(), priority = 1)]
     Float(f32),
 
-    #[regex(r"(Pool_0)|(Pool_1)|(Const)|(Pool3)", |lex| lex.slice().to_owned(), priority = 3)]
+    #[regex(r"(Pool_0)|(Pool_1)|(Const)|(Pool_3)", |lex| lex.slice().to_owned(), priority = 3)]
     ValueLocation(String),
 
     #[regex(r"[a-zA-Z_][a-zA-Z0-9_\.]+", |lex| lex.slice().to_owned(), priority = 2)]
