@@ -1,7 +1,51 @@
-use logos::Logos;
+use logos::{Lexer, Logos};
+
+#[derive(Default, Debug, Clone, PartialEq, Eq)]
+pub struct Position {
+    pub line: usize,
+    pub column: usize,
+}
+
+impl Position {
+    pub fn line_and_column(line: usize, column: usize) -> Position {
+        Position { line, column }
+    }
+}
+
+#[derive(Default, Debug, Clone)]
+pub struct LexerExtras {
+    pub line_0based: usize,
+    pub line_start_index: usize,
+}
+
+fn newline_callback(lex: &mut Lexer<AssemblyToken>) {
+    lex.extras.line_0based += 1;
+    lex.extras.line_start_index = lex.span().end - 1;
+}
+
+#[derive(Default, Debug, Clone, PartialEq)]
+pub enum LexError {
+    UnexpectedChar(Position, char),
+    #[default]
+    Other,
+}
+
+fn get_position(lex: &Lexer<AssemblyToken>) -> Position {
+    let line = lex.extras.line_0based + 1; // 1-based
+    let column = lex.span().start - lex.extras.line_start_index + if line == 1 { 1 } else { 0 }; // 1-based
+    Position { line, column }
+}
+
+fn error_unexpected(lex: &mut Lexer<AssemblyToken>) -> LexError {
+    let position = get_position(lex);
+    let char = lex.slice().chars().next().unwrap_or('?');
+    LexError::UnexpectedChar(position, char)
+}
 
 #[derive(Logos, Debug, Clone, PartialEq)]
 #[logos(skip r"[ \t\r]+")] // skip whitespace
+#[logos(extras = LexerExtras)]
+#[logos(error(LexError, error_unexpected))]
 pub enum AssemblyToken {
     #[token(".data:")]
     DataSection,
@@ -30,8 +74,10 @@ pub enum AssemblyToken {
     #[token("b\"", lex_byte_string)]
     ByteString(Vec<u8>),
 
-    #[token("\n")]
+    #[token("\n", newline_callback)]
     Newline,
+
+    Error,
 }
 
 impl Eq for AssemblyToken {} // Note: Needed since Float contains an f32
@@ -65,12 +111,33 @@ fn lex_byte_string(lex: &mut logos::Lexer<AssemblyToken>) -> Option<Vec<u8>> {
     }
 }
 
+pub fn lex_dqmj1_asm(contents: &str) -> (Vec<(AssemblyToken, Position)>, Vec<LexError>) {
+    let mut lexer = AssemblyToken::lexer(contents);
+
+    let mut tokens = vec![];
+    let mut errors = vec![];
+
+    while let Some(result) = lexer.next() {
+        match result {
+            Ok(token) => {
+                tokens.push((token, get_position(&lexer)));
+            }
+            Err(e) => {
+                tokens.push((AssemblyToken::Error, get_position(&lexer)));
+                errors.push(e);
+            }
+        }
+    }
+
+    (tokens, errors)
+}
+
 #[cfg(test)]
 mod tests {
     use rstest::rstest;
 
-    use crate::dqmj1_rom::events::assembly::lexer::AssemblyToken;
-    use crate::dqmj1_rom::events::assembly::lexer::AssemblyToken::*;
+    use crate::dqmj1_rom::events::assembly::lexer::{lex_dqmj1_asm, AssemblyToken, LexError};
+    use crate::dqmj1_rom::events::assembly::lexer::{AssemblyToken::*, Position};
 
     #[rstest]
     #[case(".data:", vec![DataSection])]
@@ -91,13 +158,107 @@ mod tests {
         Float(5.0)
     ])]
     #[case("100:", vec![Int(100), Colon])]
+    #[case("1\n2", vec![Int(1), Newline, Int(2)])]
     fn test_assembly_token_lexing(#[case] string: &str, #[case] expected: Vec<AssemblyToken>) {
-        use logos::Logos;
+        let actual = lex_dqmj1_asm(string);
 
-        let tokens: Vec<AssemblyToken> = AssemblyToken::lexer(string)
-            .filter_map(|token| token.ok())
-            .collect();
+        let tokens: Vec<AssemblyToken> = actual.0.iter().map(|(token, _)| token).cloned().collect();
 
         assert_eq!(tokens, expected);
+        assert_eq!(actual.1, vec![]);
+    }
+
+    #[test]
+    fn test_assembly_token_lexing_errors_none() {
+        let contents = "";
+
+        let actual = lex_dqmj1_asm(contents);
+
+        assert_eq!(actual.0, vec![]);
+        assert_eq!(actual.1, vec![]);
+    }
+
+    #[test]
+    fn test_assembly_token_lexing_errors_unrecognized_symbol() {
+        let contents = "@";
+
+        let actual = lex_dqmj1_asm(contents);
+
+        let expected_tokens = vec![(AssemblyToken::Error, Position::line_and_column(1, 1))];
+        let expected_errors = vec![LexError::UnexpectedChar(
+            Position::line_and_column(1, 1),
+            '@',
+        )];
+
+        assert_eq!(actual.0, expected_tokens);
+        assert_eq!(actual.1, expected_errors);
+    }
+
+    #[test]
+    fn test_assembly_token_lexing_errors_unrecognized_symbol_a_few_columns_in() {
+        let contents = "Pool_1 @";
+
+        let actual = lex_dqmj1_asm(contents);
+
+        let expected_tokens = vec![
+            (
+                AssemblyToken::ValueLocation("Pool_1".to_string()),
+                Position::line_and_column(1, 1),
+            ),
+            (AssemblyToken::Error, Position::line_and_column(1, 8)),
+        ];
+        let expected_errors = vec![LexError::UnexpectedChar(
+            Position::line_and_column(1, 8),
+            '@',
+        )];
+
+        assert_eq!(actual.0, expected_tokens);
+        assert_eq!(actual.1, expected_errors);
+    }
+
+    #[test]
+    fn test_assembly_token_lexing_errors_unrecognized_symbol_on_second_line() {
+        let contents = "Pool_1\n@";
+
+        let actual = lex_dqmj1_asm(contents);
+
+        let expected_tokens = vec![
+            (
+                AssemblyToken::ValueLocation("Pool_1".to_string()),
+                Position::line_and_column(1, 1),
+            ),
+            (AssemblyToken::Newline, Position::line_and_column(2, 0)),
+            (AssemblyToken::Error, Position::line_and_column(2, 1)),
+        ];
+        let expected_errors = vec![LexError::UnexpectedChar(
+            Position::line_and_column(2, 1),
+            '@',
+        )];
+
+        assert_eq!(actual.0, expected_tokens);
+        assert_eq!(actual.1, expected_errors);
+    }
+
+    #[test]
+    fn test_assembly_token_lexing_errors_unrecognized_symbol_on_second_line_and_spaces() {
+        let contents = "Pool_1\n     @";
+
+        let actual = lex_dqmj1_asm(contents);
+
+        let expected_tokens = vec![
+            (
+                AssemblyToken::ValueLocation("Pool_1".to_string()),
+                Position::line_and_column(1, 1),
+            ),
+            (AssemblyToken::Newline, Position::line_and_column(2, 0)),
+            (AssemblyToken::Error, Position::line_and_column(2, 6)),
+        ];
+        let expected_errors = vec![LexError::UnexpectedChar(
+            Position::line_and_column(2, 6),
+            '@',
+        )];
+
+        assert_eq!(actual.0, expected_tokens);
+        assert_eq!(actual.1, expected_errors);
     }
 }
