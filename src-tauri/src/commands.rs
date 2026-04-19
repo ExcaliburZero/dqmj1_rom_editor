@@ -15,7 +15,7 @@ use tauri::Manager;
 use crate::dqmj1_rom::{
     btl_enmy_prm::BtlEnmyPrm,
     events::{
-        assembly::parse_dqmj1_asm,
+        assembly::parser::parse_dqmj1_asm,
         binary::Evt,
         disassembly::{DisassembledEvt, Opcode},
     },

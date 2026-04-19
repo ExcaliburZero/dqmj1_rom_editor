@@ -1,75 +1,10 @@
 use chumsky::prelude::*;
 use logos::Logos;
 
-use crate::dqmj1_rom::events::disassembly::{
-    Arg, DecodedInstruction, DisassembledEvt, Opcode, ValueLocation,
+use crate::dqmj1_rom::events::{
+    assembly::lexer::AssemblyToken,
+    disassembly::{Arg, DecodedInstruction, DisassembledEvt, Opcode, ValueLocation},
 };
-
-#[derive(Logos, Debug, Clone, PartialEq)]
-#[logos(skip r"[ \t\r]+")] // skip whitespace
-pub enum AssemblyToken {
-    #[token(".data:")]
-    DataSection,
-
-    #[token(".code:")]
-    CodeSection,
-
-    #[token(":")]
-    Colon,
-
-    #[regex(r"[0-9]+", |lex| lex.slice().parse::<u32>().ok(), priority = 2)]
-    Int(u32),
-
-    #[regex(r"-?[0-9]+(?:\.[0-9]+)?(?:e[+-]?[0-9]+)?", |lex| lex.slice().parse::<f32>().ok(), priority = 1)]
-    Float(f32),
-
-    #[regex(r"(Pool_0)|(Pool_1)|(Const)|(Pool_3)", |lex| lex.slice().to_owned(), priority = 3)]
-    ValueLocation(String),
-
-    #[regex(r"[a-zA-Z_][a-zA-Z0-9_\.]+", |lex| lex.slice().to_owned(), priority = 2)]
-    Ident(String),
-
-    #[regex(r#""[^"]*""#, |lex| lex.slice()[1..lex.slice().len()-1].to_owned())]
-    StringLit(String),
-
-    #[token("b\"", lex_byte_string)]
-    ByteString(Vec<u8>),
-
-    #[token("\n")]
-    Newline,
-}
-
-impl Eq for AssemblyToken {} // Note: Needed since Float contains an f32
-
-fn lex_byte_string(lex: &mut logos::Lexer<AssemblyToken>) -> Option<Vec<u8>> {
-    let remainder = lex.remainder();
-    let mut bytes = Vec::new();
-    let mut chars = remainder.char_indices();
-
-    loop {
-        match chars.next() {
-            // Closing quote
-            Some((i, '"')) => {
-                lex.bump(i + 1);
-                return Some(bytes);
-            }
-            // Byte (ex. \xA0)
-            Some((_, '\\')) => {
-                match chars.next() {
-                    Some((_, 'x')) => {
-                        let hi = chars.next()?.1.to_digit(16)? as u8;
-                        let lo = chars.next()?.1.to_digit(16)? as u8;
-                        bytes.push((hi << 4) | lo);
-                    }
-                    _ => return None, // unexpected escape
-                }
-            }
-            // Unexpected end of input or bad char
-            _ => return None,
-        }
-    }
-}
-
 pub fn parse_dqmj1_asm<'a>(contents: &str, opcodes: &'a [Opcode]) -> DisassembledEvt<'a> {
     //let tokens: Vec<_> = AssemblyToken::lexer(contents).collect();
 
@@ -176,8 +111,9 @@ fn parse_data_section(data: Vec<u8>) -> [u8; 0x1000] {
 mod tests {
     use rstest::rstest;
 
-    use crate::dqmj1_rom::events::assembly::AssemblyToken;
-    use crate::dqmj1_rom::events::assembly::{parse_dqmj1_asm, AssemblyToken::*};
+    use crate::dqmj1_rom::events::assembly::lexer::AssemblyToken;
+    use crate::dqmj1_rom::events::assembly::lexer::AssemblyToken::*;
+    use crate::dqmj1_rom::events::assembly::parser::parse_dqmj1_asm;
     use crate::dqmj1_rom::events::disassembly::{
         Arg, DecodedInstruction, DisassembledEvt, Opcode, ValueLocation,
     };
