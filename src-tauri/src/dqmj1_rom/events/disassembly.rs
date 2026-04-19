@@ -651,7 +651,7 @@ mod tests {
             instructions_as_string(&script),
             r#"    SetU32       Pool_0 0.0 Const 42.0
     FloatsEq     Pool_0 0.0 Const 6.0
-    JumpIfTrue   l72
+    JumpIfFalse  l72
     Exit         1.0
   l72:
     Nop0        
