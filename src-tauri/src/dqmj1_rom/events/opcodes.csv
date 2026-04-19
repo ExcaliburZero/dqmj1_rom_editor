@@ -12,8 +12,8 @@ Id,Name,Arguments,Inputs,Outputs,Notes
 0x0A,StartEvent,"[InstructionLocation, U32]",[arg_0],[],
 0x0B,Sleep,"[ValueLocation, U32]",[value_arg_0],[],
 0x0C,Jump,[InstructionLocation],[arg_0],[],
-0x0D,JumpIfFalse,[InstructionLocation],"[flag, arg_0]",[],"TODO: confirm this is indeed a ""true"" check. Which commands change that flag/value?"
-0x0E,JumpIfTrue,[InstructionLocation],"[flag, arg_0]",[],"TODO: confirm this is indeed a ""true"" check. Which commands change that flag/value?"
+0x0D,JumpIfTrue,[InstructionLocation],"[flag, arg_0]",[],"TODO: confirm this is indeed a ""true"" check. Which commands change that flag/value?"
+0x0E,JumpIfFalse,[InstructionLocation],"[flag, arg_0]",[],"TODO: confirm this is indeed a ""true"" check. Which commands change that flag/value?"
 0x0F,FloatsEq,"[ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1]",[flag],TODO: confirm
 0x10,FloatsNeq,"[ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1]",[flag],TODO: confirm
 0x11,FloatsGreater,"[ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1]",[flag],TODO: confirm
@@ -51,7 +51,7 @@ Id,Name,Arguments,Inputs,Outputs,Notes
 0x31,Cmd_0x31,[],[Pool_1[0]],[Pool_1[0]],Maybe sin operation
 0x32,Cmd_0x32,[],[Pool_1[0]],[Pool_1[0]],Maybe cos operation
 0x33,Cmd_0x33,[],[Pool_1[0]],[Pool_1[0]],Some type of RAM lookup
-0x34,Cmd_0x34,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],
+0x34,Cmd_0x34,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],Set gift monster offset from 51
 0x35,Cmd_0x35,[],[Pool_1[0]],[Pool_1[0]],
 0x36,Cmd_0x36,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],
 0x37,Cmd_0x37,[],[],[],
