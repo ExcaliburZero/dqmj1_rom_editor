@@ -26,6 +26,7 @@ fn newline_callback(lex: &mut Lexer<AssemblyToken>) {
 #[derive(Default, Debug, Clone, PartialEq)]
 pub enum LexError {
     UnexpectedChar(Position, char),
+    InvalidByteString(Position, String),
     #[default]
     Other,
 }
@@ -82,33 +83,74 @@ pub enum AssemblyToken {
 
 impl Eq for AssemblyToken {} // Note: Needed since Float contains an f32
 
-fn lex_byte_string(lex: &mut logos::Lexer<AssemblyToken>) -> Option<Vec<u8>> {
+fn lex_byte_string(lex: &mut logos::Lexer<AssemblyToken>) -> Result<Vec<u8>, LexError> {
     let remainder = lex.remainder();
     let mut bytes = Vec::new();
     let mut chars = remainder.char_indices();
+
+    let position = get_position(lex);
 
     loop {
         match chars.next() {
             // Closing quote
             Some((i, '"')) => {
                 lex.bump(i + 1);
-                return Some(bytes);
+                return Ok(bytes);
             }
             // Byte (ex. \xA0)
             Some((_, '\\')) => {
                 match chars.next() {
                     Some((_, 'x')) => {
-                        let hi = chars.next()?.1.to_digit(16)? as u8;
-                        let lo = chars.next()?.1.to_digit(16)? as u8;
+                        let hi_char = chars.next();
+                        let lo_char = chars.next();
+
+                        if hi_char.is_none() || lo_char.is_none() {
+                            break;
+                        }
+
+                        let hi = hi_char.unwrap().1.to_digit(16);
+                        let lo = lo_char.unwrap().1.to_digit(16);
+
+                        if hi.is_none() || lo.is_none() {
+                            break;
+                        }
+
+                        let hi = hi.unwrap() as u8;
+                        let lo = lo.unwrap() as u8;
                         bytes.push((hi << 4) | lo);
                     }
-                    _ => return None, // unexpected escape
+                    _ => {
+                        break; // unexpected escape
+                    }
                 }
             }
-            // Unexpected end of input or bad char
-            _ => return None,
+            _ => {
+                // Unexpected end of input or bad char
+                break;
+            }
         }
     }
+
+    // Failed to parse, so find how much to bump by
+    let mut chars = remainder.char_indices();
+    loop {
+        match chars.next() {
+            // Closing quote
+            Some((i, '"')) => {
+                lex.bump(i + 1);
+                break;
+            }
+            Some(_) => {}
+            None => {
+                break;
+            }
+        }
+    }
+
+    Err(LexError::InvalidByteString(
+        position,
+        format!("b\"{}", remainder),
+    ))
 }
 
 pub fn lex_dqmj1_asm(contents: &str) -> (Vec<(AssemblyToken, Position)>, Vec<LexError>) {
@@ -256,6 +298,22 @@ mod tests {
         let expected_errors = vec![LexError::UnexpectedChar(
             Position::line_and_column(2, 6),
             '@',
+        )];
+
+        assert_eq!(actual.0, expected_tokens);
+        assert_eq!(actual.1, expected_errors);
+    }
+
+    #[test]
+    fn test_assembly_token_lexing_errors_bad_bytestring() {
+        let contents = r#"b"\""#;
+
+        let actual = lex_dqmj1_asm(contents);
+
+        let expected_tokens = vec![(AssemblyToken::Error, Position::line_and_column(1, 1))];
+        let expected_errors = vec![LexError::InvalidByteString(
+            Position::line_and_column(1, 1),
+            r#"b"\""#.to_string(),
         )];
 
         assert_eq!(actual.0, expected_tokens);
