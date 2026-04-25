@@ -506,7 +506,9 @@ function padToDigits(number, numDigits) {
 
 async function syncFiles() {
     await invoke("set_btl_enmy_prm", { btlEnmyPrm: encounters });
-    await invoke("set_skill_tbl", { skillTbl: { [skillSetsRegion]: skillSets } });
+    if (skillSets !== null) {
+        await invoke("set_skill_tbl", { skillTbl: { [skillSetsRegion]: skillSets } });
+    }
 }
 
 async function savePatchedRom() {
