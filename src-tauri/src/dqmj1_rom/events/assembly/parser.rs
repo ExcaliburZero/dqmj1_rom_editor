@@ -80,7 +80,6 @@ pub fn parse_dqmj1_asm<'a>(
     }
 
     if errors.is_empty() {
-        // TODO: handle parse errors
         Ok(result.unwrap())
     } else {
         Err(errors)
