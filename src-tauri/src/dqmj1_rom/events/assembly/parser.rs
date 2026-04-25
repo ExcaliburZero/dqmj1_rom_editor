@@ -1,7 +1,6 @@
 use std::fmt;
 
 use chumsky::{error::RichReason, prelude::*};
-use logos::Logos;
 
 use crate::dqmj1_rom::events::{
     assembly::lexer::{lex_dqmj1_asm, AssemblyToken, LexError, Position},
