@@ -968,6 +968,7 @@ dependencies = [
  "chumsky",
  "csv",
  "ds-rom",
+ "glob",
  "logos",
  "rayon",
  "rstest",

@@ -8,6 +8,7 @@ use std::{
 
 use binrw::{BinRead, BinWrite, BinWriterExt};
 use ds_rom::rom::{raw, Rom, RomLoadOptions};
+use glob::glob;
 use rayon::iter::IntoParallelRefIterator;
 use rayon::prelude::*;
 use serde::Serialize;
@@ -26,8 +27,22 @@ use crate::dqmj1_rom::{
     strings::encoding::CharacterEncoding,
 };
 
-// TODO: save event files
-const MOD_FILES: [&str; 2] = ["files/BtlEnmyPrm.bin", "files/SkillTbl.bin"];
+fn get_mod_files(directory: &Path) -> Vec<String> {
+    let mut mod_files = vec![
+        "files/BtlEnmyPrm.bin".to_string(),
+        "files/SkillTbl.bin".to_string(),
+    ];
+
+    let files_directory = directory.join("files");
+    let event_files: Vec<String> = glob(&(files_directory.to_str().unwrap().to_owned() + "/*.evt"))
+        .unwrap()
+        .map(|fp| "files/".to_string() + fp.unwrap().file_name().unwrap().to_str().unwrap())
+        .collect();
+
+    mod_files.extend_from_slice(&event_files);
+
+    mod_files
+}
 
 fn get_app_directory(app: &tauri::AppHandle) -> PathBuf {
     let app_directory = app.path().app_data_dir().unwrap();
@@ -321,14 +336,22 @@ pub fn get_mods(app: tauri::AppHandle) -> Vec<String> {
 
 #[tauri::command]
 pub fn save_mod(app: tauri::AppHandle, mod_name: &str) {
+    assert!(mod_name != "tmp");
+
     let temp_directory = get_temp_directory(&app);
     let mod_directory = get_mod_directory(&app, mod_name);
 
-    for file in MOD_FILES.iter() {
+    assert!(temp_directory != mod_directory);
+
+    for file in get_mod_files(&temp_directory).iter() {
         let source = temp_directory.join(file);
         let destination = mod_directory.join(file);
 
-        fs::copy(source, destination).unwrap();
+        assert!(source.exists());
+        if let Err(error) = fs::copy(&source, &destination) {
+            println!("Failed to copy file: {:?} => {:?}", source, destination);
+            println!("  {:?}", error);
+        };
     }
 }
 
@@ -337,7 +360,7 @@ pub fn load_mod(app: tauri::AppHandle, mod_name: &str) {
     let temp_directory = get_temp_directory(&app);
     let mod_directory = get_mod_directory(&app, mod_name);
 
-    for file in MOD_FILES.iter() {
+    for file in get_mod_files(&mod_directory).iter() {
         let source = mod_directory.join(file);
         let destination = temp_directory.join(file);
 
