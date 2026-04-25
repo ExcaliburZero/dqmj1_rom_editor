@@ -10,9 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 * Added support for Linux. (#7)
 * Added some unit tests and run them in CI. (#8)
+* Added support for editing event scripts. (#13)
 
 ### Changed
 * Improved runtime of UI form population. (#9)
+
+### Fixed
+* Fixed bug where saving a mod could crash if the skill sets tab had not been opened. (#13)
 
 ## [0.3.0] - 2026-02-20
 
