@@ -1,3 +1,5 @@
+use std::collections::BTreeMap;
+
 use crate::dqmj1_rom::{
     regions::Region,
     strings::{encoding_jp::get_jp_character_encoding, encoding_na::get_na_character_encoding},
@@ -5,15 +7,70 @@ use crate::dqmj1_rom::{
 
 pub struct CharacterEncoding {
     pub byte_to_char_map: Vec<(Vec<u8>, &'static str)>,
+    pub char_to_byte_map: BTreeMap<Vec<char>, Vec<u8>>,
 }
 
 impl CharacterEncoding {
+    pub fn from_byte_to_char_map(
+        byte_to_char_map: Vec<(Vec<u8>, &'static str)>,
+    ) -> CharacterEncoding {
+        let char_to_byte_map = byte_to_char_map
+            .iter()
+            .map(|(bytes, string)| (string.chars().collect::<Vec<char>>(), bytes.clone()))
+            .collect();
+
+        CharacterEncoding {
+            byte_to_char_map,
+            char_to_byte_map,
+        }
+    }
+
     pub fn get(region: Region) -> CharacterEncoding {
         match region {
             Region::NorthAmerica => get_na_character_encoding(),
             Region::Japan => get_jp_character_encoding(),
             _ => panic!(),
         }
+    }
+
+    pub fn encode_string(&self, string: &str) -> Vec<u8> {
+        let mut string_bytes: Vec<u8> = vec![];
+        let mut hex_buffer: Vec<char> = vec![];
+        let mut escape_buffer: Vec<char> = vec![];
+        for char in string.chars() {
+            let mut chars = vec![];
+            if char == ']' {
+                let char_bytes: String = hex_buffer[3..].iter().cloned().collect();
+                string_bytes.push(u8::from_str_radix(&char_bytes, 16).unwrap());
+                hex_buffer.clear();
+                continue;
+            } else if char == '[' || !hex_buffer.is_empty() {
+                hex_buffer.push(char);
+                continue;
+            } else if char == '\\' {
+                escape_buffer.push(char);
+                continue;
+            } else if !escape_buffer.is_empty() {
+                escape_buffer.push(char);
+                chars.append(&mut escape_buffer);
+
+                escape_buffer.clear();
+            } else {
+                chars.push(char);
+            }
+
+            if !self.char_to_byte_map.contains_key(&chars) {
+                println!("Unrecognized chars: {:?}", chars);
+                panic!();
+            }
+
+            let mut matching_bytes: Vec<u8> = self.char_to_byte_map[&chars].clone();
+            string_bytes.append(&mut matching_bytes);
+        }
+
+        string_bytes.push(0xFF);
+
+        string_bytes
     }
 
     pub fn read_string(&self, bytes: &[u8]) -> String {
@@ -104,5 +161,21 @@ mod tests {
         let encoding = CharacterEncoding::get(region);
 
         assert_eq!(encoding.read_string(bytes), expected);
+    }
+
+    #[rstest]
+    #[case(Region::NorthAmerica, "", &[0xFF])]
+    #[case(Region::Japan, "", &[0xFF])]
+    #[case(Region::NorthAmerica, "123", &[0x01, 0x02, 0x03, 0xFF])]
+    #[case(Region::Japan, "123", &[0x01, 0x02, 0x03, 0xFF])]
+    #[case(Region::NorthAmerica, "ab", &[0x25, 0x026, 0xFF])]
+    #[case(Region::NorthAmerica, r#"\n"#, &[0xFE, 0xFF])]
+    #[case(Region::Japan, "ぁい", &[0x25, 0x26, 0xFF])]
+    #[case(Region::Japan, "引", &[0xE0, 0x00, 0xFF])] // multi-byte kanji
+    #[case(Region::Japan, "[0xF0]", &[0xF0, 0xFF])] // Unknown character
+    fn encode_string(#[case] region: Region, #[case] string: &str, #[case] expected: &[u8]) {
+        let encoding = CharacterEncoding::get(region);
+
+        assert_eq!(encoding.encode_string(string), expected);
     }
 }

@@ -6,16 +6,43 @@ use std::{
     time::Instant,
 };
 
-use binrw::{BinRead, BinWriterExt};
+use binrw::{BinRead, BinWrite, BinWriterExt};
 use ds_rom::rom::{raw, Rom, RomLoadOptions};
+use glob::glob;
+use rayon::iter::IntoParallelRefIterator;
+use rayon::prelude::*;
+use serde::Serialize;
 use tauri::Manager;
 
 use crate::dqmj1_rom::{
-    btl_enmy_prm::BtlEnmyPrm, regions::Region, skill_tbl::SkillTblWithRegion,
+    btl_enmy_prm::BtlEnmyPrm,
+    events::{
+        assembly::parser::{parse_dqmj1_asm, ParseLexErrors},
+        binary::Evt,
+        disassembly::{DisassembledEvt, Opcode},
+    },
+    regions::Region,
+    skill_tbl::SkillTblWithRegion,
     string_tables::StringTables,
+    strings::encoding::CharacterEncoding,
 };
 
-const MOD_FILES: [&str; 2] = ["files/BtlEnmyPrm.bin", "files/SkillTbl.bin"];
+fn get_mod_files(directory: &Path) -> Vec<String> {
+    let mut mod_files = vec![
+        "files/BtlEnmyPrm.bin".to_string(),
+        "files/SkillTbl.bin".to_string(),
+    ];
+
+    let files_directory = directory.join("files");
+    let event_files: Vec<String> = glob(&(files_directory.to_str().unwrap().to_owned() + "/*.evt"))
+        .unwrap()
+        .map(|fp| "files/".to_string() + fp.unwrap().file_name().unwrap().to_str().unwrap())
+        .collect();
+
+    mod_files.extend_from_slice(&event_files);
+
+    mod_files
+}
 
 fn get_app_directory(app: &tauri::AppHandle) -> PathBuf {
     let app_directory = app.path().app_data_dir().unwrap();
@@ -156,6 +183,152 @@ pub fn get_string_tables(app: tauri::AppHandle) -> StringTables {
     StringTables::from_arm9(&file_data, region)
 }
 
+fn get_event_files(temp_directory: &Path) -> Vec<PathBuf> {
+    fs::read_dir(temp_directory.join("files"))
+        .unwrap()
+        .map(|entry| entry.unwrap().path())
+        .filter(|path| path.is_file())
+        .filter(|path| path.extension().is_some_and(|extension| extension == "evt"))
+        .collect()
+}
+
+#[tauri::command]
+pub fn get_event_files_list(app: tauri::AppHandle) -> Vec<String> {
+    let temp_directory = get_temp_directory(&app);
+
+    get_event_files(&temp_directory)
+        .iter()
+        .map(|path| path.file_name().unwrap().to_str().unwrap().to_string())
+        .collect()
+}
+
+fn disassemble_evt_file(
+    character_encoding: &CharacterEncoding,
+    opcodes: &[Opcode],
+    evt_filepath: &Path,
+    output_filepath: &Path,
+) {
+    println!("{:?} -> {:?}", evt_filepath, output_filepath);
+
+    let mut reader = Cursor::new(std::fs::read(evt_filepath).unwrap());
+    if let Ok(evt) = Evt::read(&mut reader) {
+        let disassembled = DisassembledEvt::from_evt(&evt, character_encoding, opcodes);
+
+        let mut file = File::create(output_filepath).unwrap();
+        disassembled.write_asm(&mut file).unwrap();
+    } else {
+        println!("Failed to parse evt file: {:?}", evt_filepath);
+    }
+}
+
+#[tauri::command]
+pub fn export_events(app: tauri::AppHandle, output_directory: String) {
+    let output_directory = Path::new(&output_directory);
+    let temp_directory = get_temp_directory(&app);
+
+    let region = get_region(&temp_directory);
+    let character_encoding = CharacterEncoding::get(region);
+
+    let opcodes = Opcode::get();
+
+    get_event_files(&temp_directory)
+        .par_iter()
+        .for_each(|evt_filepath: &PathBuf| {
+            let output_filepath = output_directory.join(
+                evt_filepath
+                    .with_extension("evt.dqmj1_asm")
+                    .file_name()
+                    .unwrap(),
+            );
+            disassemble_evt_file(
+                &character_encoding,
+                &opcodes,
+                evt_filepath,
+                &output_filepath,
+            );
+        });
+}
+
+fn assemble_event_asm_file(
+    character_encoding: &CharacterEncoding,
+    opcodes: &[Opcode],
+    asm_filepath: &Path,
+    output_filepath: &Path,
+) -> Result<(), ParseLexErrors> {
+    println!("{:?} -> {:?}", asm_filepath, output_filepath);
+
+    let contents = std::fs::read_to_string(asm_filepath).unwrap();
+    let disassembled = parse_dqmj1_asm(&contents, opcodes)?;
+    let evt = disassembled.to_evt(character_encoding);
+
+    let mut file = File::create(output_filepath).unwrap();
+    evt.write_le(&mut file).unwrap();
+
+    Ok(())
+}
+
+#[derive(Serialize, Debug)]
+pub struct FileError {
+    file: String,
+    error: String,
+}
+
+#[tauri::command]
+pub fn import_events(app: tauri::AppHandle, filepaths: Vec<String>) -> Vec<FileError> {
+    // TODO: maybe write to a different dir and move to proper dir if all successful?
+    let temp_directory = get_temp_directory(&app);
+    let output_directory = temp_directory.join("files");
+
+    let region = get_region(&temp_directory);
+    let character_encoding = CharacterEncoding::get(region);
+
+    let opcodes = Opcode::get();
+
+    let results: Vec<_> = filepaths
+        .par_iter()
+        .map(|asm_filepath: &String| {
+            let asm_filepath = Path::new(asm_filepath);
+            let base_name = asm_filepath
+                .file_name()
+                .unwrap()
+                .to_str()
+                .unwrap()
+                .split_once(".")
+                .unwrap()
+                .0;
+
+            let output_filepath = output_directory.join(format!("{}.evt", base_name));
+            (
+                asm_filepath,
+                assemble_event_asm_file(
+                    &character_encoding,
+                    &opcodes,
+                    asm_filepath,
+                    &output_filepath,
+                ),
+            )
+        })
+        .collect();
+
+    if results.iter().all(|r| r.1.is_ok()) {
+        vec![]
+    } else {
+        let mut errors = vec![];
+        for (filepath, result) in results.iter() {
+            if let Err(file_errors) = result {
+                for error in file_errors.iter() {
+                    errors.push(FileError {
+                        file: filepath.file_name().unwrap().display().to_string(), //.display().to_string(),
+                        error: error.to_string(),
+                    });
+                }
+            }
+        }
+
+        errors
+    }
+}
+
 #[tauri::command]
 pub fn get_mods(app: tauri::AppHandle) -> Vec<String> {
     get_mod_names(&app)
@@ -163,14 +336,22 @@ pub fn get_mods(app: tauri::AppHandle) -> Vec<String> {
 
 #[tauri::command]
 pub fn save_mod(app: tauri::AppHandle, mod_name: &str) {
+    assert!(mod_name != "tmp");
+
     let temp_directory = get_temp_directory(&app);
     let mod_directory = get_mod_directory(&app, mod_name);
 
-    for file in MOD_FILES.iter() {
+    assert!(temp_directory != mod_directory);
+
+    for file in get_mod_files(&temp_directory).iter() {
         let source = temp_directory.join(file);
         let destination = mod_directory.join(file);
 
-        fs::copy(source, destination).unwrap();
+        assert!(source.exists());
+        if let Err(error) = fs::copy(&source, &destination) {
+            println!("Failed to copy file: {:?} => {:?}", source, destination);
+            println!("  {:?}", error);
+        };
     }
 }
 
@@ -179,7 +360,7 @@ pub fn load_mod(app: tauri::AppHandle, mod_name: &str) {
     let temp_directory = get_temp_directory(&app);
     let mod_directory = get_mod_directory(&app, mod_name);
 
-    for file in MOD_FILES.iter() {
+    for file in get_mod_files(&mod_directory).iter() {
         let source = mod_directory.join(file);
         let destination = temp_directory.join(file);
 

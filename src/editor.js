@@ -1,5 +1,6 @@
 const { invoke } = window.__TAURI__.core;
-const { save } = window.__TAURI__.dialog;
+const { save, open } = window.__TAURI__.dialog;
+const { getCurrentWebview } = window.__TAURI__.webview;
 
 const url = new URL(window.location.toLocaleString());
 const modName = url.searchParams.get("modName");
@@ -7,6 +8,7 @@ const modName = url.searchParams.get("modName");
 let encounters = null;
 let skillSets = null;
 let skillSetsRegion = null;
+let events = null;
 let stringTables = null;
 
 let currentEncounterId = 48; // starter Dracky
@@ -411,6 +413,77 @@ async function getSkillSets() {
     }
 }
 
+async function showEvents() {
+    console.log("Showing events");
+
+    currentPage = document.getElementById("events-page");
+    currentPageNavigation = document.getElementById("navigation-events");
+
+    currentPage.style.display = "block";
+    currentPageNavigation.classList = "selected";
+
+    await getEvents();
+
+    populateEventsTable();
+}
+
+async function getEvents() {
+    if (events === null) {
+        const options = {};
+        console.log(`Getting events: ${JSON.stringify(options)}`);
+        events = await invoke("get_event_files_list", options);
+    }
+}
+
+async function importEvents(filepaths) {
+    const eventResults = document.getElementById("event-results");
+    eventResults.innerHTML = `Importing ${filepaths.length} event files`;
+
+    const options = { filepaths: filepaths };
+    console.log(`Import event files: ${JSON.stringify(options)}`);
+    const errors = await invoke("import_events", options);
+
+    if (errors.length === 0) {
+        eventResults.innerHTML = `Finished importing ${filepaths.length} event files`;
+    } else {
+        const innerHTML = [`<p>${errors.length} error(s) while importing event files</p>`];
+
+        for (const entry of errors) {
+            const file = entry.file;
+            const error = entry.error;
+
+            innerHTML.push(`${file}: ${error}<br />`);
+        }
+
+        eventResults.innerHTML = innerHTML.join("");
+    }
+}
+
+function populateEventsTable() {
+    const eventsTable = document.getElementById("events-files-table");
+    eventsTable.innerHTML = "";
+
+    const innerHTML = ["<tr><th>Filename</th></tr>"];
+    for (const eventFile of events) {
+        innerHTML.push(`<tr><td>${eventFile}</td></tr>`);
+    }
+
+    eventsTable.innerHTML = innerHTML.join("");
+}
+
+async function exportEvents() {
+    const outputDirectory = await open({
+        multiple: false,
+        directory: true,
+        title: "Select a Directory",
+    });
+
+    const options = { outputDirectory: outputDirectory };
+    console.log(`Exporting events: ${JSON.stringify(options)}`);
+    await invoke("export_events", options);
+    console.log("Finished exporting events");
+}
+
 async function getStringTables() {
     if (stringTables !== null) {
         return;
@@ -433,7 +506,9 @@ function padToDigits(number, numDigits) {
 
 async function syncFiles() {
     await invoke("set_btl_enmy_prm", { btlEnmyPrm: encounters });
-    await invoke("set_skill_tbl", { skillTbl: { [skillSetsRegion]: skillSets } });
+    if (skillSets !== null) {
+        await invoke("set_skill_tbl", { skillTbl: { [skillSetsRegion]: skillSets } });
+    }
 }
 
 async function savePatchedRom() {
@@ -479,6 +554,8 @@ async function showPage(pageName) {
         showEncounters();
     } else if (pageName === "skill-sets") {
         showSkillSets();
+    } else if (pageName === "events") {
+        showEvents();
     }
 }
 
@@ -496,6 +573,12 @@ window.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
 
         showPage("skill-sets");
+    });
+
+    document.querySelector("#navigation-events").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        showPage("events");
     });
 
     document.querySelector("#encounters-select").addEventListener("change", (e) => {
@@ -534,6 +617,12 @@ window.addEventListener("DOMContentLoaded", () => {
         savePatchedRom();
     });
 
+    document.querySelector("#export-events").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        exportEvents();
+    });
+
     document.addEventListener("keydown", async (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === "s") {
             // Save mod - Ctrl+s (or Cmd+s on Mac)
@@ -543,6 +632,21 @@ window.addEventListener("DOMContentLoaded", () => {
             // Export patched ROM - Ctrl+e (or Cmd+e on Mac)
             e.preventDefault();
             savePatchedRom();
+        }
+    });
+
+    const eventsPage = document.getElementById("events-page");
+    getCurrentWebview().onDragDropEvent((event) => {
+        if (event.payload.type === "drop") {
+            const paths = event.payload.paths;
+            importEvents(paths);
+        }
+
+        if (event.payload.type === "enter") {
+            eventsPage.classList.add("drag-over");
+        }
+        if (event.payload.type === "leave" || event.payload.type === "drop") {
+            eventsPage.classList.remove("drag-over");
         }
     });
 });
