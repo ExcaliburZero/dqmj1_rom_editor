@@ -441,9 +441,22 @@ async function importEvents(filepaths) {
 
     const options = { filepaths: filepaths };
     console.log(`Import event files: ${JSON.stringify(options)}`);
-    await invoke("import_events", options);
+    const errors = await invoke("import_events", options);
 
-    eventResults.innerHTML = `Finished importing ${filepaths.length} event files`;
+    if (errors.length === 0) {
+        eventResults.innerHTML = `Finished importing ${filepaths.length} event files`;
+    } else {
+        const innerHTML = [`<p>${errors.length} error(s) while importing event files</p>`];
+
+        for (const entry of errors) {
+            const file = entry.file;
+            const error = entry.error;
+
+            innerHTML.push(`${file}: ${error}`);
+        }
+
+        eventResults.innerHTML = innerHTML.join("");
+    }
 }
 
 function populateEventsTable() {

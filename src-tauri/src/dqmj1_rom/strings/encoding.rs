@@ -59,6 +59,11 @@ impl CharacterEncoding {
                 chars.push(char);
             }
 
+            if !self.char_to_byte_map.contains_key(&chars) {
+                println!("Unrecognized chars: {:?}", chars);
+                panic!();
+            }
+
             let mut matching_bytes: Vec<u8> = self.char_to_byte_map[&chars].clone();
             string_bytes.append(&mut matching_bytes);
         }

@@ -1,4 +1,7 @@
+use std::fmt;
+
 use logos::{Lexer, Logos};
+use thiserror::Error;
 
 #[derive(Default, Debug, Clone, PartialEq, Eq)]
 pub struct Position {
@@ -9,6 +12,12 @@ pub struct Position {
 impl Position {
     pub fn line_and_column(line: usize, column: usize) -> Position {
         Position { line, column }
+    }
+}
+
+impl fmt::Display for Position {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "line={}, col={}", self.line, self.column)
     }
 }
 
@@ -23,11 +32,14 @@ fn newline_callback(lex: &mut Lexer<AssemblyToken>) {
     lex.extras.line_start_index = lex.span().end - 1;
 }
 
-#[derive(Default, Debug, Clone, PartialEq)]
+#[derive(Error, Default, Debug, Clone, PartialEq)]
 pub enum LexError {
+    #[error("Unexpected char \"{1}\" at {0}")]
     UnexpectedChar(Position, char),
+    #[error("Invalid bytestring \"{1}\" at {0}")]
     InvalidByteString(Position, String),
     #[default]
+    #[error("Unknown lexing error")]
     Other,
 }
 
@@ -133,10 +145,12 @@ fn lex_byte_string(lex: &mut logos::Lexer<AssemblyToken>) -> Result<Vec<u8>, Lex
 
     // Failed to parse, so find how much to bump by
     let mut chars = remainder.char_indices();
+    let mut stop_i = None;
     loop {
         match chars.next() {
             // Closing quote
             Some((i, '"')) => {
+                stop_i = Some(i + 1);
                 lex.bump(i + 1);
                 break;
             }
@@ -147,9 +161,13 @@ fn lex_byte_string(lex: &mut logos::Lexer<AssemblyToken>) -> Result<Vec<u8>, Lex
         }
     }
 
+    let relevant_remainder: String = stop_i
+        .map(|i| remainder[..i].to_string())
+        .unwrap_or_else(|| remainder.to_string());
+
     Err(LexError::InvalidByteString(
         position,
-        format!("b\"{}", remainder),
+        format!("b\"{}", relevant_remainder),
     ))
 }
 
@@ -306,11 +324,14 @@ mod tests {
 
     #[test]
     fn test_assembly_token_lexing_errors_bad_bytestring() {
-        let contents = r#"b"\""#;
+        let contents = r#"b"\" 123"#;
 
         let actual = lex_dqmj1_asm(contents);
 
-        let expected_tokens = vec![(AssemblyToken::Error, Position::line_and_column(1, 1))];
+        let expected_tokens = vec![
+            (AssemblyToken::Error, Position::line_and_column(1, 1)),
+            (AssemblyToken::Int(123), Position::line_and_column(1, 6)),
+        ];
         let expected_errors = vec![LexError::InvalidByteString(
             Position::line_and_column(1, 1),
             r#"b"\""#.to_string(),

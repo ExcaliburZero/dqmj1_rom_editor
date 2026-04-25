@@ -2,17 +2,36 @@ use chumsky::prelude::*;
 use logos::Logos;
 
 use crate::dqmj1_rom::events::{
-    assembly::lexer::AssemblyToken,
+    assembly::lexer::{AssemblyToken, LexError},
     disassembly::{Arg, DecodedInstruction, DisassembledEvt, Opcode, ValueLocation},
 };
-pub fn parse_dqmj1_asm<'a>(contents: &str, opcodes: &'a [Opcode]) -> DisassembledEvt<'a> {
-    //let tokens: Vec<_> = AssemblyToken::lexer(contents).collect();
 
-    let tokens: Vec<AssemblyToken> = AssemblyToken::lexer(contents).map(|t| t.unwrap()).collect();
-    //.filter_map(|t| t.ok())
+pub type ParseLexErrors = Vec<LexError>;
 
-    let result = get_parser(opcodes).parse(&tokens).unwrap();
-    result
+pub fn parse_dqmj1_asm<'a>(
+    contents: &str,
+    opcodes: &'a [Opcode],
+) -> Result<DisassembledEvt<'a>, ParseLexErrors> {
+    let mut errors = vec![];
+
+    let tokens: Vec<AssemblyToken> = AssemblyToken::lexer(contents)
+        .map(|t| match t {
+            Ok(token) => token,
+            Err(error) => {
+                errors.push(error);
+                AssemblyToken::Error
+            }
+        })
+        .collect();
+
+    let result = get_parser(opcodes).parse(&tokens);
+
+    if errors.is_empty() {
+        // TODO: handle parse errors
+        Ok(result.unwrap())
+    } else {
+        Err(errors)
+    }
 }
 
 pub fn get_parser<'a, 'src>(
@@ -113,7 +132,7 @@ mod tests {
 
     use crate::dqmj1_rom::events::assembly::lexer::AssemblyToken;
     use crate::dqmj1_rom::events::assembly::lexer::AssemblyToken::*;
-    use crate::dqmj1_rom::events::assembly::parser::parse_dqmj1_asm;
+    use crate::dqmj1_rom::events::assembly::parser::{parse_dqmj1_asm, ParseLexErrors};
     use crate::dqmj1_rom::events::disassembly::{
         Arg, DecodedInstruction, DisassembledEvt, Opcode, ValueLocation,
     };
@@ -128,7 +147,10 @@ mod tests {
     const SPEAKER_NAME: u8 = 0x2A;
     const LOAD_POS: u8 = 0x99;
 
-    fn parse_dqmj1_asm_for_test<'a>(filepath: &str, opcodes: &'a [Opcode]) -> DisassembledEvt<'a> {
+    fn parse_dqmj1_asm_for_test<'a>(
+        filepath: &str,
+        opcodes: &'a [Opcode],
+    ) -> Result<DisassembledEvt<'a>, ParseLexErrors> {
         let contents = std::fs::read_to_string(filepath).unwrap();
 
         parse_dqmj1_asm(&contents, opcodes)
@@ -166,7 +188,8 @@ mod tests {
     #[test]
     fn test_parse_dqmj1_asm_no_instructions() {
         let opcodes = Opcode::get();
-        let actual = parse_dqmj1_asm_for_test("test/data/no_instructions.dqmj1_asm", &opcodes);
+        let actual =
+            parse_dqmj1_asm_for_test("test/data/no_instructions.dqmj1_asm", &opcodes).unwrap();
 
         let expected = vec![];
 
@@ -177,7 +200,7 @@ mod tests {
     #[test]
     fn test_parse_dqmj1_asm_single_instruction() {
         let opcodes = Opcode::get();
-        let actual = parse_dqmj1_asm_for_test("test/data/only_exit.dqmj1_asm", &opcodes);
+        let actual = parse_dqmj1_asm_for_test("test/data/only_exit.dqmj1_asm", &opcodes).unwrap();
 
         let expected = vec![(
             None,
@@ -195,7 +218,8 @@ mod tests {
     #[test]
     fn test_parse_dqmj1_asm_with_label() {
         let opcodes = Opcode::get();
-        let actual = parse_dqmj1_asm_for_test("test/data/jump_to_self.dqmj1_asm", &opcodes);
+        let actual =
+            parse_dqmj1_asm_for_test("test/data/jump_to_self.dqmj1_asm", &opcodes).unwrap();
 
         let expected = vec![(
             Some("l0".to_string()),
@@ -213,7 +237,7 @@ mod tests {
     #[test]
     fn test_parse_dqmj1_asm_with_ascii_string_literal() {
         let opcodes = Opcode::get();
-        let actual = parse_dqmj1_asm_for_test("test/data/load_pos.dqmj1_asm", &opcodes);
+        let actual = parse_dqmj1_asm_for_test("test/data/load_pos.dqmj1_asm", &opcodes).unwrap();
 
         let expected = vec![(
             None,
@@ -231,7 +255,7 @@ mod tests {
     #[test]
     fn test_parse_dqmj1_asm_dialog() {
         let opcodes = Opcode::get();
-        let actual = parse_dqmj1_asm_for_test("test/data/dialog.dqmj1_asm", &opcodes);
+        let actual = parse_dqmj1_asm_for_test("test/data/dialog.dqmj1_asm", &opcodes).unwrap();
 
         let expected = vec![
             (
@@ -309,7 +333,8 @@ mod tests {
     #[test]
     fn test_parse_dqmj1_asm_unnecessary_newlines() {
         let opcodes = Opcode::get();
-        let actual = parse_dqmj1_asm_for_test("test/data/unnecessary_newlines.dqmj1_asm", &opcodes);
+        let actual =
+            parse_dqmj1_asm_for_test("test/data/unnecessary_newlines.dqmj1_asm", &opcodes).unwrap();
 
         let expected = vec![(
             None,
