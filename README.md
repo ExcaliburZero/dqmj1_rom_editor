@@ -5,6 +5,13 @@ Currently only supports the North American and Japanese releases of the game, bu
 
 ![Screenshot of the encounter editing screen](img/encounters.png)
 
+## Features
+Currently supports modifying:
+
+* Encounter tables (enemies, bosses, starter monsters, gift monsters)
+* Skill sets
+* Events (cutscenes, overworld areas) [experimental]
+
 ## Installation
 Note that the ROM editor currently only supports Windows. I have plans to add support for Linux, and may be able to add Mac support if there is interest.
 
