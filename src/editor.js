@@ -452,7 +452,7 @@ async function importEvents(filepaths) {
             const file = entry.file;
             const error = entry.error;
 
-            innerHTML.push(`${file}: ${error}`);
+            innerHTML.push(`${file}: ${error}<br />`);
         }
 
         eventResults.innerHTML = innerHTML.join("");

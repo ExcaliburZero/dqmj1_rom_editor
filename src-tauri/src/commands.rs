@@ -303,7 +303,7 @@ pub fn import_events(app: tauri::AppHandle, filepaths: Vec<String>) -> Vec<FileE
             if let Err(file_errors) = result {
                 for error in file_errors.iter() {
                     errors.push(FileError {
-                        file: filepath.display().to_string(),
+                        file: filepath.file_name().unwrap().display().to_string(), //.display().to_string(),
                         error: error.to_string(),
                     });
                 }

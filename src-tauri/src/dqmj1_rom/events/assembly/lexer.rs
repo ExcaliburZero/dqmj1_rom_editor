@@ -13,6 +13,13 @@ impl Position {
     pub fn line_and_column(line: usize, column: usize) -> Position {
         Position { line, column }
     }
+
+    pub fn from_token_span(
+        tokens_with_position: &[(AssemblyToken, Position)],
+        offset: usize,
+    ) -> Position {
+        tokens_with_position[offset].1.clone()
+    }
 }
 
 impl fmt::Display for Position {

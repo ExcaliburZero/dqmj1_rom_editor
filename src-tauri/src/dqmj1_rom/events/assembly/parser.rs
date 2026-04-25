@@ -1,30 +1,84 @@
-use chumsky::prelude::*;
+use std::fmt;
+
+use chumsky::{error::RichReason, prelude::*};
 use logos::Logos;
 
 use crate::dqmj1_rom::events::{
-    assembly::lexer::{AssemblyToken, LexError},
+    assembly::lexer::{lex_dqmj1_asm, AssemblyToken, LexError, Position},
     disassembly::{Arg, DecodedInstruction, DisassembledEvt, Opcode, ValueLocation},
 };
 
-pub type ParseLexErrors = Vec<LexError>;
+#[derive(Debug)]
+pub struct ParseError {
+    pub message: String,
+}
+
+impl ParseError {
+    pub fn from_rich(
+        tokens_with_position: &[(AssemblyToken, Position)],
+        rich: &Rich<'_, AssemblyToken>,
+    ) -> ParseError {
+        let message = match rich.reason() {
+            RichReason::ExpectedFound { expected, found } => {
+                format!("expected: {:?}, found: {:?}", expected, found)
+            }
+            _ => "unknown error".to_string(),
+        };
+
+        ParseError {
+            message: format!(
+                "{} at {}",
+                message,
+                Position::from_token_span(tokens_with_position, rich.span().start)
+            ),
+        }
+    }
+}
+
+#[derive(Debug)]
+pub enum ParseLexError {
+    Lex(LexError),
+    Parse(ParseError),
+}
+
+impl fmt::Display for ParseLexError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let full_message = match self {
+            ParseLexError::Lex(error) => format!("{}", error),
+            ParseLexError::Parse(error) => error.message.to_string(),
+        };
+
+        write!(f, "{}", full_message)
+    }
+}
+
+pub type ParseLexErrors = Vec<ParseLexError>;
 
 pub fn parse_dqmj1_asm<'a>(
     contents: &str,
     opcodes: &'a [Opcode],
 ) -> Result<DisassembledEvt<'a>, ParseLexErrors> {
-    let mut errors = vec![];
+    let mut errors: ParseLexErrors = vec![];
 
-    let tokens: Vec<AssemblyToken> = AssemblyToken::lexer(contents)
-        .map(|t| match t {
-            Ok(token) => token,
-            Err(error) => {
-                errors.push(error);
-                AssemblyToken::Error
-            }
-        })
+    let (tokens_with_position, lex_errors) = lex_dqmj1_asm(contents);
+    for lex_error in lex_errors {
+        errors.push(ParseLexError::Lex(lex_error))
+    }
+
+    let tokens: Vec<AssemblyToken> = tokens_with_position
+        .iter()
+        .map(|(token, _)| token)
+        .cloned()
         .collect();
 
     let result = get_parser(opcodes).parse(&tokens);
+
+    for error in result.errors() {
+        errors.push(ParseLexError::Parse(ParseError::from_rich(
+            &tokens_with_position,
+            error,
+        )));
+    }
 
     if errors.is_empty() {
         // TODO: handle parse errors
@@ -36,7 +90,8 @@ pub fn parse_dqmj1_asm<'a>(
 
 pub fn get_parser<'a, 'src>(
     opcodes: &'a [Opcode],
-) -> impl Parser<'src, &'src [AssemblyToken], DisassembledEvt<'a>> {
+) -> impl Parser<'src, &'src [AssemblyToken], DisassembledEvt<'a>, extra::Err<Rich<'src, AssemblyToken>>>
+{
     let int = select! { AssemblyToken::Int(int) => int };
     let float = select! { AssemblyToken::Float(float) => float };
     let ident = select! { AssemblyToken::Ident(string) => string };
