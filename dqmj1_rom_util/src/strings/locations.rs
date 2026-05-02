@@ -1,4 +1,4 @@
-use crate::dqmj1_rom::{
+use crate::{
     regions::Region,
     strings::{locations_jp::JP_STRING_TABLE_LOCATIONS, locations_na::NA_STRING_TABLE_LOCATIONS},
 };

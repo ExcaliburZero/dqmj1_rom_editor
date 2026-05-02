@@ -1,4 +1,4 @@
-use crate::dqmj1_rom::strings::locations::{StringTableLocations, TableLocation};
+use crate::strings::locations::{StringTableLocations, TableLocation};
 
 pub const JP_STRING_TABLE_LOCATIONS: StringTableLocations = StringTableLocations {
     species_names: TableLocation {

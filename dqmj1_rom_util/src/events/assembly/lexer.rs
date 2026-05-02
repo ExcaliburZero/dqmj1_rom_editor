@@ -214,8 +214,8 @@ pub fn lex_dqmj1_asm(contents: &str) -> (Vec<(AssemblyToken, Position)>, Vec<Lex
 mod tests {
     use rstest::rstest;
 
-    use crate::dqmj1_rom::events::assembly::lexer::{lex_dqmj1_asm, AssemblyToken, LexError};
-    use crate::dqmj1_rom::events::assembly::lexer::{AssemblyToken::*, Position};
+    use crate::events::assembly::lexer::{lex_dqmj1_asm, AssemblyToken, LexError};
+    use crate::events::assembly::lexer::{AssemblyToken::*, Position};
 
     #[rstest]
     #[case(".data:", vec![DataSection])]

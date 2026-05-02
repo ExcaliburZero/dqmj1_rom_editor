@@ -5,7 +5,7 @@ use std::{
 
 use serde::Deserialize;
 
-use crate::dqmj1_rom::{
+use crate::{
     events::binary::{Evt, RawInstruction, EVT_INSTRUCTIONS_BASE_OFFSET, EVT_MAGIC},
     strings::encoding::CharacterEncoding,
 };
@@ -503,7 +503,7 @@ mod tests {
     use binrw::BinRead;
     use rstest::rstest;
 
-    use crate::dqmj1_rom::regions::Region;
+    use crate::regions::Region;
 
     use super::*;
 

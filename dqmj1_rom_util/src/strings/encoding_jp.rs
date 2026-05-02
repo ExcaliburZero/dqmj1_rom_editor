@@ -1,4 +1,4 @@
-use crate::dqmj1_rom::strings::encoding::CharacterEncoding;
+use crate::strings::encoding::CharacterEncoding;
 
 pub fn get_jp_character_encoding() -> CharacterEncoding {
     // TODO: don't allocate on every call...

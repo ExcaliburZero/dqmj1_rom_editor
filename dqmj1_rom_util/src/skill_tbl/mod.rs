@@ -3,7 +3,7 @@ use std::io::Cursor;
 use binrw::{BinRead, BinResult};
 use serde::{Deserialize, Serialize};
 
-use crate::dqmj1_rom::regions::Region;
+use crate::regions::Region;
 
 pub mod jp;
 pub mod na;

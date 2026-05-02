@@ -1022,13 +1022,10 @@ name = "dqmj1_rom_editor"
 version = "0.3.0"
 dependencies = [
  "binrw",
- "chumsky",
- "csv",
+ "dqmj1_rom_util",
  "ds-rom",
  "glob",
- "logos",
  "rayon",
- "rstest",
  "serde",
  "serde_json",
  "serde_norway",
@@ -1036,6 +1033,18 @@ dependencies = [
  "tauri-build",
  "tauri-plugin-dialog",
  "tauri-plugin-opener",
+]
+
+[[package]]
+name = "dqmj1_rom_util"
+version = "0.3.0"
+dependencies = [
+ "binrw",
+ "chumsky",
+ "csv",
+ "logos",
+ "rstest",
+ "serde",
  "thiserror 2.0.18",
 ]
 

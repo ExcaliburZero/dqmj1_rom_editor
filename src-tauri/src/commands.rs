@@ -14,7 +14,7 @@ use rayon::prelude::*;
 use serde::Serialize;
 use tauri::Manager;
 
-use crate::dqmj1_rom::{
+use dqmj1_rom_util::{
     btl_enmy_prm::BtlEnmyPrm,
     events::{
         assembly::parser::{parse_dqmj1_asm, ParseLexErrors},

@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use crate::dqmj1_rom::{
+use crate::{
     regions::Region,
     strings::{encoding_jp::get_jp_character_encoding, encoding_na::get_na_character_encoding},
 };
@@ -143,7 +143,7 @@ impl CharacterEncoding {
 
 #[cfg(test)]
 mod tests {
-    use crate::dqmj1_rom::{regions::Region, strings::encoding::CharacterEncoding};
+    use crate::{regions::Region, strings::encoding::CharacterEncoding};
     use rstest::rstest;
 
     #[rstest]

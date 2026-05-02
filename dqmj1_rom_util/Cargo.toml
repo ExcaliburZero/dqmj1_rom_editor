@@ -1,0 +1,18 @@
+[package]
+name = "dqmj1_rom_util"
+version = "0.3.0"
+edition = "2021"
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+binrw = "0.15"
+csv = "1.4"
+logos = "0.16"
+chumsky = "0.12"
+thiserror = "2.0"
+
+[dev-dependencies]
+rstest = "0.26"

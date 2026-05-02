@@ -2,7 +2,7 @@ use std::fmt;
 
 use chumsky::{error::RichReason, prelude::*};
 
-use crate::dqmj1_rom::events::{
+use crate::events::{
     assembly::lexer::{lex_dqmj1_asm, AssemblyToken, LexError, Position},
     disassembly::{Arg, DecodedInstruction, DisassembledEvt, Opcode, ValueLocation},
 };
@@ -218,10 +218,10 @@ fn parse_data_section(data: Vec<u8>) -> Result<[u8; 0x1000], String> {
 mod tests {
     use rstest::rstest;
 
-    use crate::dqmj1_rom::events::assembly::lexer::AssemblyToken;
-    use crate::dqmj1_rom::events::assembly::lexer::AssemblyToken::*;
-    use crate::dqmj1_rom::events::assembly::parser::{parse_dqmj1_asm, ParseLexErrors};
-    use crate::dqmj1_rom::events::disassembly::{
+    use crate::events::assembly::lexer::AssemblyToken;
+    use crate::events::assembly::lexer::AssemblyToken::*;
+    use crate::events::assembly::parser::{parse_dqmj1_asm, ParseLexErrors};
+    use crate::events::disassembly::{
         Arg, DecodedInstruction, DisassembledEvt, Opcode, ValueLocation,
     };
 
