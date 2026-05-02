@@ -107,9 +107,8 @@ pub fn get_parser<'a, 'src>(
         select! { AssemblyToken::Ident(string) => string },
         select! { AssemblyToken::Int(int) => int.to_string() },
     ))
-    .then(just(AssemblyToken::Colon))
-    .then(just(AssemblyToken::Newline))
-    .map(|((label, _), _)| label);
+    .then_ignore(just(AssemblyToken::Colon))
+    .then_ignore(just(AssemblyToken::Newline));
 
     let newline = just(AssemblyToken::Newline);
     let zero_or_more_newlines = newline.clone().repeated();
@@ -123,12 +122,21 @@ pub fn get_parser<'a, 'src>(
         byte_string.map(Arg::Bytes),
         value_location.map(Arg::ValueLocation),
     ));
+    let arguments = argument.repeated().collect::<Vec<_>>();
 
-    let instruction = label.or_not().then(
-        ident
-            .then(argument.repeated().collect::<Vec<_>>())
-            .map(|(name, args)| parse_instruction(opcodes, &name, args)),
-    );
+    let instruction = ident
+        .then(arguments)
+        .validate(
+            |(name, args), extra, emitter| match parse_instruction(opcodes, &name, args) {
+                Ok(inst) => inst,
+                Err(e) => {
+                    emitter.emit(chumsky::error::Rich::custom(extra.span(), e));
+                    DecodedInstruction::dummy(opcodes)
+                }
+            },
+        );
+
+    let instruction_statement = label.or_not().then(instruction);
 
     let data_section = just(AssemblyToken::DataSection)
         .then(one_or_more_newlines.clone().then(byte_string))
@@ -139,7 +147,7 @@ pub fn get_parser<'a, 'src>(
         .then(
             one_or_more_newlines
                 .clone()
-                .then(instruction)
+                .then(instruction_statement)
                 .repeated()
                 .collect::<Vec<_>>(),
         )
@@ -167,7 +175,7 @@ fn parse_instruction<'a>(
     opcodes: &'a [Opcode],
     name: &str,
     args: Vec<Arg>,
-) -> DecodedInstruction<'a> {
+) -> Result<DecodedInstruction<'a>, String> {
     let mut matching_opcode = None;
     for opcode in opcodes.iter() {
         if opcode.name == name {
@@ -176,11 +184,15 @@ fn parse_instruction<'a>(
         }
     }
 
-    DecodedInstruction {
+    if matching_opcode.is_none() {
+        return Err(format!("Unrecognized instruction name: \"{}\"", name));
+    }
+
+    Ok(DecodedInstruction {
         opcode: matching_opcode.unwrap(),
         args,
         label: None,
-    }
+    })
 }
 
 fn parse_data_section(data: Vec<u8>) -> Result<[u8; 0x1000], String> {

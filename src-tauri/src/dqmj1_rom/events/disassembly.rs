@@ -90,6 +90,14 @@ pub struct DecodedInstruction<'a> {
 }
 
 impl DecodedInstruction<'_> {
+    pub fn dummy(opcodes: &'_ [Opcode]) -> DecodedInstruction<'_> {
+        DecodedInstruction {
+            opcode: &opcodes[0],
+            args: vec![],
+            label: None,
+        }
+    }
+
     pub fn get_destinations(&self) -> InstructionDestinations {
         if self.opcode.id == EXIT {
             InstructionDestinations {
