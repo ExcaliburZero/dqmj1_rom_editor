@@ -1027,7 +1027,7 @@ dependencies = [
 
 [[package]]
 name = "dqmj1_rom_editor"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "binrw",
  "dqmj1_rom_util",
@@ -1045,7 +1045,7 @@ dependencies = [
 
 [[package]]
 name = "dqmj1_rom_util"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "binrw",
  "chumsky",

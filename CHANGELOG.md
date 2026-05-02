@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-05-02
+
 ### Added
 * Added support for Linux. (#7)
 * Added some unit tests and run them in CI. (#8)
