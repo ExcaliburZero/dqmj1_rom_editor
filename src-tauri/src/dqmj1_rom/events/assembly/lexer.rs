@@ -172,9 +172,20 @@ fn lex_byte_string(lex: &mut logos::Lexer<AssemblyToken>) -> Result<Vec<u8>, Lex
         .map(|i| remainder[..i].to_string())
         .unwrap_or_else(|| remainder.to_string());
 
+    let num_chars_to_show = 20;
+    let should_truncate = relevant_remainder.chars().count() > num_chars_to_show;
+    let suffix = if should_truncate { "..." } else { "" };
+
     Err(LexError::InvalidByteString(
         position,
-        format!("b\"{}", relevant_remainder),
+        format!(
+            "b\"{}",
+            relevant_remainder
+                .chars()
+                .take(num_chars_to_show)
+                .collect::<String>()
+                + suffix
+        ),
     ))
 }
 
