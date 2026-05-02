@@ -1,16 +1,9 @@
 [package]
 name = "dqmj1_rom_editor"
 version = "0.3.0"
-description = "A Tauri App"
-authors = ["you"]
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [lib]
-# The `_lib` suffix may seem redundant but it is necessary
-# to make the lib name unique and wouldn't conflict with the bin name.
-# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
 name = "dqmj1_rom_editor_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
@@ -18,6 +11,7 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
+dqmj1_rom_util = { path = "../dqmj1_rom_util" }
 tauri = { version = "2", features = [] }
 tauri-plugin-opener = "2"
 tauri-plugin-dialog = "2"
@@ -26,12 +20,5 @@ serde_json = "1"
 serde_norway = "0.9"
 ds-rom = "0.7"
 binrw = "0.15"
-csv = "1.4"
-logos = "0.16"
-chumsky = "0.12"
 rayon = "1.12"
-thiserror = "2.0"
 glob = "0.3"
-
-[dev-dependencies]
-rstest = "0.26"

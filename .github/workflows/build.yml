@@ -28,34 +28,42 @@ jobs:
     - name: Cache Rust dependencies
       uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2
       with:
-        workspaces: "src-tauri -> target"
+        workspaces: "."
 
     - name: Install cargo-llvm-cov
       uses: taiki-e/install-action@71b48393496777ee11188c07a34d48b048a985cd # v2.68.5
       with:
         tool: cargo-llvm-cov
 
-    - name: Check formatting of Rust code
+    - name: Check formatting of Rust code (Core)
+      working-directory: dqmj1_rom_util
+      run: cargo fmt --all -- --check
+
+    - name: Check formatting of Rust code (Tauri)
       working-directory: src-tauri
       run: cargo fmt --all -- --check
 
     - name: Check JS, CSS, JSON using Biome
       run: npx @biomejs/biome ci
 
-    - name: Lint Rust code
+    - name: Lint Rust code (Core)
+      working-directory: dqmj1_rom_util
+      run: cargo clippy
+
+    - name: Lint Rust code (Tauri)
       working-directory: src-tauri
       run: cargo clippy
 
-    - name: Test Rust code
-      working-directory: src-tauri
-      run: cargo llvm-cov --all-features --lcov --output-path target/lcov.info
+    - name: Test Rust code (Core)
+      working-directory: dqmj1_rom_util
+      run: cargo llvm-cov --all-features --lcov --output-path lcov.info
 
     - name: Upload code coverage to Qlty
       if: matrix.os == 'ubuntu-latest'
       uses: qltysh/qlty-action/coverage@a19242102d17e497f437d7466aa01b528537e899 # v2.2.0
       with:
         oidc: true
-        files: src-tauri/target/lcov.info
+        files: dqmj1_rom_util/lcov.info
 
     - name: Install dependencies
       run: npm install
@@ -66,4 +74,4 @@ jobs:
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       with:
         name: dqmj1_rom_editor_${{ runner.os }}
-        path: src-tauri/target/release/bundle/*/*
+        path: target/release/bundle/*/*

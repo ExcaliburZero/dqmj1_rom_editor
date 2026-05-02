@@ -1,6 +1,8 @@
 tmp/
 /experiment_scripts/
 
+/target/
+
 # Logs
 logs
 *.log

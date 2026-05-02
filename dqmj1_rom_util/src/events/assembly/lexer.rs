@@ -18,7 +18,16 @@ impl Position {
         tokens_with_position: &[(AssemblyToken, Position)],
         offset: usize,
     ) -> Position {
-        tokens_with_position[offset].1.clone()
+        if tokens_with_position.is_empty() {
+            Position::line_and_column(1, 1)
+        } else {
+            // NOTE: Not sure if this is the correct handling for cases where the lookup fails, but
+            // at least it avoids the panic
+            tokens_with_position
+                .get(offset)
+                .map(|r| r.1.clone())
+                .unwrap_or(tokens_with_position.last().unwrap().1.clone())
+        }
     }
 }
 
@@ -172,9 +181,20 @@ fn lex_byte_string(lex: &mut logos::Lexer<AssemblyToken>) -> Result<Vec<u8>, Lex
         .map(|i| remainder[..i].to_string())
         .unwrap_or_else(|| remainder.to_string());
 
+    let num_chars_to_show = 20;
+    let should_truncate = relevant_remainder.chars().count() > num_chars_to_show;
+    let suffix = if should_truncate { "..." } else { "" };
+
     Err(LexError::InvalidByteString(
         position,
-        format!("b\"{}", relevant_remainder),
+        format!(
+            "b\"{}",
+            relevant_remainder
+                .chars()
+                .take(num_chars_to_show)
+                .collect::<String>()
+                + suffix
+        ),
     ))
 }
 
@@ -203,8 +223,8 @@ pub fn lex_dqmj1_asm(contents: &str) -> (Vec<(AssemblyToken, Position)>, Vec<Lex
 mod tests {
     use rstest::rstest;
 
-    use crate::dqmj1_rom::events::assembly::lexer::{lex_dqmj1_asm, AssemblyToken, LexError};
-    use crate::dqmj1_rom::events::assembly::lexer::{AssemblyToken::*, Position};
+    use crate::events::assembly::lexer::{lex_dqmj1_asm, AssemblyToken, LexError};
+    use crate::events::assembly::lexer::{AssemblyToken::*, Position};
 
     #[rstest]
     #[case(".data:", vec![DataSection])]

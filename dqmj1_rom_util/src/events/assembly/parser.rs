@@ -2,17 +2,23 @@ use std::fmt;
 
 use chumsky::{error::RichReason, prelude::*};
 
-use crate::dqmj1_rom::events::{
+use crate::events::{
     assembly::lexer::{lex_dqmj1_asm, AssemblyToken, LexError, Position},
     disassembly::{Arg, DecodedInstruction, DisassembledEvt, Opcode, ValueLocation},
 };
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct ParseError {
     pub message: String,
 }
 
 impl ParseError {
+    pub fn new(message: &str) -> ParseError {
+        ParseError {
+            message: message.to_string(),
+        }
+    }
+
     pub fn from_rich(
         tokens_with_position: &[(AssemblyToken, Position)],
         rich: &Rich<'_, AssemblyToken>,
@@ -21,7 +27,7 @@ impl ParseError {
             RichReason::ExpectedFound { expected, found } => {
                 format!("expected: {:?}, found: {:?}", expected, found)
             }
-            _ => "unknown error".to_string(),
+            RichReason::Custom(msg) => msg.to_string(),
         };
 
         ParseError {
@@ -34,7 +40,7 @@ impl ParseError {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum ParseLexError {
     Lex(LexError),
     Parse(ParseError),
@@ -101,9 +107,8 @@ pub fn get_parser<'a, 'src>(
         select! { AssemblyToken::Ident(string) => string },
         select! { AssemblyToken::Int(int) => int.to_string() },
     ))
-    .then(just(AssemblyToken::Colon))
-    .then(just(AssemblyToken::Newline))
-    .map(|((label, _), _)| label);
+    .then_ignore(just(AssemblyToken::Colon))
+    .then_ignore(just(AssemblyToken::Newline));
 
     let newline = just(AssemblyToken::Newline);
     let zero_or_more_newlines = newline.clone().repeated();
@@ -117,21 +122,32 @@ pub fn get_parser<'a, 'src>(
         byte_string.map(Arg::Bytes),
         value_location.map(Arg::ValueLocation),
     ));
+    let arguments = argument.repeated().collect::<Vec<_>>();
 
-    let instruction = label.or_not().then(
-        ident
-            .then(argument.repeated().collect::<Vec<_>>())
-            .map(|(name, args)| parse_instruction(opcodes, &name, args)),
-    );
+    let instruction = ident
+        .then(arguments)
+        .validate(
+            |(name, args), extra, emitter| match parse_instruction(opcodes, &name, args) {
+                Ok(inst) => inst,
+                Err(e) => {
+                    emitter.emit(chumsky::error::Rich::custom(extra.span(), e));
+                    DecodedInstruction::dummy(opcodes)
+                }
+            },
+        );
+
+    let instruction_statement = label.or_not().then(instruction);
 
     let data_section = just(AssemblyToken::DataSection)
         .then(one_or_more_newlines.clone().then(byte_string))
-        .map(|(_, (_, data))| parse_data_section(data));
+        .try_map(|(_, (_, data)), span| {
+            parse_data_section(data).map_err(|e| chumsky::error::Rich::custom(span, e))
+        });
     let code_section = just(AssemblyToken::CodeSection)
         .then(
             one_or_more_newlines
                 .clone()
-                .then(instruction)
+                .then(instruction_statement)
                 .repeated()
                 .collect::<Vec<_>>(),
         )
@@ -159,7 +175,7 @@ fn parse_instruction<'a>(
     opcodes: &'a [Opcode],
     name: &str,
     args: Vec<Arg>,
-) -> DecodedInstruction<'a> {
+) -> Result<DecodedInstruction<'a>, String> {
     let mut matching_opcode = None;
     for opcode in opcodes.iter() {
         if opcode.name == name {
@@ -168,25 +184,46 @@ fn parse_instruction<'a>(
         }
     }
 
-    DecodedInstruction {
+    if matching_opcode.is_none() {
+        return Err(format!("Unrecognized instruction name: \"{}\"", name));
+    }
+
+    Ok(DecodedInstruction {
         opcode: matching_opcode.unwrap(),
         args,
         label: None,
-    }
+    })
 }
 
-fn parse_data_section(data: Vec<u8>) -> [u8; 0x1000] {
-    data.try_into().unwrap()
+fn parse_data_section(data: Vec<u8>) -> Result<[u8; 0x1000], String> {
+    if data.len() != 0x1000 {
+        return Err(format!(
+            "Data section has wrong number of bytes, should be {} was {}",
+            0x1000,
+            data.len()
+        ));
+    }
+
+    if let Ok(data) = data.try_into() {
+        Ok(data)
+    } else {
+        Err(
+            "Data section failed to convert to array of 4096 bytes due to unknown reason"
+                .to_string(),
+        )
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use rstest::rstest;
 
-    use crate::dqmj1_rom::events::assembly::lexer::AssemblyToken;
-    use crate::dqmj1_rom::events::assembly::lexer::AssemblyToken::*;
-    use crate::dqmj1_rom::events::assembly::parser::{parse_dqmj1_asm, ParseLexErrors};
-    use crate::dqmj1_rom::events::disassembly::{
+    use crate::events::assembly::lexer::AssemblyToken;
+    use crate::events::assembly::lexer::AssemblyToken::*;
+    use crate::events::assembly::parser::{
+        parse_dqmj1_asm, ParseError, ParseLexError, ParseLexErrors,
+    };
+    use crate::events::disassembly::{
         Arg, DecodedInstruction, DisassembledEvt, Opcode, ValueLocation,
     };
 
@@ -400,5 +437,29 @@ mod tests {
 
         assert_eq!(actual.data, [0x00; 0x1000]);
         assert_eq!(actual.instructions, expected);
+    }
+
+    #[test]
+    fn test_parse_dqmj1_asm_empty() {
+        let opcodes = Opcode::get();
+        let actual = parse_dqmj1_asm_for_test("test/data/empty.dqmj1_asm", &opcodes);
+
+        let expected = Err(vec![ParseLexError::Parse(ParseError::new(
+            "expected: ['Newline', 'DataSection'], found: None at line=1, col=1",
+        ))]);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_parse_dqmj1_asm_only_whitespace() {
+        let opcodes = Opcode::get();
+        let actual = parse_dqmj1_asm_for_test("test/data/only_whitespace.dqmj1_asm", &opcodes);
+
+        let expected = Err(vec![ParseLexError::Parse(ParseError::new(
+            "expected: ['Newline', 'DataSection'], found: None at line=3, col=0",
+        ))]);
+
+        assert_eq!(actual, expected);
     }
 }

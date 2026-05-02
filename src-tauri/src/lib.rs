@@ -5,7 +5,6 @@ use crate::commands::{
 };
 
 pub mod commands;
-pub mod dqmj1_rom;
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

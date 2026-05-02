@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-use crate::dqmj1_rom::{
+use crate::{
     regions::Region,
     strings::{
         encoding::CharacterEncoding,

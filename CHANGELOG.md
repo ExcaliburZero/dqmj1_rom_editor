@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added support for Linux. (#7)
 * Added some unit tests and run them in CI. (#8)
 * Added support for editing event scripts. (#13)
+* Moved core functionality into a separate crate. (#15)
 
 ### Changed
 * Improved runtime of UI form population. (#9)
