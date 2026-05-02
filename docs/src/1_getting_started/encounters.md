@@ -52,3 +52,11 @@ Similar to the previous dropdowns, you can click on the encounter select dropdow
 <p align="center">
 <img src="../images/encounters_edit_slime_before.png" alt="" style="max-height: 600px;" />
 </p>
+
+Let's make it a metal slime! We'll change its species to `metal slime (6)` and its exp dropped to `3072`.
+
+Make sure to do it for all three encounter ids (`080`, `265`, and `266`), then export the ROM and play up to Infant Isle. Notice that in the overworld the slimes still appear as slimes, but in battle they are metal slimes that drop 3072 exp. Since we did not change their stats, they still take as much damage as a regular slime.
+
+<p align="center">
+<img src="../images/encounters_metal_slime_ingame.png" alt="" style="max-height: 600px;" />
+</p>
