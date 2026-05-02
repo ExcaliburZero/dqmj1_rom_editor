@@ -28,7 +28,7 @@ jobs:
     - name: Cache Rust dependencies
       uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2
       with:
-        workspaces: "src-tauri -> target\ndqmj1_rom_util -> target"
+        workspaces: "."
 
     - name: Install cargo-llvm-cov
       uses: taiki-e/install-action@71b48393496777ee11188c07a34d48b048a985cd # v2.68.5
@@ -74,4 +74,4 @@ jobs:
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       with:
         name: dqmj1_rom_editor_${{ runner.os }}
-        path: src-tauri/target/release/bundle/*/*
+        path: target/release/bundle/*/*
