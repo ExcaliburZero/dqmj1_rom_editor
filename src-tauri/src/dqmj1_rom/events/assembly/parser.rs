@@ -13,6 +13,12 @@ pub struct ParseError {
 }
 
 impl ParseError {
+    pub fn new(message: &str) -> ParseError {
+        ParseError {
+            message: message.to_string(),
+        }
+    }
+
     pub fn from_rich(
         tokens_with_position: &[(AssemblyToken, Position)],
         rich: &Rich<'_, AssemblyToken>,
@@ -21,7 +27,7 @@ impl ParseError {
             RichReason::ExpectedFound { expected, found } => {
                 format!("expected: {:?}, found: {:?}", expected, found)
             }
-            _ => "unknown error".to_string(),
+            RichReason::Custom(msg) => msg.to_string(),
         };
 
         ParseError {
@@ -126,7 +132,9 @@ pub fn get_parser<'a, 'src>(
 
     let data_section = just(AssemblyToken::DataSection)
         .then(one_or_more_newlines.clone().then(byte_string))
-        .map(|(_, (_, data))| parse_data_section(data));
+        .try_map(|(_, (_, data)), span| {
+            parse_data_section(data).map_err(|e| chumsky::error::Rich::custom(span, e))
+        });
     let code_section = just(AssemblyToken::CodeSection)
         .then(
             one_or_more_newlines
@@ -175,8 +183,23 @@ fn parse_instruction<'a>(
     }
 }
 
-fn parse_data_section(data: Vec<u8>) -> [u8; 0x1000] {
-    data.try_into().unwrap()
+fn parse_data_section(data: Vec<u8>) -> Result<[u8; 0x1000], String> {
+    if data.len() != 0x1000 {
+        return Err(format!(
+            "Data section has wrong number of bytes, should be {} was {}",
+            0x1000,
+            data.len()
+        ));
+    }
+
+    if let Ok(data) = data.try_into() {
+        Ok(data)
+    } else {
+        Err(
+            "Data section failed to convert to array of 4096 bytes due to unknown reason"
+                .to_string(),
+        )
+    }
 }
 
 #[cfg(test)]
