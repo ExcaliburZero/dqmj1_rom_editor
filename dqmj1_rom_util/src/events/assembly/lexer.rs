@@ -18,7 +18,11 @@ impl Position {
         tokens_with_position: &[(AssemblyToken, Position)],
         offset: usize,
     ) -> Position {
-        tokens_with_position[offset].1.clone()
+        if tokens_with_position.is_empty() {
+            Position::line_and_column(1, 1)
+        } else {
+            tokens_with_position[offset].1.clone()
+        }
     }
 }
 

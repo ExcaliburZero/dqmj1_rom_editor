@@ -7,7 +7,7 @@ use crate::events::{
     disassembly::{Arg, DecodedInstruction, DisassembledEvt, Opcode, ValueLocation},
 };
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct ParseError {
     pub message: String,
 }
@@ -40,7 +40,7 @@ impl ParseError {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum ParseLexError {
     Lex(LexError),
     Parse(ParseError),
@@ -220,7 +220,9 @@ mod tests {
 
     use crate::events::assembly::lexer::AssemblyToken;
     use crate::events::assembly::lexer::AssemblyToken::*;
-    use crate::events::assembly::parser::{parse_dqmj1_asm, ParseLexErrors};
+    use crate::events::assembly::parser::{
+        parse_dqmj1_asm, ParseError, ParseLexError, ParseLexErrors,
+    };
     use crate::events::disassembly::{
         Arg, DecodedInstruction, DisassembledEvt, Opcode, ValueLocation,
     };
@@ -435,5 +437,17 @@ mod tests {
 
         assert_eq!(actual.data, [0x00; 0x1000]);
         assert_eq!(actual.instructions, expected);
+    }
+
+    #[test]
+    fn test_parse_dqmj1_asm_empty() {
+        let opcodes = Opcode::get();
+        let actual = parse_dqmj1_asm_for_test("test/data/empty.dqmj1_asm", &opcodes);
+
+        let expected = Err(vec![ParseLexError::Parse(ParseError::new(
+            "expected: ['Newline', 'DataSection'], found: None at line=1, col=1",
+        ))]);
+
+        assert_eq!(actual, expected);
     }
 }
