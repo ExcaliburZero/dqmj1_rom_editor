@@ -56,14 +56,14 @@ jobs:
 
     - name: Test Rust code (Core)
       working-directory: dqmj1_rom_util
-      run: cargo llvm-cov --all-features --lcov --output-path target/lcov.info
+      run: cargo llvm-cov --all-features --lcov --output-path lcov.info
 
     - name: Upload code coverage to Qlty
       if: matrix.os == 'ubuntu-latest'
       uses: qltysh/qlty-action/coverage@a19242102d17e497f437d7466aa01b528537e899 # v2.2.0
       with:
         oidc: true
-        files: dqmj1_rom_util/target/lcov.info
+        files: dqmj1_rom_util/lcov.info
 
     - name: Install dependencies
       run: npm install
