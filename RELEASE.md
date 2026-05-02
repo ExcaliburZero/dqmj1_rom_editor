@@ -3,6 +3,7 @@
 * Choose a new `vX.Y.Z` version number that follows [semantic versioning](https://semver.org/).
 * Update the version number in the following locations:
     * `package.json`
+    * `dqmj1_rom_util/Cargo.toml`
     * `src-tauri/Cargo.toml`
     * `src-tauri/tauri.conf.json`
     * `CHANGELOG.md`
