@@ -450,4 +450,16 @@ mod tests {
 
         assert_eq!(actual, expected);
     }
+
+    #[test]
+    fn test_parse_dqmj1_asm_only_whitespace() {
+        let opcodes = Opcode::get();
+        let actual = parse_dqmj1_asm_for_test("test/data/only_whitespace.dqmj1_asm", &opcodes);
+
+        let expected = Err(vec![ParseLexError::Parse(ParseError::new(
+            "expected: ['Newline', 'DataSection'], found: None at line=3, col=0",
+        ))]);
+
+        assert_eq!(actual, expected);
+    }
 }

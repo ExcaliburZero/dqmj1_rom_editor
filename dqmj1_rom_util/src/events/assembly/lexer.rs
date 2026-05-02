@@ -21,7 +21,12 @@ impl Position {
         if tokens_with_position.is_empty() {
             Position::line_and_column(1, 1)
         } else {
-            tokens_with_position[offset].1.clone()
+            // NOTE: Not sure if this is the correct handling for cases where the lookup fails, but
+            // at least it avoids the panic
+            tokens_with_position
+                .get(offset)
+                .map(|r| r.1.clone())
+                .unwrap_or(tokens_with_position.last().unwrap().1.clone())
         }
     }
 }
