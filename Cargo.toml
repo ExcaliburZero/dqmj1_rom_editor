@@ -1,3 +1,3 @@
 [workspace]
-members = ["dqmj1_rom_util", "src-tauri"]
+members = ["dqmj1_rom_util", "dqmj1_rom_util/fuzz", "src-tauri"]
 resolver = "2"
