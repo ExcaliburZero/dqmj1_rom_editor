@@ -12,6 +12,11 @@ Currently supports modifying:
 * Skill sets
 * Events (cutscenes, overworld areas) [experimental]
 
+## Documentation
+For information on how to use the ROM Editor, see:
+
+* [User's Guide](https://excaliburzero.github.io/dqmj1_rom_editor/) - tutorials on how to edit encounter tables, skill sets, and events
+
 ## Installation
 Note that the ROM editor currently only supports Windows and Linux. I may add Mac support if there is interest.
 
