@@ -152,7 +152,6 @@ summary.admonition-title::-webkit-details-marker {
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
   mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
 }
 
 :is(.admonition):is(.admonish-abstract, .admonish-summary, .admonish-tldr) {
@@ -171,7 +170,6 @@ summary.admonition-title::-webkit-details-marker {
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
   mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
 }
 
 :is(.admonition):is(.admonish-info, .admonish-todo) {
@@ -188,7 +186,6 @@ summary.admonition-title::-webkit-details-marker {
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
   mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
 }
 
 :is(.admonition):is(.admonish-tip, .admonish-hint, .admonish-important) {
@@ -207,7 +204,6 @@ summary.admonition-title::-webkit-details-marker {
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
   mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
 }
 
 :is(.admonition):is(.admonish-success, .admonish-check, .admonish-done) {
@@ -226,7 +222,6 @@ summary.admonition-title::-webkit-details-marker {
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
   mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
 }
 
 :is(.admonition):is(.admonish-question, .admonish-help, .admonish-faq) {
@@ -245,7 +240,6 @@ summary.admonition-title::-webkit-details-marker {
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
   mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
 }
 
 :is(.admonition):is(.admonish-warning, .admonish-caution, .admonish-attention) {
@@ -264,7 +258,6 @@ summary.admonition-title::-webkit-details-marker {
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
   mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
 }
 
 :is(.admonition):is(.admonish-failure, .admonish-fail, .admonish-missing) {
@@ -283,7 +276,6 @@ summary.admonition-title::-webkit-details-marker {
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
   mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
 }
 
 :is(.admonition):is(.admonish-danger, .admonish-error) {
@@ -300,7 +292,6 @@ summary.admonition-title::-webkit-details-marker {
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
   mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
 }
 
 :is(.admonition):is(.admonish-bug) {
@@ -317,7 +308,6 @@ summary.admonition-title::-webkit-details-marker {
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
   mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
 }
 
 :is(.admonition):is(.admonish-example) {
@@ -334,7 +324,6 @@ summary.admonition-title::-webkit-details-marker {
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
   mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
 }
 
 :is(.admonition):is(.admonish-quote, .admonish-cite) {
@@ -351,7 +340,6 @@ summary.admonition-title::-webkit-details-marker {
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
   mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
 }
 
 .navy :is(.admonition) {
