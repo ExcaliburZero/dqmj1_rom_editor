@@ -1,14 +1,19 @@
 # Modifying encounters
-The **encounters table** is a data file within the game that details all of the enemies, bosses, starter monsters, and gift monsters. This table has one row for each such monster.
+The **encounters table** is a data file within the game that details all of the enemies, bosses, starter monsters, and gift monsters. Encounters determine monster's species, stats, moves, skill sets, etc..
 
-Using the Encounters tab, you can edit the stats, moves, skill sets, and more for each individual encounter.
+Editing the encounters table will enable you to:
+
+* Create new bosses
+* Increase the difficulty of specific encounters
+* Change the starter monsters
+* and more!
 
 <p align="center">
 <img src="../images/encounters.png" alt="Encounters tab showing one of the starter monsters" style="max-height: 600px;" />
 </p>
 
 ## Modifying a starter
-As an example, lets change one of the starter monsters. The three starter monsters are in the table rows `048`, `049`, and `050`.
+As an example, let's change one of the starter monsters. The three starter monsters are in the table rows `048`, `049`, and `050`.
 
 Let's edit encounter `048`, the starter Dracky.
 
@@ -20,13 +25,13 @@ We can also give it a third skill set by clicking on the `Skill set (3)` dropdow
 <img src="../images/encounters_edited.png" alt="" style="max-height: 600px;" />
 </p>
 
-Now you can export the ROM with this change to the starter Dracky by clicking on the `Export patched ROM` button (or pressing `Ctrl + e`). Once you play up to point you get to choose your starter monster, you'll find the Darkonium Slime we created.
+At this point, it's a good idea to save the changes we made to the mod. To do that click on the `Save mod` button (or press `Ctrl + s`).
+
+Next you should export the ROM with this change to the starter Dracky by clicking on the `Export patched ROM` button (or pressing `Ctrl + e`). Once you play up to point you get to choose your starter monster, you'll find the Darkonium Slime we created.
 
 <p align="center">
 <img src="../images/encounters_edited_ingame.png" alt="" style="max-height: 600px;" />
 </p>
-
-It's also a good idea to save the changes we made to the mod. To do that click on the `Save mod` button (or press `Ctrl + s`).
 
 ## Modifying other encounters
 To modify an encounter, you'll need to find its encounter id.
@@ -41,13 +46,15 @@ As a general rule of thumb:
 
 To find a particular encounter, a good first place to look is the [DQM:J Wiki](https://dqmj.fandom.com/wiki/Dragon_Quest_Monsters:_Joker_Wiki).
 
-For example, on the [Slime](https://dqmj.fandom.com/wiki/Slime) page you can find an encounter listing for the slimes that appear on Infant Isle. The codes in the bottom right corner are encounter ids in hexadecimal (`050`, `109`, and `10a`), and you can [convert them to decimal](https://www.rapidtables.com/convert/number/hex-to-decimal.html) (`80`, `265`, and `266`) to find the encounter ids to select and modify.
+For example, on the [Slime](https://dqmj.fandom.com/wiki/Slime) page you can find an encounter listing for the slimes that appear on Infant Isle.
 
 <p align="center">
 <img src="../images/dqmj_wiki_slime.png" alt="" style="max-height: 600px;" />
 </p>
 
-Similar to the previous dropdowns, you can click on the encounter select dropdown (in the top middle of the page) and type in the encounter id (ex. `080`) to select the encounter to modify.
+The codes in the bottom right corner are encounter ids in hexadecimal (`050`, `109`, and `10a`). The ROM editor uses [decimal ids](https://www.rapidtables.com/convert/number/hex-to-decimal.html) (ex. `050 hex` = `080 decimal`).
+
+Let's go to the first Slime encounter by clicking on the encounter select dropdown (in the top middle of the page) and typing in the encounter id (ex. `080`).
 
 <p align="center">
 <img src="../images/encounters_edit_slime_before.png" alt="" style="max-height: 600px;" />
@@ -55,8 +62,18 @@ Similar to the previous dropdowns, you can click on the encounter select dropdow
 
 Let's make it a metal slime! We'll change its species to `metal slime (6)` and its exp dropped to `3072`.
 
-Make sure to do it for all three encounter ids (`080`, `265`, and `266`), then export the ROM and play up to Infant Isle. Notice that in the overworld the slimes still appear as slimes, but in battle they are metal slimes that drop 3072 exp. Since we did not change their stats, they still take as much damage as a regular slime.
+```admonish note
+Make sure to make these changes for all three encounter ids (`080`, `265`, and `266`).
+```
+
+Next export the ROM and play up to Infant Isle.
 
 <p align="center">
 <img src="../images/encounters_metal_slime_ingame.png" alt="" style="max-height: 600px;" />
 </p>
+
+```admonish note
+In the overworld the slimes still appear as slimes. This is because their overworld model and behavior is not controlled by the encounters table.
+```
+
+Next let's modify some skill sets!
