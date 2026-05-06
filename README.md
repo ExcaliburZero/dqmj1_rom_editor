@@ -16,6 +16,7 @@ Currently supports modifying:
 For information on how to use the ROM Editor, see:
 
 * [User's Guide](https://excaliburzero.github.io/dqmj1_rom_editor/) - tutorials on how to edit encounter tables, skill sets, and events
+* [Data Crystal pages](https://datacrystal.tcrf.net/wiki/Dragon_Quest_Monsters:_Joker) - technical details about the game's internal files
 
 ## Installation
 Note that the ROM editor currently only supports Windows and Linux. I may add Mac support if there is interest.
