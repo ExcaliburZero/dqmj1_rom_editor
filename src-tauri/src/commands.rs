@@ -17,7 +17,7 @@ use tauri::Manager;
 use dqmj1_rom_util::{
     btl_enmy_prm::BtlEnmyPrm,
     events::{
-        assembly::parser::{parse_dqmj1_asm, ParseLexErrors},
+        assembly::parser::{parse_dqmj1_asm, ParseError, ParseLexError, ParseLexErrors},
         binary::Evt,
         disassembly::{DisassembledEvt, Opcode},
     },
@@ -259,7 +259,9 @@ fn assemble_event_asm_file(
 
     let contents = std::fs::read_to_string(asm_filepath).unwrap();
     let disassembled = parse_dqmj1_asm(&contents, opcodes)?;
-    let evt = disassembled.to_evt(character_encoding);
+    let evt = disassembled
+        .to_evt(character_encoding)
+        .map_err(|err| vec![ParseLexError::Parse(ParseError::new(&err))])?;
 
     let mut file = File::create(output_filepath).unwrap();
     evt.write_le(&mut file).unwrap();
