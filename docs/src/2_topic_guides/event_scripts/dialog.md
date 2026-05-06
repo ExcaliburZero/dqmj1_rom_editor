@@ -53,7 +53,7 @@ Looking at the text in the `SetDialog` instruction, you'll notice that it starts
 SetDialog    "[0xEA]..."
 ```
 
-You'll also notice that before the `ShowDialog` instruction that there is a `SetU32` instruction. This controls whether the dialog advance triangle appears at the bottom of the dialog box. Using `1.0` at the end shows the triangle, while using `0.0` hides it.
+You'll also notice that before the `ShowDialog` instruction that there is a `SetU32` instruction. This controls whether the dialog advance triangle appears at the bottom of the dialog box. Using `1.0` at the end shows the triangle, while using `0.0` hides it. See [Value pools](value_pools.md) for a more detailed explanation of `SetU32`.
 
 ```
 SetU32       Pool_1 0.0 Const 0.0
