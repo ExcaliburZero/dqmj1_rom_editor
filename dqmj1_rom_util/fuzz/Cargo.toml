@@ -27,3 +27,9 @@ test = false
 doc = false
 bench = false
 
+[[bin]]
+name = "string_encoding"
+path = "fuzz_targets/string_encoding.rs"
+test = false
+doc = false
+bench = false
