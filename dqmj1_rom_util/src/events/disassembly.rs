@@ -138,7 +138,10 @@ impl DecodedInstruction<'_> {
         }
     }
 
-    pub fn get_raw_size_bytes(&self, character_encoding: &CharacterEncoding) -> usize {
+    pub fn get_raw_size_bytes(
+        &self,
+        character_encoding: &CharacterEncoding,
+    ) -> Result<usize, String> {
         let header_size = 8; // opcode + length
 
         let mut args_size = 0;
@@ -151,7 +154,7 @@ impl DecodedInstruction<'_> {
                 Arg::StringLit(string) => match arg_kind {
                     ArgumentKind::AsciiString => Self::round_up_to_multiple_of_4(string.len() + 1), // characters + null terminator
                     ArgumentKind::Dqmj1String => {
-                        let encoded_string = character_encoding.encode_string(string);
+                        let encoded_string = character_encoding.encode_string(string)?;
                         Self::round_up_to_multiple_of_4(encoded_string.len())
                     }
                     _ => panic!(),
@@ -161,7 +164,7 @@ impl DecodedInstruction<'_> {
 
         assert_eq!(args_size % 4, 0);
 
-        header_size + args_size
+        Ok(header_size + args_size)
     }
 
     fn round_up_to_multiple_of_4(value: usize) -> usize {
@@ -234,7 +237,7 @@ impl DisassembledEvt<'_> {
         }
     }
 
-    pub fn to_evt(&self, character_encoding: &CharacterEncoding) -> Evt {
+    pub fn to_evt(&self, character_encoding: &CharacterEncoding) -> Result<Evt, String> {
         // Find byte offsets for each label
         let mut i = 0;
         let mut label_to_offset = BTreeMap::new();
@@ -243,7 +246,7 @@ impl DisassembledEvt<'_> {
                 label_to_offset.insert(label.clone(), i);
             }
 
-            let size = instruction.get_raw_size_bytes(character_encoding);
+            let size = instruction.get_raw_size_bytes(character_encoding)?;
             i += size;
         }
 
@@ -272,7 +275,9 @@ impl DisassembledEvt<'_> {
                                 bytes.push(0x00);
                                 bytes
                             } // characters + null terminator
-                            ArgumentKind::Dqmj1String => character_encoding.encode_string(string),
+                            ArgumentKind::Dqmj1String => {
+                                character_encoding.encode_string(string)?
+                            }
                             _ => panic!(),
                         };
 
@@ -287,7 +292,7 @@ impl DisassembledEvt<'_> {
                 };
             }
 
-            let size = instruction.get_raw_size_bytes(character_encoding);
+            let size = instruction.get_raw_size_bytes(character_encoding)?;
             instructions.push(RawInstruction {
                 opcode: instruction.opcode.id as u32,
                 length: size as u32,
@@ -295,11 +300,11 @@ impl DisassembledEvt<'_> {
             });
         }
 
-        Evt {
+        Ok(Evt {
             magic: EVT_MAGIC,
             data: self.data,
             instructions,
-        }
+        })
     }
 
     fn parse_arguments(

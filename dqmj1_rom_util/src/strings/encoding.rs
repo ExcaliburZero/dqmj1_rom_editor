@@ -33,17 +33,25 @@ impl CharacterEncoding {
         }
     }
 
-    pub fn encode_string(&self, string: &str) -> Vec<u8> {
+    pub fn encode_string(&self, string: &str) -> Result<Vec<u8>, String> {
         let mut string_bytes: Vec<u8> = vec![];
         let mut hex_buffer: Vec<char> = vec![];
         let mut escape_buffer: Vec<char> = vec![];
         for char in string.chars() {
             let mut chars = vec![];
             if char == ']' {
+                if hex_buffer.len() < 3 {
+                    return Err("Found closing ] too early".to_string());
+                }
+
                 let char_bytes: String = hex_buffer[3..].iter().cloned().collect();
-                string_bytes.push(u8::from_str_radix(&char_bytes, 16).unwrap());
-                hex_buffer.clear();
-                continue;
+                if let Ok(hex_value) = u8::from_str_radix(&char_bytes, 16) {
+                    string_bytes.push(hex_value);
+                    hex_buffer.clear();
+                    continue;
+                } else {
+                    return Err(format!("Invalid hex value: \"{}\"", char_bytes));
+                }
             } else if char == '[' || !hex_buffer.is_empty() {
                 hex_buffer.push(char);
                 continue;
@@ -60,8 +68,7 @@ impl CharacterEncoding {
             }
 
             if !self.char_to_byte_map.contains_key(&chars) {
-                println!("Unrecognized chars: {:?}", chars);
-                panic!();
+                return Err(format!("Unrecognized chars: {:?}", chars));
             }
 
             let mut matching_bytes: Vec<u8> = self.char_to_byte_map[&chars].clone();
@@ -70,7 +77,7 @@ impl CharacterEncoding {
 
         string_bytes.push(0xFF);
 
-        string_bytes
+        Ok(string_bytes)
     }
 
     pub fn read_string(&self, bytes: &[u8]) -> String {
@@ -176,6 +183,6 @@ mod tests {
     fn encode_string(#[case] region: Region, #[case] string: &str, #[case] expected: &[u8]) {
         let encoding = CharacterEncoding::get(region);
 
-        assert_eq!(encoding.encode_string(string), expected);
+        assert_eq!(encoding.encode_string(string).unwrap(), expected);
     }
 }
