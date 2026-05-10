@@ -3,13 +3,13 @@ title = "DQMJ1 ROM Editor"
 authors = ["ExcaliburZero"]
 language = "en"
 
-[preprocessor]
-
 [preprocessor.admonish]
 command = "mdbook-admonish"
 assets_version = "3.1.0" # do not edit: managed by `mdbook-admonish install`
 
-[output]
+[preprocessor.mermaid]
+command = "mdbook-mermaid"
 
 [output.html]
 additional-css = ["./mdbook-admonish.css"]
+additional-js = ["./mermaid.min.js", "./mermaid-init.js"]
