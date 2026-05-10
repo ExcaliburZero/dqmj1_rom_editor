@@ -402,7 +402,343 @@
 <p>During the opening cutscene you'll see the updated dialog.</p>
 <p align="center">
 <img src="1_getting_started/../images/demo001_dialog_after_change_ingame.png" alt="" style="max-height: 600px;" />
+</p><div style="break-before: page; page-break-before: always;"></div><h1 id="topic-guides"><a class="header" href="#topic-guides">Topic Guides</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="event-scripts"><a class="header" href="#event-scripts">Event Scripts</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="instructions"><a class="header" href="#instructions">Instructions</a></h1>
+<p><strong>Instructions</strong> are the basic building blocks of event scripts. During a cutscene or overworld segment, the game will run an event script by executing the instructions in that script one-by-one in order.</p>
+<pre><code>Sleep        Const 60.0
+SetU32       Pool_1 0.0 Const 42.0
+LoadMap     
+LoadPos      "demo001.pos"
+</code></pre>
+<h2 id="parts-of-an-instruction"><a class="header" href="#parts-of-an-instruction">Parts of an instruction</a></h2>
+<p>Every instruction consists of the following parts:</p>
+<div class="table-wrapper"><table><thead><tr><th>Part</th><th>Example</th><th>Description</th></tr></thead><tbody>
+<tr><td>Name</td><td><code>Sleep</code></td><td>Determines the type of instruction, and thus what it does (wait, show dialog, move the camera, etc.)</td></tr>
+<tr><td>Arguments</td><td><code>Const 60.0</code></td><td>Additional information the instruction needs to perform its action (how long to wait, where to move the camera to, etc.)<br/><br/>Instructions can have 0 or more arguments.</td></tr>
+</tbody></table>
+</div>
+<p>As an example, the following instruction has the name <code>Sleep</code> and the arguments <code>Const</code> and <code>60.0</code>.</p>
+<pre><code>Sleep        Const 60.0
+</code></pre>
+<p>This particular instruction forces the game to wait 60 frames (1 second) before executing the next instruction.</p>
+<p>For a full list of the different types of instructions with descriptions and argument breakdowns, see the <a href="2_topic_guides/event_scripts/../../3_reference_guides/list_of_event_instructions.html">list of event instructions</a>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="value-pools"><a class="header" href="#value-pools">Value pools</a></h1>
+<p><strong>Value pools</strong> are the way that event scripts store and keep track of data. <a href="2_topic_guides/event_scripts/instructions.html">Instructions</a> read data from value pools as input and store data into value pools as output.</p>
+<p>Each pool holds a numbered list of values that can be written to, or read from.</p>
+<p>We will refer to entries in a pool by the pool name followed by the entry number in square brackets (ex. entry <code>0</code> of <code>Pool_1</code> = <code>Pool_1[0]</code>).</p>
+<pre><code>SetU32       Pool_1 0.0 Const 2.0   # Store the value 2.0 into Pool_1[0]
+SetU32       Pool_1 1.0 Const 1.0   # Store the value 1.0 into Pool_1[1]
+
+GetItemCount                        # Checks how many strong medicines (2.0)
+                                    # the player has in their bag (1.0)
+                                    # and store that number in Pool_1[0]
+
+GivePlayerGold                      # Give the player 1 gold for each strong
+                                    # medicine in their bag
+</code></pre>
+<h2 id="example"><a class="header" href="#example">Example</a></h2>
+<p>Let's explore the example shown above, which gives the player 1 gold for each strong medicine they have in their bag.</p>
+<h3 id="as-input"><a class="header" href="#as-input">As input</a></h3>
+<p>Notice that the <code>GetItemCount</code> instruction does not take any <a href="2_topic_guides/event_scripts/instructions.html#parts-of-an-instruction">arguments</a>. But it needs some way to know what type of item we want to count, as well as whether we want to look in the player's hand, bag, or both.</p>
+<p>The <code>GetItemCount</code> instruction takes two inputs, an <code>item_id</code> and an <code>item_location</code>. It reads the <code>item_id</code> from <code>Pool_1[0]</code>, and it reads <code>item_location</code> from <code>Pool_1[1]</code>.</p>
+<p>So in order to have <code>GetItemCount</code> count the number of strong medicines the player has in their bag, we will need to:</p>
+<ul>
+<li>Store <code>2.0</code> in <code>Pool_1[0]</code>, as <code>2</code> is the <a href="https://datacrystal.tcrf.net/wiki/Dragon_Quest_Monsters:_Joker/Notes#Item_IDs">item id for strong medicine</a></li>
+<li>Store <code>1.0</code> in <code>Pool_1[1]</code>, as <code>1</code> is a special value for <code>GetItemCount</code> indicating to look only in the player's bag</li>
+</ul>
+<p>To store a value within a pool, we can use the <code>SetU32</code> instruction. It takes 4 arguments:</p>
+<div class="table-wrapper"><table><thead><tr><th>Argument</th><th>Purpose</th></tr></thead><tbody>
+<tr><td>1st</td><td>Pool to store the value in</td></tr>
+<tr><td>2nd</td><td>Entry within that pool to store the value in</td></tr>
+<tr><td>3rd</td><td><code>Const</code></td></tr>
+<tr><td>4th</td><td>Value to store</td></tr>
+</tbody></table>
+</div><div id="admonition-note" class="admonition admonish-note" role="note" aria-labelledby="admonition-note-title">
+<div class="admonition-title">
+<div id="admonition-note-title">
+<p>Note</p>
+</div>
+<a class="admonition-anchor-link" href="2_topic_guides/event_scripts/value_pools.html#admonition-note"></a>
+</div>
+<div>
+<p><code>SetU32</code> can also be used to move a value from one pool entry to another. In that case the 3rd argument is the pool to read the value from, and the 4th argument is the entry in that pool to read from.</p>
+</div>
+</div>
+<p>The two <code>SetU32</code> instructions below will store <code>2.0</code> into <code>Pool_1[0]</code> and <code>1.0</code> into <code>Pool_1[1]</code>.</p>
+<pre><code>SetU32       Pool_1 0.0 Const 2.0   # Store the value 2.0 into Pool_1[0]
+SetU32       Pool_1 1.0 Const 1.0   # Store the value 1.0 into Pool_1[1]
+</code></pre>
+<p>The <code>GetItemCount</code> instruction will then count the number of strong medicines that the player has in their bag. Once it has executed, the count is stored into <code>Pool_1[0]</code>, which the next instruction can then read.</p>
+<h3 id="as-output"><a class="header" href="#as-output">As output</a></h3>
+<p>We want the <code>GivePlayerGold</code> instruction to give the player 1 gold for each strong medicine in their bag, but we don't know how many strong medicines the player will have in their bag until the script is actually running. So we can't just use <code>SetU32</code> to specify a fixed amount.</p>
+<p><code>GetItemCount</code> stores its result into <code>Pool_1[0]</code> after it executes, and <code>GivePlayerGold</code> reads the amount of gold to give from <code>Pool_1[0]</code>. So by placing <code>GivePlayerGold</code> directly after <code>GetItemCount</code>, it will give the player gold equal to the count that was calculated.</p>
+<h2 id="supported-pools"><a class="header" href="#supported-pools">Supported pools</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Main purpose</th></tr></thead><tbody>
+<tr><td><code>Pool_0</code></td><td>Storing data for later use.</td></tr>
+<tr><td><code>Pool_1</code></td><td>Passing data as input to instructions. Instructions also store their output in this pool.</td></tr>
+<tr><td><code>Pool_3</code></td><td>Storing data for later use. (unclear if this has a special purpose)</td></tr>
+</tbody></table>
+</div><div id="admonition-note-1" class="admonition admonish-note" role="note" aria-labelledby="admonition-note-1-title">
+<div class="admonition-title">
+<div id="admonition-note-1-title">
+<p>Note</p>
+</div>
+<a class="admonition-anchor-link" href="2_topic_guides/event_scripts/value_pools.html#admonition-note-1"></a>
+</div>
+<div>
+<p>There is no <code>Pool_2</code>, as the internal representation for event scripts uses <code>2</code> for the pool to represent <code>Const</code> rather than an actual pool.</p>
+</div>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="dialog"><a class="header" href="#dialog">Dialog</a></h1>
+<p><strong>Dialog</strong> boxes allow you to show the player character dialog or other text.</p>
+<pre><code>StartDialog 
+SpeakerName  "Black Jacques"
+SetDialog    "[0xEA]Time to go, [0xF5].\nZe Warden iz calling for you."
+SetU32       Pool_1 0.0 Const 1.0
+ShowDialog  
+SetDialog    "[0xEA]..."
+SetU32       Pool_1 0.0 Const 0.0
+ShowDialog  
+EndDialog   
+</code></pre>
+<p align="center">
+<img src="2_topic_guides/event_scripts/../../images/events_dialog_first_cutscene.png" alt="" style="max-height: 600px;" />
 </p>
+<h2 id="overall-structure"><a class="header" href="#overall-structure">Overall structure</a></h2>
+<p>Each section of dialog has the following basic structure of <a href="2_topic_guides/event_scripts/instructions.html">instructions</a>:</p>
+<ul>
+<li><code>StartDialog</code> starts the dialog section</li>
+<li><code>SpeakerName</code> determines the character name shown for the dialog boxes (optional)</li>
+<li><code>SetDialog</code> sets the text of the dialog</li>
+<li><code>ShowDialog</code> shows the dialog onscreen until the player presses the A button</li>
+<li><code>EndDialog</code> ends the dialog section</li>
+</ul>
+<p>A dialog section can contain multiple <code>SetDialog</code>/<code>ShowDialog</code> pairs between a single <code>StartDialog</code> and <code>EndDialog</code>.</p>
+<h3 id="example-1"><a class="header" href="#example-1">Example 1</a></h3>
+<p>As an example, consider the following dialog section:</p>
+<pre><code>StartDialog 
+SpeakerName  "Black Jacques"
+SetDialog    "[0xEA]..."
+SetU32       Pool_1 0.0 Const 0.0
+ShowDialog  
+EndDialog   
+</code></pre>
+<p>In this case the speaker name is <code>Black Jacques</code> and the text shown in the dialog box is <code>...</code>. All text must be surrounded in double quotes <code>"</code>
+to indicate that it is text.</p>
+<p align="center">
+<img src="2_topic_guides/event_scripts/../../images/events_dialog_first_cutscene_ellipses_only.png" alt="" style="max-height: 250px;" />
+</p>
+<p>Looking at the text in the <code>SetDialog</code> instruction, you'll notice that it starts with <code>[0xEA]</code>. This is a <a href="2_topic_guides/event_scripts/dialog.html#control-codes">control code</a>. In this case, it indicates that the text is for a conversation. Most conversation text will start with <code>[0xEA]</code>, though there are some cases where it may start with a another control code (such as <code>[0xEB]</code>).</p>
+<pre><code>SetDialog    "[0xEA]..."
+</code></pre>
+<p>You'll also notice that before the <code>ShowDialog</code> instruction that there is a <code>SetU32</code> instruction. This controls whether the dialog advance triangle appears at the bottom of the dialog box. Using <code>1.0</code> at the end shows the triangle, while using <code>0.0</code> hides it. See <a href="2_topic_guides/event_scripts/value_pools.html">Value pools</a> for a more detailed explanation of <code>SetU32</code>.</p>
+<pre><code>SetU32       Pool_1 0.0 Const 0.0
+ShowDialog  
+</code></pre>
+<h3 id="example-2"><a class="header" href="#example-2">Example 2</a></h3>
+<p>As another example, consider this actual dialog section from the first cutscene of the game:</p>
+<pre><code>StartDialog 
+SpeakerName  "Black Jacques"
+SetDialog    "[0xEA]Time to go, [0xF5].\nZe Warden iz calling for you."
+SetU32       Pool_1 0.0 Const 1.0
+ShowDialog  
+SetDialog    "[0xEA]..."
+SetU32       Pool_1 0.0 Const 0.0
+ShowDialog  
+EndDialog   
+</code></pre>
+<p align="center">
+<img src="2_topic_guides/event_scripts/../../images/events_dialog_first_cutscene.png" alt="" style="max-height: 600px;" />
+</p>
+<p>Here we can notice a few things:</p>
+<ul>
+<li><code>SpeakerName</code> only needs to be used once, even if the character has multiple dialog boxes</li>
+<li>In the first <code>SetDialog</code>, there are two interesting parts:
+<ul>
+<li><code>\n</code> is used to start a new line of dialog in the same dialog box</li>
+<li><code>[0xF5]</code> is the <a href="2_topic_guides/event_scripts/dialog.html#control-codes">control code</a> used to insert the player's name</li>
+</ul>
+</li>
+<li>The dialog advance triangle is used for the first dialog box, but not the second
+<ul>
+<li><code>Const 1.0</code> vs <code>Const 0.0</code> for the <code>SetU32</code> instructions</li>
+</ul>
+</li>
+</ul>
+<div id="admonition-note" class="admonition admonish-note" role="note" aria-labelledby="admonition-note-title">
+<div class="admonition-title">
+<div id="admonition-note-title">
+<p>Note</p>
+</div>
+<a class="admonition-anchor-link" href="2_topic_guides/event_scripts/dialog.html#admonition-note"></a>
+</div>
+<div>
+<p>We haven't shown how to use dialog prompts (ex. Yes or No). Those are covered in the <a href="2_topic_guides/event_scripts/jumps_and_conditionals.html">Jumps and Conditionals</a> page.</p>
+</div>
+</div>
+<h2 id="control-codes"><a class="header" href="#control-codes">Control codes</a></h2>
+<p>Control codes are special pieces of text that instruct the game to display specific information within dialog text or use a particular effect in displaying the text of the dialog box.</p>
+<div class="table-wrapper"><table><thead><tr><th>Code</th><th>Purpose</th></tr></thead><tbody>
+<tr><td><code>[0xD0]</code></td><td>Starts a non-conversational dialog (ex. for opening a treasure chest)</td></tr>
+<tr><td><code>[0xEA]</code></td><td>Starts a conversational dialog</td></tr>
+<tr><td><code>[0xEB]</code></td><td>Used to start some conversational dialog (exact behavior unclear)</td></tr>
+<tr><td><code>[0xF5]</code></td><td>Inserts the player's name</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="jumps-and-conditionals"><a class="header" href="#jumps-and-conditionals">Jumps and conditionals</a></h1>
+<p><strong>Jumps and conditionals</strong> are used to make cutscenes and overworld events react to player choices or game state.</p>
+<ul>
+<li>Different dialog or cutscene outcome based on a yes/no choice</li>
+<li>Different outcomes based on the player's gold or items</li>
+<li>Repeat a dialog box until the player gives the correct answer</li>
+</ul>
+<h2 id="jumps"><a class="header" href="#jumps">Jumps</a></h2>
+<p><strong>Jumps</strong> are a special type of instruction that instead of causing the event to move on to the next instruction after it, move the event to a specific instruction.</p>
+<p>Consider the following example: (We've indented the instructions in this example for clarity)</p>
+<pre><code>    StartDialog 
+    SpeakerName  "Black Jacques"
+    SetDialog    "[0xEA]I am only going to tell you this once"
+    SetU32       Pool_1 0.0 Const 1.0
+    ShowDialog  
+    EndDialog   
+</code></pre>
+<p>In this case, the instructions run one after another:</p>
+<pre class="mermaid">flowchart LR
+    A[StartDialog] --&gt; B[SpeakerName] --&gt; C[SetDialog] --&gt; D[SetU32] --&gt; E[ShowDialog] --&gt; F[EndDialog]
+</pre>
+<p>Let's add in a <code>Jump</code> and see how it affects what the event does:</p>
+<pre><code>    StartDialog 
+    SpeakerName  "Black Jacques"
+loop_start:
+    SetDialog    "[0xEA]I am going to tell you this infinitely many times"
+    SetU32       Pool_1 0.0 Const 1.0
+    ShowDialog  
+    Jump loop_start
+    EndDialog 
+</code></pre>
+<p>Note that there are two changes here:</p>
+<ol>
+<li>The <code>loop_start:</code> line before the <code>SetDialog</code>, these types of lines are called <strong>labels</strong></li>
+<li>The <code>Jump loop_start</code> after the <code>ShowDialog</code></li>
+</ol>
+<p>The instructions will run one after another, but when the <code>Jump</code> instruction is reached the event will move back to the <code>SetDialog</code> instead of moving forward to the <code>EndDialog</code>. Specifically, it will go back to the <code>SetDialog</code> because the <code>Jump</code> command has the <code>loop_start</code> label as its first argument and the <code>loop_start</code> label is placed directly before the <code>SetDialog</code>.</p>
+<pre class="mermaid">flowchart LR
+    A[StartDialog] --&gt; B[SpeakerName] --&gt; C[SetDialog] --&gt; D[SetU32] --&gt; E[ShowDialog] --&gt; F[Jump] --&gt; C
+</pre>
+<p>This behavior where an event script repeats the same set of instructions more than once is called a <strong>loop</strong>.</p>
+<p align="center">
+<img src="2_topic_guides/event_scripts/../../images/events_infinite_loop.gif" alt="" style="max-height: 300px;" />
+</p>
+<div id="admonition-note" class="admonition admonish-note" role="note" aria-labelledby="admonition-note-title">
+<div class="admonition-title">
+<div id="admonition-note-title">
+<p>Note</p>
+</div>
+<a class="admonition-anchor-link" href="2_topic_guides/event_scripts/jumps_and_conditionals.html#admonition-note"></a>
+</div>
+<div>
+<p>This particular example will make the "I am going to tell you this infinitely many times" dialog box appear over and over again without end, trapping the game in an <strong>infinite loop</strong>.</p>
+<p>We'll fix this in the next section.</p>
+</div>
+</div>
+<h3 id="types-of-jumps"><a class="header" href="#types-of-jumps">Types of jumps</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Instruction</th><th>Description</th></tr></thead><tbody>
+<tr><td>Jump</td><td>Jumps to the specified label</td></tr>
+<tr><td>JumpIfTrue</td><td>Jumps to the specified label if previous conditional is true</td></tr>
+<tr><td>JumpIfFalse</td><td>Jumps to the specified label if previous conditional is false</td></tr>
+<tr><td>JumpKeepBackPointer</td><td>Jumps to the specified label and keep track of where the following instruction is</td></tr>
+</tbody></table>
+</div><div id="admonition-note-1" class="admonition admonish-note" role="note" aria-labelledby="admonition-note-1-title">
+<div class="admonition-title">
+<div id="admonition-note-1-title">
+<p>Note</p>
+</div>
+<a class="admonition-anchor-link" href="2_topic_guides/event_scripts/jumps_and_conditionals.html#admonition-note-1"></a>
+</div>
+<div>
+<p><code>JumpKeepBackPointer</code> enables jumping to a different part of the script, and jumping back using <code>Exit</code>.</p>
+<p>This will be covered in an upcoming later section of the guide.</p>
+</div>
+</div>
+<h2 id="conditionals"><a class="header" href="#conditionals">Conditionals</a></h2>
+<p><strong>Conditionals</strong> allow you to control where the event will go after a jump instruction. This will enable you to make events react to player choices and game state.</p>
+<h3 id="player-choice--controlling-loops"><a class="header" href="#player-choice--controlling-loops">Player choice &amp; controlling loops</a></h3>
+<p>As shown in the previous section, we can use a <code>Jump</code> instruction to repeat a dialog box. Let's use a conditional to make the dialog box stop after the player selects a "No" choice.</p>
+<pre><code>    StartDialog 
+    SpeakerName  "Black Jacques"
+loop_start:
+    SetDialog    "[0xEA]Do you want me to say this again?"
+    SetU32       Pool_1 0.0 Const 1.0
+    PromptYesNo
+    FloatsEq Pool_1 0.0 Const 1.0
+    JumpIfTrue loop_start
+    EndDialog 
+</code></pre>
+<p>Note that there are three main changes here:</p>
+<ol>
+<li>Changes the <code>ShowDialog</code> to <code>PromptYesNo</code>. This both shows the dialog and gives the player a Yes or No choice, storing <code>1.0</code> in <code>Pool_1[0]</code> if the player chose "Yes", or <code>0.0</code> if the player chose "No".
+<ul>
+<li>Note that like <code>ShowDialog</code>, <code>PromptYesNo</code> also shows the dialog advance triangle if <code>Pool_1[0]</code> is equal to <code>1.0</code>.</li>
+</ul>
+</li>
+<li>The <code>FloatsEq Pool_1 0.0 Const 1.0</code>. This is a conditional, which checks if the value in <code>Pool_1[0]</code> is equal to <code>1.0</code>.</li>
+<li>The <code>Jump</code> has been changed to <code>JumpIfTrue</code>. This will move the event to <code>SetDialog</code> if the previous conditional was true, or move the event to <code>EndDialog</code> if the previous conditional was false.</li>
+</ol>
+<p>By adding these instructions, we have created a loop that will repeat if the player selects "Yes" and end when the player selects "No".</p>
+<pre class="mermaid">flowchart LR
+    A[StartDialog] --&gt; B[SpeakerName] --&gt; C[SetDialog] --&gt; D[SetU32] --&gt; F[PromptYesNo] --&gt; G[FloatsEq] --&gt; H{JumpIfTrue}
+    H -- Yes --&gt; C
+    H -- No --&gt; I[EndDialog]
+</pre>
+<p align="center">
+<img src="2_topic_guides/event_scripts/../../images/events_yes_no_loop.gif" alt="" style="max-height: 300px;" />
+</p>
+<h3 id="game-state"><a class="header" href="#game-state">Game state</a></h3>
+<p>In addition to controlling loops, conditionals enable you to have events behave differently based on game state (ex. player's gold, items, library completion, etc.).</p>
+<p>As an example of this, let's make a script that gives the player 500 gold if they have less than 1000 gold.</p>
+<p>Here's the script behavior we want to achieve:</p>
+<pre class="mermaid">flowchart LR
+    A[Greet player] --&gt; B{Does player have &lt; 1000 gold?}
+    B -- no --&gt; C[Say they're doing well]
+    B -- yes --&gt; D[Give player 500 gold]
+    C --&gt; E[End conversation]
+    D --&gt; E
+</pre>
+<p>As a part of this, we will use the <code>GetPlayerGold</code> instruction. It will set <code>Pool_1[0]</code> to the amount of gold the player currently has.</p>
+<pre><code>    StartDialog 
+    SpeakerName  "Generous Individual"
+    SetDialog    "[0xEA]How are you doing on this fine day?"
+    SetU32       Pool_1 0.0 Const 1.0
+    ShowDialog
+    GetPlayerGold
+    FloatsLess Pool_1 0.0 Const 1000.0
+    JumpIfTrue in_need_of_money
+    SetDialog    "[0xEA]Seems like you're doing well for yourself!"
+    SetU32       Pool_1 0.0 Const 1.0
+    ShowDialog
+    Jump conversation_end
+in_need_of_money:
+    SetDialog    "[0xEA]You could be doing better.\nHere, take this and buy some ice cream!"
+    SetU32       Pool_1 0.0 Const 1.0
+    ShowDialog
+    SetU32       Pool_1 0.0 Const 500.0
+    GivePlayerGold
+conversation_end:
+    EndDialog 
+</code></pre>
+<p>Here we use <code>JumpIfTrue</code> to go to the <code>in_need_of_money</code> label if the player's gold is less than 1000. If the player has 1000 or more gold, then the script instead continues on to the "Seems like ..." dialog and uses a <code>Jump</code> to go to <code>conversation_end</code>. This results in both paths ending up at <code>conversation_end</code>.</p>
+<h3 id="types-of-conditionals"><a class="header" href="#types-of-conditionals">Types of conditionals</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Instruction</th><th>Description</th></tr></thead><tbody>
+<tr><td>FloatsEq</td><td>Checks if two values are equal</td></tr>
+<tr><td>FloatsNeq</td><td>Checks if two values are not equal</td></tr>
+<tr><td>FloatsGreater</td><td>Checks if the first value is greater than the second</td></tr>
+<tr><td>FloatsLess</td><td>Checks if the first value is less than the second</td></tr>
+<tr><td>FloatsGreaterEq</td><td>Checks if the first value is greater than or equal to the second</td></tr>
+<tr><td>FloatsLessEq</td><td>Checks if the first value is less than or equal to the second</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="reference-guides"><a class="header" href="#reference-guides">Reference guides</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="list-of-event-instructions"><a class="header" href="#list-of-event-instructions">List of event instructions</a></h1>
+<p>TODO: work in progress</p>
+
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
@@ -437,6 +773,8 @@
         <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
+        <script src="./mermaid.min.js"></script>
+        <script src="./mermaid-init.js"></script>
 
         <script>
         window.addEventListener('load', function() {

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Installation - DQMJ1 ROM Editor</title>
+        <title>Value pools - DQMJ1 ROM Editor</title>
 
 
         <!-- Custom HTML head -->
@@ -12,35 +12,35 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        <link rel="stylesheet" href=".././mdbook-admonish.css">
+        <link rel="stylesheet" href="../.././mdbook-admonish.css">
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../";
+            const path_to_root = "../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex.js";
+            window.path_to_searchindex_js = "../../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc.js"></script>
+        <script src="../../toc.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -107,7 +107,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -142,7 +142,7 @@
                     <h1 class="menu-title">DQMJ1 ROM Editor</h1>
 
                     <div class="right-buttons">
-                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
 
@@ -176,33 +176,82 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
-<h3 id="windows"><a class="header" href="#windows">Windows</a></h3>
-<ul>
-<li>Download the <code>.msi</code> installer file from the <a href="https://github.com/ExcaliburZero/dqmj1_rom_editor/releases">releases page</a></li>
-<li>Double click on the <code>.msi</code> installer to run it</li>
-<li>Follow the instructions in the installer</li>
-<li>Run the application from your desktop search bar (<code>dqmj1_rom_editor</code>)</li>
-</ul>
-<h3 id="linux"><a class="header" href="#linux">Linux</a></h3>
-<ul>
-<li>Download your Linux file of choice (<code>.AppImage</code>, <code>.deb</code>, <code>.rpm</code>) from the <a href="https://github.com/ExcaliburZero/dqmj1_rom_editor/releases">releases page</a>
-<ul>
-<li>I've only tested the <code>.AppImage</code>. If you encounter issues with any of them, <a href="https://github.com/ExcaliburZero/dqmj1_rom_editor/issues">create an issue about it</a>.</li>
-</ul>
-</li>
-<li>Run / install your file of choice</li>
-</ul>
+                        <h1 id="value-pools"><a class="header" href="#value-pools">Value pools</a></h1>
+<p><strong>Value pools</strong> are the way that event scripts store and keep track of data. <a href="instructions.html">Instructions</a> read data from value pools as input and store data into value pools as output.</p>
+<p>Each pool holds a numbered list of values that can be written to, or read from.</p>
+<p>We will refer to entries in a pool by the pool name followed by the entry number in square brackets (ex. entry <code>0</code> of <code>Pool_1</code> = <code>Pool_1[0]</code>).</p>
+<pre><code>SetU32       Pool_1 0.0 Const 2.0   # Store the value 2.0 into Pool_1[0]
+SetU32       Pool_1 1.0 Const 1.0   # Store the value 1.0 into Pool_1[1]
 
+GetItemCount                        # Checks how many strong medicines (2.0)
+                                    # the player has in their bag (1.0)
+                                    # and store that number in Pool_1[0]
+
+GivePlayerGold                      # Give the player 1 gold for each strong
+                                    # medicine in their bag
+</code></pre>
+<h2 id="example"><a class="header" href="#example">Example</a></h2>
+<p>Let's explore the example shown above, which gives the player 1 gold for each strong medicine they have in their bag.</p>
+<h3 id="as-input"><a class="header" href="#as-input">As input</a></h3>
+<p>Notice that the <code>GetItemCount</code> instruction does not take any <a href="instructions.html#parts-of-an-instruction">arguments</a>. But it needs some way to know what type of item we want to count, as well as whether we want to look in the player's hand, bag, or both.</p>
+<p>The <code>GetItemCount</code> instruction takes two inputs, an <code>item_id</code> and an <code>item_location</code>. It reads the <code>item_id</code> from <code>Pool_1[0]</code>, and it reads <code>item_location</code> from <code>Pool_1[1]</code>.</p>
+<p>So in order to have <code>GetItemCount</code> count the number of strong medicines the player has in their bag, we will need to:</p>
+<ul>
+<li>Store <code>2.0</code> in <code>Pool_1[0]</code>, as <code>2</code> is the <a href="https://datacrystal.tcrf.net/wiki/Dragon_Quest_Monsters:_Joker/Notes#Item_IDs">item id for strong medicine</a></li>
+<li>Store <code>1.0</code> in <code>Pool_1[1]</code>, as <code>1</code> is a special value for <code>GetItemCount</code> indicating to look only in the player's bag</li>
+</ul>
+<p>To store a value within a pool, we can use the <code>SetU32</code> instruction. It takes 4 arguments:</p>
+<div class="table-wrapper"><table><thead><tr><th>Argument</th><th>Purpose</th></tr></thead><tbody>
+<tr><td>1st</td><td>Pool to store the value in</td></tr>
+<tr><td>2nd</td><td>Entry within that pool to store the value in</td></tr>
+<tr><td>3rd</td><td><code>Const</code></td></tr>
+<tr><td>4th</td><td>Value to store</td></tr>
+</tbody></table>
+</div><div id="admonition-note" class="admonition admonish-note" role="note" aria-labelledby="admonition-note-title">
+<div class="admonition-title">
+<div id="admonition-note-title">
+<p>Note</p>
+</div>
+<a class="admonition-anchor-link" href="#admonition-note"></a>
+</div>
+<div>
+<p><code>SetU32</code> can also be used to move a value from one pool entry to another. In that case the 3rd argument is the pool to read the value from, and the 4th argument is the entry in that pool to read from.</p>
+</div>
+</div>
+<p>The two <code>SetU32</code> instructions below will store <code>2.0</code> into <code>Pool_1[0]</code> and <code>1.0</code> into <code>Pool_1[1]</code>.</p>
+<pre><code>SetU32       Pool_1 0.0 Const 2.0   # Store the value 2.0 into Pool_1[0]
+SetU32       Pool_1 1.0 Const 1.0   # Store the value 1.0 into Pool_1[1]
+</code></pre>
+<p>The <code>GetItemCount</code> instruction will then count the number of strong medicines that the player has in their bag. Once it has executed, the count is stored into <code>Pool_1[0]</code>, which the next instruction can then read.</p>
+<h3 id="as-output"><a class="header" href="#as-output">As output</a></h3>
+<p>We want the <code>GivePlayerGold</code> instruction to give the player 1 gold for each strong medicine in their bag, but we don't know how many strong medicines the player will have in their bag until the script is actually running. So we can't just use <code>SetU32</code> to specify a fixed amount.</p>
+<p><code>GetItemCount</code> stores its result into <code>Pool_1[0]</code> after it executes, and <code>GivePlayerGold</code> reads the amount of gold to give from <code>Pool_1[0]</code>. So by placing <code>GivePlayerGold</code> directly after <code>GetItemCount</code>, it will give the player gold equal to the count that was calculated.</p>
+<h2 id="supported-pools"><a class="header" href="#supported-pools">Supported pools</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Main purpose</th></tr></thead><tbody>
+<tr><td><code>Pool_0</code></td><td>Storing data for later use.</td></tr>
+<tr><td><code>Pool_1</code></td><td>Passing data as input to instructions. Instructions also store their output in this pool.</td></tr>
+<tr><td><code>Pool_3</code></td><td>Storing data for later use. (unclear if this has a special purpose)</td></tr>
+</tbody></table>
+</div><div id="admonition-note-1" class="admonition admonish-note" role="note" aria-labelledby="admonition-note-1-title">
+<div class="admonition-title">
+<div id="admonition-note-1-title">
+<p>Note</p>
+</div>
+<a class="admonition-anchor-link" href="#admonition-note-1"></a>
+</div>
+<div>
+<p>There is no <code>Pool_2</code>, as the internal representation for event scripts uses <code>2</code> for the pool to represent <code>Const</code> rather than an actual pool.</p>
+</div>
+</div>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../1_getting_started/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../2_topic_guides/event_scripts/instructions.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../1_getting_started/basics.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../2_topic_guides/event_scripts/dialog.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -212,11 +261,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../1_getting_started/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../2_topic_guides/event_scripts/instructions.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../1_getting_started/basics.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../2_topic_guides/event_scripts/dialog.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -231,17 +280,17 @@
         </script>
 
 
-        <script src="../elasticlunr.min.js"></script>
-        <script src="../mark.min.js"></script>
-        <script src="../searcher.js"></script>
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
 
-        <script src="../clipboard.min.js"></script>
-        <script src="../highlight.js"></script>
-        <script src="../book.js"></script>
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src=".././mermaid.min.js"></script>
-        <script src=".././mermaid-init.js"></script>
+        <script src="../.././mermaid.min.js"></script>
+        <script src="../.././mermaid-init.js"></script>
 
 
 

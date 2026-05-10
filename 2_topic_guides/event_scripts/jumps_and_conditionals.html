@@ -1,0 +1,384 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Jumps and conditionals - DQMJ1 ROM Editor</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../.././mdbook-admonish.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">DQMJ1 ROM Editor</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="jumps-and-conditionals"><a class="header" href="#jumps-and-conditionals">Jumps and conditionals</a></h1>
+<p><strong>Jumps and conditionals</strong> are used to make cutscenes and overworld events react to player choices or game state.</p>
+<ul>
+<li>Different dialog or cutscene outcome based on a yes/no choice</li>
+<li>Different outcomes based on the player's gold or items</li>
+<li>Repeat a dialog box until the player gives the correct answer</li>
+</ul>
+<h2 id="jumps"><a class="header" href="#jumps">Jumps</a></h2>
+<p><strong>Jumps</strong> are a special type of instruction that instead of causing the event to move on to the next instruction after it, move the event to a specific instruction.</p>
+<p>Consider the following example: (We've indented the instructions in this example for clarity)</p>
+<pre><code>    StartDialog 
+    SpeakerName  "Black Jacques"
+    SetDialog    "[0xEA]I am only going to tell you this once"
+    SetU32       Pool_1 0.0 Const 1.0
+    ShowDialog  
+    EndDialog   
+</code></pre>
+<p>In this case, the instructions run one after another:</p>
+<pre class="mermaid">flowchart LR
+    A[StartDialog] --&gt; B[SpeakerName] --&gt; C[SetDialog] --&gt; D[SetU32] --&gt; E[ShowDialog] --&gt; F[EndDialog]
+</pre>
+<p>Let's add in a <code>Jump</code> and see how it affects what the event does:</p>
+<pre><code>    StartDialog 
+    SpeakerName  "Black Jacques"
+loop_start:
+    SetDialog    "[0xEA]I am going to tell you this infinitely many times"
+    SetU32       Pool_1 0.0 Const 1.0
+    ShowDialog  
+    Jump loop_start
+    EndDialog 
+</code></pre>
+<p>Note that there are two changes here:</p>
+<ol>
+<li>The <code>loop_start:</code> line before the <code>SetDialog</code>, these types of lines are called <strong>labels</strong></li>
+<li>The <code>Jump loop_start</code> after the <code>ShowDialog</code></li>
+</ol>
+<p>The instructions will run one after another, but when the <code>Jump</code> instruction is reached the event will move back to the <code>SetDialog</code> instead of moving forward to the <code>EndDialog</code>. Specifically, it will go back to the <code>SetDialog</code> because the <code>Jump</code> command has the <code>loop_start</code> label as its first argument and the <code>loop_start</code> label is placed directly before the <code>SetDialog</code>.</p>
+<pre class="mermaid">flowchart LR
+    A[StartDialog] --&gt; B[SpeakerName] --&gt; C[SetDialog] --&gt; D[SetU32] --&gt; E[ShowDialog] --&gt; F[Jump] --&gt; C
+</pre>
+<p>This behavior where an event script repeats the same set of instructions more than once is called a <strong>loop</strong>.</p>
+<p align="center">
+<img src="../../images/events_infinite_loop.gif" alt="" style="max-height: 300px;" />
+</p>
+<div id="admonition-note" class="admonition admonish-note" role="note" aria-labelledby="admonition-note-title">
+<div class="admonition-title">
+<div id="admonition-note-title">
+<p>Note</p>
+</div>
+<a class="admonition-anchor-link" href="#admonition-note"></a>
+</div>
+<div>
+<p>This particular example will make the "I am going to tell you this infinitely many times" dialog box appear over and over again without end, trapping the game in an <strong>infinite loop</strong>.</p>
+<p>We'll fix this in the next section.</p>
+</div>
+</div>
+<h3 id="types-of-jumps"><a class="header" href="#types-of-jumps">Types of jumps</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Instruction</th><th>Description</th></tr></thead><tbody>
+<tr><td>Jump</td><td>Jumps to the specified label</td></tr>
+<tr><td>JumpIfTrue</td><td>Jumps to the specified label if previous conditional is true</td></tr>
+<tr><td>JumpIfFalse</td><td>Jumps to the specified label if previous conditional is false</td></tr>
+<tr><td>JumpKeepBackPointer</td><td>Jumps to the specified label and keep track of where the following instruction is</td></tr>
+</tbody></table>
+</div><div id="admonition-note-1" class="admonition admonish-note" role="note" aria-labelledby="admonition-note-1-title">
+<div class="admonition-title">
+<div id="admonition-note-1-title">
+<p>Note</p>
+</div>
+<a class="admonition-anchor-link" href="#admonition-note-1"></a>
+</div>
+<div>
+<p><code>JumpKeepBackPointer</code> enables jumping to a different part of the script, and jumping back using <code>Exit</code>.</p>
+<p>This will be covered in an upcoming later section of the guide.</p>
+</div>
+</div>
+<h2 id="conditionals"><a class="header" href="#conditionals">Conditionals</a></h2>
+<p><strong>Conditionals</strong> allow you to control where the event will go after a jump instruction. This will enable you to make events react to player choices and game state.</p>
+<h3 id="player-choice--controlling-loops"><a class="header" href="#player-choice--controlling-loops">Player choice &amp; controlling loops</a></h3>
+<p>As shown in the previous section, we can use a <code>Jump</code> instruction to repeat a dialog box. Let's use a conditional to make the dialog box stop after the player selects a "No" choice.</p>
+<pre><code>    StartDialog 
+    SpeakerName  "Black Jacques"
+loop_start:
+    SetDialog    "[0xEA]Do you want me to say this again?"
+    SetU32       Pool_1 0.0 Const 1.0
+    PromptYesNo
+    FloatsEq Pool_1 0.0 Const 1.0
+    JumpIfTrue loop_start
+    EndDialog 
+</code></pre>
+<p>Note that there are three main changes here:</p>
+<ol>
+<li>Changes the <code>ShowDialog</code> to <code>PromptYesNo</code>. This both shows the dialog and gives the player a Yes or No choice, storing <code>1.0</code> in <code>Pool_1[0]</code> if the player chose "Yes", or <code>0.0</code> if the player chose "No".
+<ul>
+<li>Note that like <code>ShowDialog</code>, <code>PromptYesNo</code> also shows the dialog advance triangle if <code>Pool_1[0]</code> is equal to <code>1.0</code>.</li>
+</ul>
+</li>
+<li>The <code>FloatsEq Pool_1 0.0 Const 1.0</code>. This is a conditional, which checks if the value in <code>Pool_1[0]</code> is equal to <code>1.0</code>.</li>
+<li>The <code>Jump</code> has been changed to <code>JumpIfTrue</code>. This will move the event to <code>SetDialog</code> if the previous conditional was true, or move the event to <code>EndDialog</code> if the previous conditional was false.</li>
+</ol>
+<p>By adding these instructions, we have created a loop that will repeat if the player selects "Yes" and end when the player selects "No".</p>
+<pre class="mermaid">flowchart LR
+    A[StartDialog] --&gt; B[SpeakerName] --&gt; C[SetDialog] --&gt; D[SetU32] --&gt; F[PromptYesNo] --&gt; G[FloatsEq] --&gt; H{JumpIfTrue}
+    H -- Yes --&gt; C
+    H -- No --&gt; I[EndDialog]
+</pre>
+<p align="center">
+<img src="../../images/events_yes_no_loop.gif" alt="" style="max-height: 300px;" />
+</p>
+<h3 id="game-state"><a class="header" href="#game-state">Game state</a></h3>
+<p>In addition to controlling loops, conditionals enable you to have events behave differently based on game state (ex. player's gold, items, library completion, etc.).</p>
+<p>As an example of this, let's make a script that gives the player 500 gold if they have less than 1000 gold.</p>
+<p>Here's the script behavior we want to achieve:</p>
+<pre class="mermaid">flowchart LR
+    A[Greet player] --&gt; B{Does player have &lt; 1000 gold?}
+    B -- no --&gt; C[Say they're doing well]
+    B -- yes --&gt; D[Give player 500 gold]
+    C --&gt; E[End conversation]
+    D --&gt; E
+</pre>
+<p>As a part of this, we will use the <code>GetPlayerGold</code> instruction. It will set <code>Pool_1[0]</code> to the amount of gold the player currently has.</p>
+<pre><code>    StartDialog 
+    SpeakerName  "Generous Individual"
+    SetDialog    "[0xEA]How are you doing on this fine day?"
+    SetU32       Pool_1 0.0 Const 1.0
+    ShowDialog
+    GetPlayerGold
+    FloatsLess Pool_1 0.0 Const 1000.0
+    JumpIfTrue in_need_of_money
+    SetDialog    "[0xEA]Seems like you're doing well for yourself!"
+    SetU32       Pool_1 0.0 Const 1.0
+    ShowDialog
+    Jump conversation_end
+in_need_of_money:
+    SetDialog    "[0xEA]You could be doing better.\nHere, take this and buy some ice cream!"
+    SetU32       Pool_1 0.0 Const 1.0
+    ShowDialog
+    SetU32       Pool_1 0.0 Const 500.0
+    GivePlayerGold
+conversation_end:
+    EndDialog 
+</code></pre>
+<p>Here we use <code>JumpIfTrue</code> to go to the <code>in_need_of_money</code> label if the player's gold is less than 1000. If the player has 1000 or more gold, then the script instead continues on to the "Seems like ..." dialog and uses a <code>Jump</code> to go to <code>conversation_end</code>. This results in both paths ending up at <code>conversation_end</code>.</p>
+<h3 id="types-of-conditionals"><a class="header" href="#types-of-conditionals">Types of conditionals</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Instruction</th><th>Description</th></tr></thead><tbody>
+<tr><td>FloatsEq</td><td>Checks if two values are equal</td></tr>
+<tr><td>FloatsNeq</td><td>Checks if two values are not equal</td></tr>
+<tr><td>FloatsGreater</td><td>Checks if the first value is greater than the second</td></tr>
+<tr><td>FloatsLess</td><td>Checks if the first value is less than the second</td></tr>
+<tr><td>FloatsGreaterEq</td><td>Checks if the first value is greater than or equal to the second</td></tr>
+<tr><td>FloatsLessEq</td><td>Checks if the first value is less than or equal to the second</td></tr>
+</tbody></table>
+</div>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../2_topic_guides/event_scripts/dialog.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../3_reference_guides/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../2_topic_guides/event_scripts/dialog.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../3_reference_guides/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../.././mermaid.min.js"></script>
+        <script src="../.././mermaid-init.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

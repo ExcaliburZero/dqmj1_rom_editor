@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Installation - DQMJ1 ROM Editor</title>
+        <title>Dialog - DQMJ1 ROM Editor</title>
 
 
         <!-- Custom HTML head -->
@@ -12,35 +12,35 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        <link rel="stylesheet" href=".././mdbook-admonish.css">
+        <link rel="stylesheet" href="../.././mdbook-admonish.css">
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../";
+            const path_to_root = "../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex.js";
+            window.path_to_searchindex_js = "../../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc.js"></script>
+        <script src="../../toc.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -107,7 +107,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -142,7 +142,7 @@
                     <h1 class="menu-title">DQMJ1 ROM Editor</h1>
 
                     <div class="right-buttons">
-                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
 
@@ -176,33 +176,111 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
-<h3 id="windows"><a class="header" href="#windows">Windows</a></h3>
+                        <h1 id="dialog"><a class="header" href="#dialog">Dialog</a></h1>
+<p><strong>Dialog</strong> boxes allow you to show the player character dialog or other text.</p>
+<pre><code>StartDialog 
+SpeakerName  "Black Jacques"
+SetDialog    "[0xEA]Time to go, [0xF5].\nZe Warden iz calling for you."
+SetU32       Pool_1 0.0 Const 1.0
+ShowDialog  
+SetDialog    "[0xEA]..."
+SetU32       Pool_1 0.0 Const 0.0
+ShowDialog  
+EndDialog   
+</code></pre>
+<p align="center">
+<img src="../../images/events_dialog_first_cutscene.png" alt="" style="max-height: 600px;" />
+</p>
+<h2 id="overall-structure"><a class="header" href="#overall-structure">Overall structure</a></h2>
+<p>Each section of dialog has the following basic structure of <a href="instructions.html">instructions</a>:</p>
 <ul>
-<li>Download the <code>.msi</code> installer file from the <a href="https://github.com/ExcaliburZero/dqmj1_rom_editor/releases">releases page</a></li>
-<li>Double click on the <code>.msi</code> installer to run it</li>
-<li>Follow the instructions in the installer</li>
-<li>Run the application from your desktop search bar (<code>dqmj1_rom_editor</code>)</li>
+<li><code>StartDialog</code> starts the dialog section</li>
+<li><code>SpeakerName</code> determines the character name shown for the dialog boxes (optional)</li>
+<li><code>SetDialog</code> sets the text of the dialog</li>
+<li><code>ShowDialog</code> shows the dialog onscreen until the player presses the A button</li>
+<li><code>EndDialog</code> ends the dialog section</li>
 </ul>
-<h3 id="linux"><a class="header" href="#linux">Linux</a></h3>
+<p>A dialog section can contain multiple <code>SetDialog</code>/<code>ShowDialog</code> pairs between a single <code>StartDialog</code> and <code>EndDialog</code>.</p>
+<h3 id="example-1"><a class="header" href="#example-1">Example 1</a></h3>
+<p>As an example, consider the following dialog section:</p>
+<pre><code>StartDialog 
+SpeakerName  "Black Jacques"
+SetDialog    "[0xEA]..."
+SetU32       Pool_1 0.0 Const 0.0
+ShowDialog  
+EndDialog   
+</code></pre>
+<p>In this case the speaker name is <code>Black Jacques</code> and the text shown in the dialog box is <code>...</code>. All text must be surrounded in double quotes <code>"</code>
+to indicate that it is text.</p>
+<p align="center">
+<img src="../../images/events_dialog_first_cutscene_ellipses_only.png" alt="" style="max-height: 250px;" />
+</p>
+<p>Looking at the text in the <code>SetDialog</code> instruction, you'll notice that it starts with <code>[0xEA]</code>. This is a <a href="#control-codes">control code</a>. In this case, it indicates that the text is for a conversation. Most conversation text will start with <code>[0xEA]</code>, though there are some cases where it may start with a another control code (such as <code>[0xEB]</code>).</p>
+<pre><code>SetDialog    "[0xEA]..."
+</code></pre>
+<p>You'll also notice that before the <code>ShowDialog</code> instruction that there is a <code>SetU32</code> instruction. This controls whether the dialog advance triangle appears at the bottom of the dialog box. Using <code>1.0</code> at the end shows the triangle, while using <code>0.0</code> hides it. See <a href="value_pools.html">Value pools</a> for a more detailed explanation of <code>SetU32</code>.</p>
+<pre><code>SetU32       Pool_1 0.0 Const 0.0
+ShowDialog  
+</code></pre>
+<h3 id="example-2"><a class="header" href="#example-2">Example 2</a></h3>
+<p>As another example, consider this actual dialog section from the first cutscene of the game:</p>
+<pre><code>StartDialog 
+SpeakerName  "Black Jacques"
+SetDialog    "[0xEA]Time to go, [0xF5].\nZe Warden iz calling for you."
+SetU32       Pool_1 0.0 Const 1.0
+ShowDialog  
+SetDialog    "[0xEA]..."
+SetU32       Pool_1 0.0 Const 0.0
+ShowDialog  
+EndDialog   
+</code></pre>
+<p align="center">
+<img src="../../images/events_dialog_first_cutscene.png" alt="" style="max-height: 600px;" />
+</p>
+<p>Here we can notice a few things:</p>
 <ul>
-<li>Download your Linux file of choice (<code>.AppImage</code>, <code>.deb</code>, <code>.rpm</code>) from the <a href="https://github.com/ExcaliburZero/dqmj1_rom_editor/releases">releases page</a>
+<li><code>SpeakerName</code> only needs to be used once, even if the character has multiple dialog boxes</li>
+<li>In the first <code>SetDialog</code>, there are two interesting parts:
 <ul>
-<li>I've only tested the <code>.AppImage</code>. If you encounter issues with any of them, <a href="https://github.com/ExcaliburZero/dqmj1_rom_editor/issues">create an issue about it</a>.</li>
+<li><code>\n</code> is used to start a new line of dialog in the same dialog box</li>
+<li><code>[0xF5]</code> is the <a href="#control-codes">control code</a> used to insert the player's name</li>
 </ul>
 </li>
-<li>Run / install your file of choice</li>
+<li>The dialog advance triangle is used for the first dialog box, but not the second
+<ul>
+<li><code>Const 1.0</code> vs <code>Const 0.0</code> for the <code>SetU32</code> instructions</li>
 </ul>
-
+</li>
+</ul>
+<div id="admonition-note" class="admonition admonish-note" role="note" aria-labelledby="admonition-note-title">
+<div class="admonition-title">
+<div id="admonition-note-title">
+<p>Note</p>
+</div>
+<a class="admonition-anchor-link" href="#admonition-note"></a>
+</div>
+<div>
+<p>We haven't shown how to use dialog prompts (ex. Yes or No). Those are covered in the <a href="jumps_and_conditionals.html">Jumps and Conditionals</a> page.</p>
+</div>
+</div>
+<h2 id="control-codes"><a class="header" href="#control-codes">Control codes</a></h2>
+<p>Control codes are special pieces of text that instruct the game to display specific information within dialog text or use a particular effect in displaying the text of the dialog box.</p>
+<div class="table-wrapper"><table><thead><tr><th>Code</th><th>Purpose</th></tr></thead><tbody>
+<tr><td><code>[0xD0]</code></td><td>Starts a non-conversational dialog (ex. for opening a treasure chest)</td></tr>
+<tr><td><code>[0xEA]</code></td><td>Starts a conversational dialog</td></tr>
+<tr><td><code>[0xEB]</code></td><td>Used to start some conversational dialog (exact behavior unclear)</td></tr>
+<tr><td><code>[0xF5]</code></td><td>Inserts the player's name</td></tr>
+</tbody></table>
+</div>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../1_getting_started/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../2_topic_guides/event_scripts/value_pools.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../1_getting_started/basics.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../2_topic_guides/event_scripts/jumps_and_conditionals.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -212,11 +290,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../1_getting_started/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../2_topic_guides/event_scripts/value_pools.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../1_getting_started/basics.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../2_topic_guides/event_scripts/jumps_and_conditionals.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -231,17 +309,17 @@
         </script>
 
 
-        <script src="../elasticlunr.min.js"></script>
-        <script src="../mark.min.js"></script>
-        <script src="../searcher.js"></script>
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
 
-        <script src="../clipboard.min.js"></script>
-        <script src="../highlight.js"></script>
-        <script src="../book.js"></script>
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src=".././mermaid.min.js"></script>
-        <script src=".././mermaid-init.js"></script>
+        <script src="../.././mermaid.min.js"></script>
+        <script src="../.././mermaid-init.js"></script>
 
 
 
