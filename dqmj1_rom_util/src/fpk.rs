@@ -61,4 +61,40 @@ mod tests {
 
         assert_eq!(actual, expected);
     }
+
+    #[test]
+    fn test_read_two_file_fpk() {
+        let actual = read_fpk_from_file("test/data/two_files.fpk");
+
+        let expected = Fpk {
+            num_files: 2,
+            files: vec![
+                FpkFile {
+                    name_info: [
+                        102, 105, 108, 101, 46, 116, 120, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    ],
+                    offset: 88,
+                    size: 16,
+                    data: vec![
+                        104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 0, 0, 0, 0, 0,
+                    ],
+                },
+                FpkFile {
+                    name_info: [
+                        102, 105, 108, 101, 95, 50, 46, 116, 120, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    ],
+                    offset: 104,
+                    size: 28,
+                    data: vec![
+                        103, 111, 111, 100, 98, 121, 101, 32, 119, 111, 114, 108, 100, 44, 32, 102,
+                        111, 114, 32, 116, 111, 100, 97, 121, 0, 0, 0, 0,
+                    ],
+                },
+            ],
+        };
+
+        assert_eq!(actual, expected);
+    }
 }
