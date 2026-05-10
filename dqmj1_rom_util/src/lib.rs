@@ -1,5 +1,6 @@
 pub mod btl_enmy_prm;
 pub mod events;
+pub mod fpk;
 pub mod regions;
 pub mod skill_tbl;
 pub mod string_tables;
