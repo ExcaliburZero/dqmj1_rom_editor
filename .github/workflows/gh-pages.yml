@@ -24,7 +24,7 @@ jobs:
         with:
           mdbook-version: "0.4.52"
 
-      - run: cargo install mdbook-admonish
+      - run: cargo install mdbook-admonish mdbook-mermaid --version "^0.16"
 
       - run: mdbook build
         working-directory: docs
