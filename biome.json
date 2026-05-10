@@ -27,10 +27,6 @@
     }
   },
   "files": {
-    "includes": [
-      "**",
-      "!target",
-      "!**/*.min.js"
-    ]
+    "includes": ["**", "!target", "!**/*.min.js"]
   }
 }
