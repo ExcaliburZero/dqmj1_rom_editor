@@ -15,4 +15,5 @@
         - [Dialog](./2_topic_guides/event_scripts/dialog.md)
         - [Jumps and conditionals](./2_topic_guides/event_scripts/jumps_and_conditionals.md)
 - [Reference guides](./3_reference_guides/index.md)
-    - [List of event instructions](./3_reference_guides/list_of_event_instructions.md)
+    - [Event instructions](./3_reference_guides/event_instructions/index.md)
+      - [Jumps and conditionals](./3_reference_guides/event_instructions/jumps_and_conditionals.md)
