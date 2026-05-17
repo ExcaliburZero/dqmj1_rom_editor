@@ -1,3 +1,9 @@
+use std::{
+    fs::{self, File},
+    io::Write,
+    path::Path,
+};
+
 use binrw::{binread, io::SeekFrom};
 
 #[binread]
@@ -16,6 +22,15 @@ pub struct FpkFile {
     pub data: Vec<u8>,
 }
 
+impl FpkFile {
+    pub fn write(&self, filepath: &Path) -> std::io::Result<()> {
+        let mut file = File::create(filepath)?;
+        file.write_all(&self.data)?;
+
+        Ok(())
+    }
+}
+
 #[binread]
 #[brw(little)]
 #[derive(Debug, PartialEq)]
@@ -25,6 +40,26 @@ pub struct Fpk {
 
     #[br(count = num_files)]
     pub files: Vec<FpkFile>,
+}
+
+impl Fpk {
+    pub fn write_to_directory(&self, directory: &Path) -> Result<(), Box<dyn std::error::Error>> {
+        fs::create_dir(directory)?;
+
+        for file in self.files.iter() {
+            let filename_bytes: Vec<u8> = file
+                .name_info
+                .iter()
+                .cloned()
+                .take_while(|value| *value != 0x00)
+                .collect();
+            let filename = str::from_utf8(&filename_bytes)?;
+            let filepath = directory.join(filename);
+            file.write(&filepath)?;
+        }
+
+        Ok(())
+    }
 }
 
 #[cfg(test)]

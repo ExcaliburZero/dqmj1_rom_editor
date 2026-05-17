@@ -21,6 +21,7 @@ use dqmj1_rom_util::{
         binary::Evt,
         disassembly::{DisassembledEvt, Opcode},
     },
+    fpk::Fpk,
     regions::Region,
     skill_tbl::SkillTblWithRegion,
     string_tables::StringTables,
@@ -328,6 +329,26 @@ pub fn import_events(app: tauri::AppHandle, filepaths: Vec<String>) -> Vec<FileE
         }
 
         errors
+    }
+}
+
+#[tauri::command]
+pub fn extract_maps(app: tauri::AppHandle) {
+    let temp_directory = get_temp_directory(&app);
+    let files_directory = temp_directory.join("files");
+
+    let map_files: Vec<PathBuf> = glob(&(files_directory.to_str().unwrap().to_owned() + "/*.map"))
+        .unwrap()
+        .map(|p| p.unwrap())
+        .collect();
+
+    // TODO: parallelize
+    for filepath in map_files.iter() {
+        let mut reader = File::open(filepath).unwrap();
+        let fpk = Fpk::read(&mut reader).unwrap();
+
+        fpk.write_to_directory(&filepath.with_extension(""))
+            .unwrap();
     }
 }
 
