@@ -24,4 +24,4 @@ Sleep        Const 60.0
 
 This particular instruction forces the game to wait 60 frames (1 second) before executing the next instruction.
 
-For a full list of the different types of instructions with descriptions and argument breakdowns, see the [list of event instructions](../../3_reference_guides/list_of_event_instructions.md).
+For a full list of the different types of instructions with descriptions and argument breakdowns, see the [table of event instructions](../../3_reference_guides/event_instructions/index.md).

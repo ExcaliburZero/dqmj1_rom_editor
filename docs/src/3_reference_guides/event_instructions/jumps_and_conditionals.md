@@ -15,7 +15,7 @@ loop_start:
 * **destination** (`InstructionLocation`) - Instruction location to move the event to
 
 ### JumpIfTrue (0x0D)
-`JumpIfTrue` moves the event to the specified instruction location if the previous conditional was true, else moves the event to the next instruction.
+`JumpIfTrue` moves the event to the specified instruction location if the previous conditional was **true**, else moves the event to the next instruction.
 
 ```
 loop_start:
@@ -29,6 +29,18 @@ loop_start:
 * **destination** (`InstructionLocation`) - Instruction location to move the event to if the conditional is true
 
 ### JumpIfFalse (0x0E)
+`JumpIfFalse` moves the event to the specified instruction location if the previous conditional was **false**, else moves the event to the next instruction.
+
+```
+loop_start:
+    SetDialog    "[0xEA]Do you NOT want me to say this again?"
+    PromptYesNo
+    FloatsEq Pool_1 0.0 Const 1.0
+    JumpIfFalse loop_start
+    EndDialog 
+```
+#### Arguments
+* **destination** (`InstructionLocation`) - Instruction location to move the event to if the conditional is false
 
 ### JumpKeepBackPointer (0x09)
 
