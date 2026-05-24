@@ -88,9 +88,8 @@ Here we can notice a few things:
 * The dialog advance triangle is used for the first dialog box, but not the second
     * `Const 1.0` vs `Const 0.0` for the `SetU32` instructions
 
-```admonish note
-We haven't shown how to use dialog prompts (ex. Yes or No). Those are covered in the [Jumps and Conditionals](jumps_and_conditionals.md) page.
-```
+> [!NOTE]
+> We haven't shown how to use dialog prompts (ex. Yes or No). Those are covered in the [Jumps and Conditionals](jumps_and_conditionals.md) page.
 
 ## Control codes
 Control codes are special pieces of text that instruct the game to display specific information within dialog text or use a particular effect in displaying the text of the dialog box.

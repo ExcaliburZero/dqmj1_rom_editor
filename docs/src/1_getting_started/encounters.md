@@ -62,9 +62,8 @@ Let's go to the first Slime encounter by clicking on the encounter select dropdo
 
 Let's make it a metal slime! We'll change its species to `metal slime (6)` and its exp dropped to `3072`.
 
-```admonish note
-Make sure to make these changes for all three encounter ids (`080`, `265`, and `266`).
-```
+> [!NOTE]
+> Make sure to make these changes for all three encounter ids (`080`, `265`, and `266`).
 
 Next export the ROM and play up to Infant Isle.
 
@@ -72,8 +71,7 @@ Next export the ROM and play up to Infant Isle.
 <img src="../images/encounters_metal_slime_ingame.png" alt="" style="max-height: 600px;" />
 </p>
 
-```admonish note
-In the overworld the slimes still appear as slimes. This is because their overworld model and behavior is not controlled by the encounters table.
-```
+> [!NOTE]
+> In the overworld the slimes still appear as slimes. This is because their overworld model and behavior is not controlled by the encounters table.
 
 Next let's modify some skill sets!

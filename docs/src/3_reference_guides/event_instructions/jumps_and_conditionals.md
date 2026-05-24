@@ -28,4 +28,15 @@ loop_start:
 #### Arguments
 * **destination** (`InstructionLocation`) - Instruction location to move the event to if the conditional is true
 
+### JumpIfFalse (0x0E)
+
+### JumpKeepBackPointer (0x09)
+
 ## Conditionals
+
+### FloatsEq (0x0F)
+### FloatsNeq (0x10)
+### FloatsGreater (0x11)
+### FloatsLess (0x12)
+### FloatsGreaterEq (0x13)
+### FloatsLessEq (0x14)

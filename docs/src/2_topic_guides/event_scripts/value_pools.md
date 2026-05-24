@@ -39,9 +39,8 @@ To store a value within a pool, we can use the `SetU32` instruction. It takes 4 
 | 3rd | `Const` |
 | 4th | Value to store |
 
-```admonish note
-`SetU32` can also be used to move a value from one pool entry to another. In that case the 3rd argument is the pool to read the value from, and the 4th argument is the entry in that pool to read from.
-```
+> [!NOTE]
+> `SetU32` can also be used to move a value from one pool entry to another. In that case the 3rd argument is the pool to read the value from, and the 4th argument is the entry in that pool to read from.
 
 The two `SetU32` instructions below will store `2.0` into `Pool_1[0]` and `1.0` into `Pool_1[1]`.
 
@@ -64,6 +63,5 @@ We want the `GivePlayerGold` instruction to give the player 1 gold for each stro
 | `Pool_1` | Passing data as input to instructions. Instructions also store their output in this pool. |
 | `Pool_3` | Storing data for later use. (unclear if this has a special purpose) |
 
-```admonish note
-There is no `Pool_2`, as the internal representation for event scripts uses `2` for the pool to represent `Const` rather than an actual pool.
-```
+> [!NOTE]
+> There is no `Pool_2`, as the internal representation for event scripts uses `2` for the pool to represent `Const` rather than an actual pool.

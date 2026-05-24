@@ -17,3 +17,4 @@
 - [Reference guides](./3_reference_guides/index.md)
     - [Event instructions](./3_reference_guides/event_instructions/index.md)
       - [Jumps and conditionals](./3_reference_guides/event_instructions/jumps_and_conditionals.md)
+      - [Player data](./3_reference_guides/event_instructions/player_data.md)

@@ -57,11 +57,10 @@ This behavior where an event script repeats the same set of instructions more th
 <img src="../../images/events_infinite_loop.gif" alt="" style="max-height: 300px;" />
 </p>
 
-```admonish note
-This particular example will make the "I am going to tell you this infinitely many times" dialog box appear over and over again without end, trapping the game in an **infinite loop**.
-
-We'll fix this in the next section.
-```
+> [!NOTE]
+> This particular example will make the "I am going to tell you this infinitely many times" dialog box appear over and over again without end, trapping the game in an **infinite loop**.
+> 
+> We'll fix this in the next section.
 
 ### Types of jumps
 | Instruction | Description |
@@ -71,11 +70,10 @@ We'll fix this in the next section.
 | JumpIfFalse | Jumps to the specified label if previous conditional is false |
 | JumpKeepBackPointer | Jumps to the specified label and keep track of where the following instruction is |
 
-```admonish note
-`JumpKeepBackPointer` enables jumping to a different part of the script, and jumping back using `Exit`.
-
-This will be covered in an upcoming later section of the guide.
-```
+> [!NOTE]
+> `JumpKeepBackPointer` enables jumping to a different part of the script, and jumping back using `Exit`.
+> 
+> This will be covered in an upcoming later section of the guide.
 
 
 ## Conditionals

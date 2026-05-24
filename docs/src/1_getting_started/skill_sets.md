@@ -56,10 +56,9 @@ Then you'll be able to allocate those skill points to the Dark Knight skill set 
 <img src="../images/skill_sets_edit_ingame.png" alt="" style="max-height: 600px;" />
 </p>
 
-```admonish note
-In this tutorial, we have avoided adding any skill increases or multiple skills/traits at the same reward level. Both of these things are possible, but the exact conditions for them working correctly are not yet known.
-
-It seems that the category of the skill set affects how many stat increases a skill set can have. It also seems that multiple skills/traits for the same reward level serve to encode "skill/trait" upgrades (ex. Frizz upgrading to Frizzle).
-```
+> [!NOTE]
+> In this tutorial, we have avoided adding any skill increases or multiple skills/traits at the same reward level. Both of these things are possible, but the exact conditions for them working correctly are not yet known.
+> 
+> It seems that the category of the skill set affects how many stat increases a skill set can have. It also seems that multiple skills/traits for the same reward level serve to encode "skill/trait" upgrades (ex. Frizz upgrading to Frizzle).
 
 Next let's modify some event scripts to make changes to cutscenes.
