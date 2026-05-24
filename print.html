@@ -13,24 +13,22 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="favicon.svg">
-        <link rel="shortcut icon" href="favicon.png">
-        <link rel="stylesheet" href="css/variables.css">
-        <link rel="stylesheet" href="css/general.css">
-        <link rel="stylesheet" href="css/chrome.css">
-        <link rel="stylesheet" href="css/print.css" media="print">
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="fonts/fonts.css">
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
 
         <!-- Custom theme stylesheets -->
-        <link rel="stylesheet" href="./mdbook-admonish.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -38,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            window.path_to_searchindex_js = "searchindex-7465de07.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc.js"></script>
+        <script src="toc-deff5bc3.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -55,7 +53,7 @@
             </div>
         </div>
     </div>
-    <div id="body-container">
+    <div id="mdbook-body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
@@ -84,12 +82,12 @@
             html.classList.add("js");
         </script>
 
-        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
             let sidebar = null;
-            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
@@ -104,39 +102,39 @@
             }
         </script>
 
-        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
                 <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
             </noscript>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
             </div>
         </nav>
 
-        <div id="page-wrapper" class="page-wrapper">
+        <div id="mdbook-page-wrapper" class="page-wrapper">
 
             <div class="page">
-                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
-                            <i class="fa fa-bars"></i>
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
                         </label>
-                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
-                            <i class="fa fa-paint-brush"></i>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
                         </button>
-                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
-                            <i class="fa fa-search"></i>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
                         </button>
                     </div>
 
@@ -144,38 +142,38 @@
 
                     <div class="right-buttons">
                         <a href="print.html" title="Print this book" aria-label="Print this book">
-                            <i id="print-button" class="fa fa-print"></i>
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
                         </a>
 
                     </div>
                 </div>
 
-                <div id="search-wrapper" class="hidden">
-                    <form id="searchbar-outer" class="searchbar-outer">
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
                         <div class="search-wrapper">
-                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
                             <div class="spinner-wrapper">
-                                <i class="fa fa-spinner fa-spin"></i>
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
                             </div>
                         </div>
                     </form>
-                    <div id="searchresults-outer" class="searchresults-outer hidden">
-                        <div id="searchresults-header" class="searchresults-header"></div>
-                        <ul id="searchresults">
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
                         </ul>
                     </div>
                 </div>
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script>
-                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
-                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
-                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
                         link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
                     });
                 </script>
 
-                <div id="content" class="content">
+                <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
 <p>DQMJ1 ROM Editor is an modding tool / ROM editor for Dragon Quest Monsters Joker 1.</p>
@@ -185,16 +183,18 @@
 <li><strong>Skill sets</strong> - changing skills, traits, and skill point costs</li>
 <li><strong>Events</strong> <em>[experimental]</em> - modifying cutscenes and overworld events</li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h1>
-<p>Here you'll learn about the different features of the ROM editor:</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h1>
+<p>Here you’ll learn about the different features of the ROM editor:</p>
 <ul>
-<li><a href="1_getting_started/installation.html">Installation</a> - Installing DQMJ1 ROM Editor</li>
-<li><a href="1_getting_started/basics.html">Basics</a> - Creating a mod and choosing a ROM to base it off of</li>
-<li><a href="1_getting_started/encounters.html">Modifying encounters</a> - Modifying starter monsters, enemies, etc.</li>
-<li><a href="1_getting_started/skill_sets.html">Modifying skill sets</a> - Modifying skill set rewards</li>
-<li><a href="1_getting_started/event_scripts.html">Modifying event scripts</a> - Modifying cutscenes and overworld logic</li>
+<li><a href="#installation">Installation</a> - Installing DQMJ1 ROM Editor</li>
+<li><a href="#basics">Basics</a> - Creating a mod and choosing a ROM to base it off of</li>
+<li><a href="#modifying-encounters">Modifying encounters</a> - Modifying starter monsters, enemies, etc.</li>
+<li><a href="#modifying-skill-sets">Modifying skill sets</a> - Modifying skill set rewards</li>
+<li><a href="#modifying-event-scripts">Modifying event scripts</a> - Modifying cutscenes and overworld logic</li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
 <h3 id="windows"><a class="header" href="#windows">Windows</a></h3>
 <ul>
 <li>Download the <code>.msi</code> installer file from the <a href="https://github.com/ExcaliburZero/dqmj1_rom_editor/releases">releases page</a></li>
@@ -206,27 +206,31 @@
 <ul>
 <li>Download your Linux file of choice (<code>.AppImage</code>, <code>.deb</code>, <code>.rpm</code>) from the <a href="https://github.com/ExcaliburZero/dqmj1_rom_editor/releases">releases page</a>
 <ul>
-<li>I've only tested the <code>.AppImage</code>. If you encounter issues with any of them, <a href="https://github.com/ExcaliburZero/dqmj1_rom_editor/issues">create an issue about it</a>.</li>
+<li>I’ve only tested the <code>.AppImage</code>. If you encounter issues with any of them, <a href="https://github.com/ExcaliburZero/dqmj1_rom_editor/issues">create an issue about it</a>.</li>
 </ul>
 </li>
 <li>Run / install your file of choice</li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="basics"><a class="header" href="#basics">Basics</a></h1>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="basics"><a class="header" href="#basics">Basics</a></h1>
 <p>When you open DQMJ1 ROM Editor, it will open to the Mod Selection window. Here you create a mod and load a ROM to begin making changes to the game.</p>
 <h2 id="create-a-mod"><a class="header" href="#create-a-mod">Create a mod</a></h2>
 <p>To create a mod, click on the <code>Create a new mod (+)</code> button and enter a name for the mod.</p>
 <p align="center">
-<img src="1_getting_started/../images/mod_selection_no_mods.png" alt="Mod Selection window with no mods created yet" style="max-height: 400px;" />
+<img src="images/mod_selection_no_mods.png" alt="Mod Selection window with no mods created yet" style="max-height: 400px;" />
 </p>
+
 <h2 id="loading-a-rom"><a class="header" href="#loading-a-rom">Loading a ROM</a></h2>
 <p>Once you have created a mod and selected it, you can click on the <code>Load ROM</code> button to select a ROM to base your mod on.</p>
-<p>Typically you'll want to select an original ROM for the game, but you can select an already modified ROM (ex. a <a href="https://github.com/ExcaliburZero/dqmj1_randomizer">randomizer</a>).</p>
+<p>Typically you’ll want to select an original ROM for the game, but you can select an already modified ROM (ex. a <a href="https://github.com/ExcaliburZero/dqmj1_randomizer">randomizer</a>).</p>
 <p align="center">
-<img src="1_getting_started/../images/mod_selection_one_mod.png" alt="Mod Selection window with one mod created" style="max-height: 400px;" />
+<img src="images/mod_selection_one_mod.png" alt="Mod Selection window with one mod created" style="max-height: 400px;" />
 </p>
+
 <p>After loading a ROM you will be able to make changes to it and save those changes as a mod.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="modifying-encounters"><a class="header" href="#modifying-encounters">Modifying encounters</a></h1>
-<p>The <strong>encounters table</strong> is a data file within the game that details all of the enemies, bosses, starter monsters, and gift monsters. Encounters determine monster's species, stats, moves, skill sets, etc..</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="modifying-encounters"><a class="header" href="#modifying-encounters">Modifying encounters</a></h1>
+<p>The <strong>encounters table</strong> is a data file within the game that details all of the enemies, bosses, starter monsters, and gift monsters. Encounters determine monster’s species, stats, moves, skill sets, etc..</p>
 <p>Editing the encounters table will enable you to:</p>
 <ul>
 <li>Create new bosses</li>
@@ -235,69 +239,68 @@
 <li>and more!</li>
 </ul>
 <p align="center">
-<img src="1_getting_started/../images/encounters.png" alt="Encounters tab showing one of the starter monsters" style="max-height: 600px;" />
+<img src="images/encounters.png" alt="Encounters tab showing one of the starter monsters" style="max-height: 600px;" />
 </p>
+
 <h2 id="modifying-a-starter"><a class="header" href="#modifying-a-starter">Modifying a starter</a></h2>
-<p>As an example, let's change one of the starter monsters. The three starter monsters are in the table rows <code>048</code>, <code>049</code>, and <code>050</code>.</p>
-<p>Let's edit encounter <code>048</code>, the starter Dracky.</p>
+<p>As an example, let’s change one of the starter monsters. The three starter monsters are in the table rows <code>048</code>, <code>049</code>, and <code>050</code>.</p>
+<p>Let’s edit encounter <code>048</code>, the starter Dracky.</p>
 <p>Using the Species dropdown, we can change it from a Dracky to a Darkonium Slime. With the dropdown selected, you can start typing <code>darkonium</code> and <code>darkonium slime (28)</code> should be highlighted.</p>
 <p>We can also give it a third skill set by clicking on the <code>Skill set (3)</code> dropdown and typing in <code>Wulfspade</code> to give it the Wulfspade skill set.</p>
 <p align="center">
-<img src="1_getting_started/../images/encounters_edited.png" alt="" style="max-height: 600px;" />
+<img src="images/encounters_edited.png" alt="" style="max-height: 600px;" />
 </p>
-<p>At this point, it's a good idea to save the changes we made to the mod. To do that click on the <code>Save mod</code> button (or press <code>Ctrl + s</code>).</p>
-<p>Next you should export the ROM with this change to the starter Dracky by clicking on the <code>Export patched ROM</code> button (or pressing <code>Ctrl + e</code>). Once you play up to point you get to choose your starter monster, you'll find the Darkonium Slime we created.</p>
+
+<p>At this point, it’s a good idea to save the changes we made to the mod. To do that click on the <code>Save mod</code> button (or press <code>Ctrl + s</code>).</p>
+<p>Next you should export the ROM with this change to the starter Dracky by clicking on the <code>Export patched ROM</code> button (or pressing <code>Ctrl + e</code>). Once you play up to point you get to choose your starter monster, you’ll find the Darkonium Slime we created.</p>
 <p align="center">
-<img src="1_getting_started/../images/encounters_edited_ingame.png" alt="" style="max-height: 600px;" />
+<img src="images/encounters_edited_ingame.png" alt="" style="max-height: 600px;" />
 </p>
+
 <h2 id="modifying-other-encounters"><a class="header" href="#modifying-other-encounters">Modifying other encounters</a></h2>
-<p>To modify an encounter, you'll need to find its encounter id.</p>
+<p>To modify an encounter, you’ll need to find its encounter id.</p>
 <p>As a general rule of thumb:</p>
-<div class="table-wrapper"><table><thead><tr><th>Category</th><th>Encounter ID range</th></tr></thead><tbody>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Category</th><th>Encounter ID range</th></tr>
+</thead>
+<tbody>
 <tr><td>Bosses</td><td>1 - 39</td></tr>
 <tr><td>Starters &amp; Gift Monsters</td><td>44 - 74</td></tr>
 <tr><td>Scout/Rival Monsters</td><td>304 - 378, 431 - 751</td></tr>
-</tbody></table>
+</tbody>
+</table>
 </div>
 <p>To find a particular encounter, a good first place to look is the <a href="https://dqmj.fandom.com/wiki/Dragon_Quest_Monsters:_Joker_Wiki">DQM:J Wiki</a>.</p>
 <p>For example, on the <a href="https://dqmj.fandom.com/wiki/Slime">Slime</a> page you can find an encounter listing for the slimes that appear on Infant Isle.</p>
 <p align="center">
-<img src="1_getting_started/../images/dqmj_wiki_slime.png" alt="" style="max-height: 600px;" />
+<img src="images/dqmj_wiki_slime.png" alt="" style="max-height: 600px;" />
 </p>
+
 <p>The codes in the bottom right corner are encounter ids in hexadecimal (<code>050</code>, <code>109</code>, and <code>10a</code>). The ROM editor uses <a href="https://www.rapidtables.com/convert/number/hex-to-decimal.html">decimal ids</a> (ex. <code>050 hex</code> = <code>080 decimal</code>).</p>
-<p>Let's go to the first Slime encounter by clicking on the encounter select dropdown (in the top middle of the page) and typing in the encounter id (ex. <code>080</code>).</p>
+<p>Let’s go to the first Slime encounter by clicking on the encounter select dropdown (in the top middle of the page) and typing in the encounter id (ex. <code>080</code>).</p>
 <p align="center">
-<img src="1_getting_started/../images/encounters_edit_slime_before.png" alt="" style="max-height: 600px;" />
+<img src="images/encounters_edit_slime_before.png" alt="" style="max-height: 600px;" />
 </p>
-<p>Let's make it a metal slime! We'll change its species to <code>metal slime (6)</code> and its exp dropped to <code>3072</code>.</p>
-<div id="admonition-note" class="admonition admonish-note" role="note" aria-labelledby="admonition-note-title">
-<div class="admonition-title">
-<div id="admonition-note-title">
-<p>Note</p>
-</div>
-<a class="admonition-anchor-link" href="1_getting_started/encounters.html#admonition-note"></a>
-</div>
-<div>
+
+<p>Let’s make it a metal slime! We’ll change its species to <code>metal slime (6)</code> and its exp dropped to <code>3072</code>.</p>
+<blockquote class="blockquote-tag blockquote-tag-note">
+<p class="blockquote-tag-title"><svg viewbox="0 0 16 16" width="18" height="18"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
 <p>Make sure to make these changes for all three encounter ids (<code>080</code>, <code>265</code>, and <code>266</code>).</p>
-</div>
-</div>
+</blockquote>
 <p>Next export the ROM and play up to Infant Isle.</p>
 <p align="center">
-<img src="1_getting_started/../images/encounters_metal_slime_ingame.png" alt="" style="max-height: 600px;" />
+<img src="images/encounters_metal_slime_ingame.png" alt="" style="max-height: 600px;" />
 </p>
-<div id="admonition-note-1" class="admonition admonish-note" role="note" aria-labelledby="admonition-note-1-title">
-<div class="admonition-title">
-<div id="admonition-note-1-title">
-<p>Note</p>
-</div>
-<a class="admonition-anchor-link" href="1_getting_started/encounters.html#admonition-note-1"></a>
-</div>
-<div>
+
+<blockquote class="blockquote-tag blockquote-tag-note">
+<p class="blockquote-tag-title"><svg viewbox="0 0 16 16" width="18" height="18"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
 <p>In the overworld the slimes still appear as slimes. This is because their overworld model and behavior is not controlled by the encounters table.</p>
-</div>
-</div>
-<p>Next let's modify some skill sets!</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="modifying-skill-sets"><a class="header" href="#modifying-skill-sets">Modifying skill sets</a></h1>
+</blockquote>
+<p>Next let’s modify some skill sets!</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="modifying-skill-sets"><a class="header" href="#modifying-skill-sets">Modifying skill sets</a></h1>
 <p>The <strong>skill set table</strong> is a data file within the game that details the rewards for allocating skill points into specific skill sets. Each skill set reward level has a skill point requirement and one or more skills, traits, or stat increases they reward.</p>
 <p>Editing the skill sets table will enable you to:</p>
 <ul>
@@ -305,58 +308,62 @@
 <li>Re-balance existing skill sets</li>
 </ul>
 <p align="center">
-<img src="1_getting_started/../images/skill_sets.png" alt="" style="max-height: 600px;" />
+<img src="images/skill_sets.png" alt="" style="max-height: 600px;" />
 </p>
+
 <h2 id="modifying-a-skill-set"><a class="header" href="#modifying-a-skill-set">Modifying a skill set</a></h2>
-<p>As an example, let's change one of the skill sets that a starter monster has.</p>
-<p>Let's edit Dark Knight (<code>058</code>), since the starter Dracky has it.</p>
-<p>First click on "Skill sets" to switch to that tab. By default it will already show the Dark Knight skill set.</p>
-<p>We'll make two different changes to this skill set:</p>
-<div class="table-wrapper"><table><thead><tr><th>Reward level</th><th>Skill Points</th><th>Skills</th><th>Traits</th></tr></thead><tbody>
+<p>As an example, let’s change one of the skill sets that a starter monster has.</p>
+<p>Let’s edit Dark Knight (<code>058</code>), since the starter Dracky has it.</p>
+<p>First click on “Skill sets” to switch to that tab. By default it will already show the Dark Knight skill set.</p>
+<p>We’ll make two different changes to this skill set:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Reward level</th><th>Skill Points</th><th>Skills</th><th>Traits</th></tr>
+</thead>
+<tbody>
 <tr><td>1</td><td>5 -&gt; <strong>3</strong></td><td>Zam (21) -&gt; <strong>Crack (13)</strong></td><td>-</td></tr>
 <tr><td>2</td><td>11 -&gt; <strong>7</strong></td><td>Shade Slash (96) -&gt; <em>None</em></td><td><em>None</em> -&gt; <strong>Zapmeister (21)</strong></td></tr>
-</tbody></table>
+</tbody>
+</table>
 </div>
 <h3 id="level-1---crack"><a class="header" href="#level-1---crack">Level 1 -&gt; Crack</a></h3>
-<p>First we'll change the reward level 1 to require only 3 skill points and reward Crack. To do this, you'll need to edit the row marked "1st" and the row below it.</p>
+<p>First we’ll change the reward level 1 to require only 3 skill points and reward Crack. To do this, you’ll need to edit the row marked “1st” and the row below it.</p>
 <ol>
-<li>The box below "1st" is the number of skill points required, so we'll change that from 5 to 3.</li>
-<li>The boxes to the right of "1st" are the skills rewarded, so we'll change the first one from "Zam (21)" to "Crack (13)".</li>
+<li>The box below “1st” is the number of skill points required, so we’ll change that from 5 to 3.</li>
+<li>The boxes to the right of “1st” are the skills rewarded, so we’ll change the first one from “Zam (21)” to “Crack (13)”.</li>
 </ol>
 <p align="center">
-<img src="1_getting_started/../images/skill_sets_edit_1.png" alt="" style="max-height: 600px;" />
+<img src="images/skill_sets_edit_1.png" alt="" style="max-height: 600px;" />
 </p>
+
 <h3 id="level-2---zapmeister"><a class="header" href="#level-2---zapmeister">Level 2 -&gt; Zapmeister</a></h3>
-<p>Next we'll change the reward level 2 to require only 7 skill points and reward the Zapmeister trait. This time we'll be editing the row marked "2nd" and the row below it.</p>
+<p>Next we’ll change the reward level 2 to require only 7 skill points and reward the Zapmeister trait. This time we’ll be editing the row marked “2nd” and the row below it.</p>
 <ol>
-<li>Like before, we'll change the number of skill points required from 11 to 7.</li>
-<li>The boxes to the right of the number of skill points are the traits rewarded, so we'll set the first one to "Zapmeister (21)".</li>
-<li>We'll also need to set the skill box next to "2nd" to empty (first option in the dropdown).</li>
+<li>Like before, we’ll change the number of skill points required from 11 to 7.</li>
+<li>The boxes to the right of the number of skill points are the traits rewarded, so we’ll set the first one to “Zapmeister (21)”.</li>
+<li>We’ll also need to set the skill box next to “2nd” to empty (first option in the dropdown).</li>
 </ol>
 <p align="center">
-<img src="1_getting_started/../images/skill_sets_edit_2.png" alt="" style="max-height: 600px;" />
+<img src="images/skill_sets_edit_2.png" alt="" style="max-height: 600px;" />
 </p>
+
 <h3 id="testing-ingame"><a class="header" href="#testing-ingame">Testing ingame</a></h3>
-<p>Next we'll save the mod (<code>Ctrl + s</code>) and export the ROM (<code>Ctrl + e</code>).</p>
+<p>Next we’ll save the mod (<code>Ctrl + s</code>) and export the ROM (<code>Ctrl + e</code>).</p>
 <p>Pick the first starter, get to Infant Isle, and fight monsters until you get at least 7 skill points.</p>
-<p>Then you'll be able to allocate those skill points to the Dark Knight skill set and obtain Crack and Zapmeister.</p>
+<p>Then you’ll be able to allocate those skill points to the Dark Knight skill set and obtain Crack and Zapmeister.</p>
 <p align="center">
-<img src="1_getting_started/../images/skill_sets_edit_ingame.png" alt="" style="max-height: 600px;" />
+<img src="images/skill_sets_edit_ingame.png" alt="" style="max-height: 600px;" />
 </p>
-<div id="admonition-note" class="admonition admonish-note" role="note" aria-labelledby="admonition-note-title">
-<div class="admonition-title">
-<div id="admonition-note-title">
-<p>Note</p>
-</div>
-<a class="admonition-anchor-link" href="1_getting_started/skill_sets.html#admonition-note"></a>
-</div>
-<div>
+
+<blockquote class="blockquote-tag blockquote-tag-note">
+<p class="blockquote-tag-title"><svg viewbox="0 0 16 16" width="18" height="18"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
 <p>In this tutorial, we have avoided adding any skill increases or multiple skills/traits at the same reward level. Both of these things are possible, but the exact conditions for them working correctly are not yet known.</p>
-<p>It seems that the category of the skill set affects how many stat increases a skill set can have. It also seems that multiple skills/traits for the same reward level serve to encode "skill/trait" upgrades (ex. Frizz upgrading to Frizzle).</p>
-</div>
-</div>
-<p>Next let's modify some event scripts to make changes to cutscenes.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="modifying-event-scripts"><a class="header" href="#modifying-event-scripts">Modifying event scripts</a></h1>
+<p>It seems that the category of the skill set affects how many stat increases a skill set can have. It also seems that multiple skills/traits for the same reward level serve to encode “skill/trait” upgrades (ex. Frizz upgrading to Frizzle).</p>
+</blockquote>
+<p>Next let’s modify some event scripts to make changes to cutscenes.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="modifying-event-scripts"><a class="header" href="#modifying-event-scripts">Modifying event scripts</a></h1>
 <p><strong>Event scripts</strong> are files that control cutscenes and overworld interactions.</p>
 <p>Editing event scripts will enable you to:</p>
 <ul>
@@ -366,45 +373,54 @@
 <li>and more!</li>
 </ul>
 <p align="center">
-<img src="1_getting_started/../images/events.png" alt="" style="max-height: 600px;" />
+<img src="images/events.png" alt="" style="max-height: 600px;" />
 </p>
+
 <h2 id="modifying-an-existing-cutscene"><a class="header" href="#modifying-an-existing-cutscene">Modifying an existing cutscene</a></h2>
-<p>As an example, let's change the dialogue in the opening cutscene.</p>
+<p>As an example, let’s change the dialogue in the opening cutscene.</p>
 <h3 id="exporting-event-scripts"><a class="header" href="#exporting-event-scripts">Exporting event scripts</a></h3>
-<p>First we'll need to export the game's event scripts.</p>
-<p>After clicking on the "Events" tab, you'll see a list of event scripts on the left.</p>
+<p>First we’ll need to export the game’s event scripts.</p>
+<p>After clicking on the “Events” tab, you’ll see a list of event scripts on the left.</p>
 <p>We can export all the scripts in one go by clicking on the <code>Export events</code> button and selecting a directory to write the scripts to.</p>
 <h3 id="editing-the-event"><a class="header" href="#editing-the-event">Editing the event</a></h3>
-<p>Next we'll need to find the event script for the opening cutscene.</p>
+<p>Next we’ll need to find the event script for the opening cutscene.</p>
 <p>Each of the event scripts starts with a prefix, in particular all cutscene script start with <code>demo</code>. In our case we need to edit <code>demo001.evt.dqmj1_asm</code>. The <code>.dqmj1_asm</code> extensions indicates that this is a disassembled event script for DQMJ1.</p>
 <p>You can open up <code>demo001.evt.dqmj1_asm</code> in Notepad, VS Code, or any other text editor.</p>
 <p align="center">
-<img src="1_getting_started/../images/demo001_beginning.png" alt="" style="max-height: 600px;" />
+<img src="images/demo001_beginning.png" alt="" style="max-height: 600px;" />
 </p>
-<p>You can see that the file is divided into two sections: (1) a data section, and (2) a code section. For now we're only interested in the code section.</p>
+
+<p>You can see that the file is divided into two sections: (1) a data section, and (2) a code section. For now we’re only interested in the code section.</p>
 <p>Each line of the code section is an instruction (ex. <code>Sleep Const 60.0</code>), which consists of a name (ex. <code>Sleep</code>) and arguments (ex. <code>Const 60.0</code>).</p>
 <p>Since we want to modify some dialog, we can look through the file until we find an instruction that contains dialog. In particular looking for any instruction with the name <code>SetDialog</code>.</p>
 <p align="center">
-<img src="1_getting_started/../images/demo001_dialog.png" alt="" style="max-height: 600px;" />
+<img src="images/demo001_dialog.png" alt="" style="max-height: 600px;" />
 </p>
-<p>Let's go ahead and change the text for the first <code>SetDialog</code> instruction.</p>
+
+<p>Let’s go ahead and change the text for the first <code>SetDialog</code> instruction.</p>
 <p align="center">
-<img src="1_getting_started/../images/demo001_dialog_after_change.png" alt="" style="max-height: 600px;" />
+<img src="images/demo001_dialog_after_change.png" alt="" style="max-height: 600px;" />
 </p>
+
 <p>Then save the modified event script.</p>
 <h3 id="importing-the-modified-event"><a class="header" href="#importing-the-modified-event">Importing the modified event</a></h3>
 <p>Next we need to import the modified event script back into the ROM editor.</p>
 <p>To do this, select the modified <code>demo001.evt.dqmj1_asm</code> file in your file browser and click and drag it onto the main section of the ROM editor.</p>
 <p align="center">
-<img src="1_getting_started/../images/events_drag_and_drop.png" alt="" style="max-height: 600px;" />
+<img src="images/events_drag_and_drop.png" alt="" style="max-height: 600px;" />
 </p>
+
 <p>Then save the mod, export the ROM, and start a new game.</p>
-<p>During the opening cutscene you'll see the updated dialog.</p>
+<p>During the opening cutscene you’ll see the updated dialog.</p>
 <p align="center">
-<img src="1_getting_started/../images/demo001_dialog_after_change_ingame.png" alt="" style="max-height: 600px;" />
-</p><div style="break-before: page; page-break-before: always;"></div><h1 id="topic-guides"><a class="header" href="#topic-guides">Topic Guides</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="event-scripts"><a class="header" href="#event-scripts">Event Scripts</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="instructions"><a class="header" href="#instructions">Instructions</a></h1>
+<img src="images/demo001_dialog_after_change_ingame.png" alt="" style="max-height: 600px;" />
+</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="topic-guides"><a class="header" href="#topic-guides">Topic Guides</a></h1>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="event-scripts"><a class="header" href="#event-scripts">Event Scripts</a></h1>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="instructions"><a class="header" href="#instructions">Instructions</a></h1>
 <p><strong>Instructions</strong> are the basic building blocks of event scripts. During a cutscene or overworld segment, the game will run an event script by executing the instructions in that script one-by-one in order.</p>
 <pre><code>Sleep        Const 60.0
 SetU32       Pool_1 0.0 Const 42.0
@@ -413,18 +429,25 @@ LoadPos      "demo001.pos"
 </code></pre>
 <h2 id="parts-of-an-instruction"><a class="header" href="#parts-of-an-instruction">Parts of an instruction</a></h2>
 <p>Every instruction consists of the following parts:</p>
-<div class="table-wrapper"><table><thead><tr><th>Part</th><th>Example</th><th>Description</th></tr></thead><tbody>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Part</th><th>Example</th><th>Description</th></tr>
+</thead>
+<tbody>
 <tr><td>Name</td><td><code>Sleep</code></td><td>Determines the type of instruction, and thus what it does (wait, show dialog, move the camera, etc.)</td></tr>
-<tr><td>Arguments</td><td><code>Const 60.0</code></td><td>Additional information the instruction needs to perform its action (how long to wait, where to move the camera to, etc.)<br/><br/>Instructions can have 0 or more arguments.</td></tr>
-</tbody></table>
+<tr><td>Arguments</td><td><code>Const 60.0</code></td><td>Additional information the instruction needs to perform its action (how long to wait, where to move the camera to, etc.)<br /><br />Instructions can have 0 or more arguments.</td></tr>
+</tbody>
+</table>
 </div>
 <p>As an example, the following instruction has the name <code>Sleep</code> and the arguments <code>Const</code> and <code>60.0</code>.</p>
 <pre><code>Sleep        Const 60.0
 </code></pre>
 <p>This particular instruction forces the game to wait 60 frames (1 second) before executing the next instruction.</p>
-<p>For a full list of the different types of instructions with descriptions and argument breakdowns, see the <a href="2_topic_guides/event_scripts/../../3_reference_guides/list_of_event_instructions.html">list of event instructions</a>.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="value-pools"><a class="header" href="#value-pools">Value pools</a></h1>
-<p><strong>Value pools</strong> are the way that event scripts store and keep track of data. <a href="2_topic_guides/event_scripts/instructions.html">Instructions</a> read data from value pools as input and store data into value pools as output.</p>
+<p>For a full list of the different types of instructions with descriptions and argument breakdowns, see the <a href="#event-instructions">table of event instructions</a>.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="value-pools"><a class="header" href="#value-pools">Value pools</a></h1>
+<p><strong>Value pools</strong> are the way that event scripts store and keep track of data. <a href="#instructions">Instructions</a> read data from value pools as input and store data into value pools as output.</p>
 <p>Each pool holds a numbered list of values that can be written to, or read from.</p>
 <p>We will refer to entries in a pool by the pool name followed by the entry number in square brackets (ex. entry <code>0</code> of <code>Pool_1</code> = <code>Pool_1[0]</code>).</p>
 <pre><code>SetU32       Pool_1 0.0 Const 2.0   # Store the value 2.0 into Pool_1[0]
@@ -438,58 +461,60 @@ GivePlayerGold                      # Give the player 1 gold for each strong
                                     # medicine in their bag
 </code></pre>
 <h2 id="example"><a class="header" href="#example">Example</a></h2>
-<p>Let's explore the example shown above, which gives the player 1 gold for each strong medicine they have in their bag.</p>
+<p>Let’s explore the example shown above, which gives the player 1 gold for each strong medicine they have in their bag.</p>
 <h3 id="as-input"><a class="header" href="#as-input">As input</a></h3>
-<p>Notice that the <code>GetItemCount</code> instruction does not take any <a href="2_topic_guides/event_scripts/instructions.html#parts-of-an-instruction">arguments</a>. But it needs some way to know what type of item we want to count, as well as whether we want to look in the player's hand, bag, or both.</p>
+<p>Notice that the <code>GetItemCount</code> instruction does not take any <a href="#parts-of-an-instruction">arguments</a>. But it needs some way to know what type of item we want to count, as well as whether we want to look in the player’s hand, bag, or both.</p>
 <p>The <code>GetItemCount</code> instruction takes two inputs, an <code>item_id</code> and an <code>item_location</code>. It reads the <code>item_id</code> from <code>Pool_1[0]</code>, and it reads <code>item_location</code> from <code>Pool_1[1]</code>.</p>
 <p>So in order to have <code>GetItemCount</code> count the number of strong medicines the player has in their bag, we will need to:</p>
 <ul>
 <li>Store <code>2.0</code> in <code>Pool_1[0]</code>, as <code>2</code> is the <a href="https://datacrystal.tcrf.net/wiki/Dragon_Quest_Monsters:_Joker/Notes#Item_IDs">item id for strong medicine</a></li>
-<li>Store <code>1.0</code> in <code>Pool_1[1]</code>, as <code>1</code> is a special value for <code>GetItemCount</code> indicating to look only in the player's bag</li>
+<li>Store <code>1.0</code> in <code>Pool_1[1]</code>, as <code>1</code> is a special value for <code>GetItemCount</code> indicating to look only in the player’s bag</li>
 </ul>
 <p>To store a value within a pool, we can use the <code>SetU32</code> instruction. It takes 4 arguments:</p>
-<div class="table-wrapper"><table><thead><tr><th>Argument</th><th>Purpose</th></tr></thead><tbody>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Argument</th><th>Purpose</th></tr>
+</thead>
+<tbody>
 <tr><td>1st</td><td>Pool to store the value in</td></tr>
 <tr><td>2nd</td><td>Entry within that pool to store the value in</td></tr>
 <tr><td>3rd</td><td><code>Const</code></td></tr>
 <tr><td>4th</td><td>Value to store</td></tr>
-</tbody></table>
-</div><div id="admonition-note" class="admonition admonish-note" role="note" aria-labelledby="admonition-note-title">
-<div class="admonition-title">
-<div id="admonition-note-title">
-<p>Note</p>
+</tbody>
+</table>
 </div>
-<a class="admonition-anchor-link" href="2_topic_guides/event_scripts/value_pools.html#admonition-note"></a>
-</div>
-<div>
+<blockquote class="blockquote-tag blockquote-tag-note">
+<p class="blockquote-tag-title"><svg viewbox="0 0 16 16" width="18" height="18"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
 <p><code>SetU32</code> can also be used to move a value from one pool entry to another. In that case the 3rd argument is the pool to read the value from, and the 4th argument is the entry in that pool to read from.</p>
-</div>
-</div>
+</blockquote>
 <p>The two <code>SetU32</code> instructions below will store <code>2.0</code> into <code>Pool_1[0]</code> and <code>1.0</code> into <code>Pool_1[1]</code>.</p>
 <pre><code>SetU32       Pool_1 0.0 Const 2.0   # Store the value 2.0 into Pool_1[0]
 SetU32       Pool_1 1.0 Const 1.0   # Store the value 1.0 into Pool_1[1]
 </code></pre>
 <p>The <code>GetItemCount</code> instruction will then count the number of strong medicines that the player has in their bag. Once it has executed, the count is stored into <code>Pool_1[0]</code>, which the next instruction can then read.</p>
 <h3 id="as-output"><a class="header" href="#as-output">As output</a></h3>
-<p>We want the <code>GivePlayerGold</code> instruction to give the player 1 gold for each strong medicine in their bag, but we don't know how many strong medicines the player will have in their bag until the script is actually running. So we can't just use <code>SetU32</code> to specify a fixed amount.</p>
+<p>We want the <code>GivePlayerGold</code> instruction to give the player 1 gold for each strong medicine in their bag, but we don’t know how many strong medicines the player will have in their bag until the script is actually running. So we can’t just use <code>SetU32</code> to specify a fixed amount.</p>
 <p><code>GetItemCount</code> stores its result into <code>Pool_1[0]</code> after it executes, and <code>GivePlayerGold</code> reads the amount of gold to give from <code>Pool_1[0]</code>. So by placing <code>GivePlayerGold</code> directly after <code>GetItemCount</code>, it will give the player gold equal to the count that was calculated.</p>
 <h2 id="supported-pools"><a class="header" href="#supported-pools">Supported pools</a></h2>
-<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Main purpose</th></tr></thead><tbody>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Name</th><th>Main purpose</th></tr>
+</thead>
+<tbody>
 <tr><td><code>Pool_0</code></td><td>Storing data for later use.</td></tr>
 <tr><td><code>Pool_1</code></td><td>Passing data as input to instructions. Instructions also store their output in this pool.</td></tr>
 <tr><td><code>Pool_3</code></td><td>Storing data for later use. (unclear if this has a special purpose)</td></tr>
-</tbody></table>
-</div><div id="admonition-note-1" class="admonition admonish-note" role="note" aria-labelledby="admonition-note-1-title">
-<div class="admonition-title">
-<div id="admonition-note-1-title">
-<p>Note</p>
+</tbody>
+</table>
 </div>
-<a class="admonition-anchor-link" href="2_topic_guides/event_scripts/value_pools.html#admonition-note-1"></a>
-</div>
-<div>
+<blockquote class="blockquote-tag blockquote-tag-note">
+<p class="blockquote-tag-title"><svg viewbox="0 0 16 16" width="18" height="18"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
 <p>There is no <code>Pool_2</code>, as the internal representation for event scripts uses <code>2</code> for the pool to represent <code>Const</code> rather than an actual pool.</p>
-</div>
-</div><div style="break-before: page; page-break-before: always;"></div><h1 id="dialog"><a class="header" href="#dialog">Dialog</a></h1>
+</blockquote>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="dialog"><a class="header" href="#dialog">Dialog</a></h1>
 <p><strong>Dialog</strong> boxes allow you to show the player character dialog or other text.</p>
 <pre><code>StartDialog 
 SpeakerName  "Black Jacques"
@@ -502,10 +527,11 @@ ShowDialog
 EndDialog   
 </code></pre>
 <p align="center">
-<img src="2_topic_guides/event_scripts/../../images/events_dialog_first_cutscene.png" alt="" style="max-height: 600px;" />
+<img src="images/events_dialog_first_cutscene.png" alt="" style="max-height: 600px;" />
 </p>
+
 <h2 id="overall-structure"><a class="header" href="#overall-structure">Overall structure</a></h2>
-<p>Each section of dialog has the following basic structure of <a href="2_topic_guides/event_scripts/instructions.html">instructions</a>:</p>
+<p>Each section of dialog has the following basic structure of <a href="#instructions">instructions</a>:</p>
 <ul>
 <li><code>StartDialog</code> starts the dialog section</li>
 <li><code>SpeakerName</code> determines the character name shown for the dialog boxes (optional)</li>
@@ -526,12 +552,13 @@ EndDialog
 <p>In this case the speaker name is <code>Black Jacques</code> and the text shown in the dialog box is <code>...</code>. All text must be surrounded in double quotes <code>"</code>
 to indicate that it is text.</p>
 <p align="center">
-<img src="2_topic_guides/event_scripts/../../images/events_dialog_first_cutscene_ellipses_only.png" alt="" style="max-height: 250px;" />
+<img src="images/events_dialog_first_cutscene_ellipses_only.png" alt="" style="max-height: 250px;" />
 </p>
-<p>Looking at the text in the <code>SetDialog</code> instruction, you'll notice that it starts with <code>[0xEA]</code>. This is a <a href="2_topic_guides/event_scripts/dialog.html#control-codes">control code</a>. In this case, it indicates that the text is for a conversation. Most conversation text will start with <code>[0xEA]</code>, though there are some cases where it may start with a another control code (such as <code>[0xEB]</code>).</p>
+
+<p>Looking at the text in the <code>SetDialog</code> instruction, you’ll notice that it starts with <code>[0xEA]</code>. This is a <a href="#control-codes">control code</a>. In this case, it indicates that the text is for a conversation. Most conversation text will start with <code>[0xEA]</code>, though there are some cases where it may start with a another control code (such as <code>[0xEB]</code>).</p>
 <pre><code>SetDialog    "[0xEA]..."
 </code></pre>
-<p>You'll also notice that before the <code>ShowDialog</code> instruction that there is a <code>SetU32</code> instruction. This controls whether the dialog advance triangle appears at the bottom of the dialog box. Using <code>1.0</code> at the end shows the triangle, while using <code>0.0</code> hides it. See <a href="2_topic_guides/event_scripts/value_pools.html">Value pools</a> for a more detailed explanation of <code>SetU32</code>.</p>
+<p>You’ll also notice that before the <code>ShowDialog</code> instruction that there is a <code>SetU32</code> instruction. This controls whether the dialog advance triangle appears at the bottom of the dialog box. Using <code>1.0</code> at the end shows the triangle, while using <code>0.0</code> hides it. See <a href="#value-pools">Value pools</a> for a more detailed explanation of <code>SetU32</code>.</p>
 <pre><code>SetU32       Pool_1 0.0 Const 0.0
 ShowDialog  
 </code></pre>
@@ -548,15 +575,16 @@ ShowDialog
 EndDialog   
 </code></pre>
 <p align="center">
-<img src="2_topic_guides/event_scripts/../../images/events_dialog_first_cutscene.png" alt="" style="max-height: 600px;" />
+<img src="images/events_dialog_first_cutscene.png" alt="" style="max-height: 600px;" />
 </p>
+
 <p>Here we can notice a few things:</p>
 <ul>
 <li><code>SpeakerName</code> only needs to be used once, even if the character has multiple dialog boxes</li>
 <li>In the first <code>SetDialog</code>, there are two interesting parts:
 <ul>
 <li><code>\n</code> is used to start a new line of dialog in the same dialog box</li>
-<li><code>[0xF5]</code> is the <a href="2_topic_guides/event_scripts/dialog.html#control-codes">control code</a> used to insert the player's name</li>
+<li><code>[0xF5]</code> is the <a href="#control-codes">control code</a> used to insert the player’s name</li>
 </ul>
 </li>
 <li>The dialog advance triangle is used for the first dialog box, but not the second
@@ -565,35 +593,36 @@ EndDialog
 </ul>
 </li>
 </ul>
-<div id="admonition-note" class="admonition admonish-note" role="note" aria-labelledby="admonition-note-title">
-<div class="admonition-title">
-<div id="admonition-note-title">
-<p>Note</p>
-</div>
-<a class="admonition-anchor-link" href="2_topic_guides/event_scripts/dialog.html#admonition-note"></a>
-</div>
-<div>
-<p>We haven't shown how to use dialog prompts (ex. Yes or No). Those are covered in the <a href="2_topic_guides/event_scripts/jumps_and_conditionals.html">Jumps and Conditionals</a> page.</p>
-</div>
-</div>
+<blockquote class="blockquote-tag blockquote-tag-note">
+<p class="blockquote-tag-title"><svg viewbox="0 0 16 16" width="18" height="18"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
+<p>We haven’t shown how to use dialog prompts (ex. Yes or No). Those are covered in the <a href="#jumps-and-conditionals">Jumps and Conditionals</a> page.</p>
+</blockquote>
 <h2 id="control-codes"><a class="header" href="#control-codes">Control codes</a></h2>
 <p>Control codes are special pieces of text that instruct the game to display specific information within dialog text or use a particular effect in displaying the text of the dialog box.</p>
-<div class="table-wrapper"><table><thead><tr><th>Code</th><th>Purpose</th></tr></thead><tbody>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Code</th><th>Purpose</th></tr>
+</thead>
+<tbody>
 <tr><td><code>[0xD0]</code></td><td>Starts a non-conversational dialog (ex. for opening a treasure chest)</td></tr>
 <tr><td><code>[0xEA]</code></td><td>Starts a conversational dialog</td></tr>
 <tr><td><code>[0xEB]</code></td><td>Used to start some conversational dialog (exact behavior unclear)</td></tr>
-<tr><td><code>[0xF5]</code></td><td>Inserts the player's name</td></tr>
-</tbody></table>
-</div><div style="break-before: page; page-break-before: always;"></div><h1 id="jumps-and-conditionals"><a class="header" href="#jumps-and-conditionals">Jumps and conditionals</a></h1>
+<tr><td><code>[0xF5]</code></td><td>Inserts the player’s name</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="jumps-and-conditionals"><a class="header" href="#jumps-and-conditionals">Jumps and conditionals</a></h1>
 <p><strong>Jumps and conditionals</strong> are used to make cutscenes and overworld events react to player choices or game state.</p>
 <ul>
 <li>Different dialog or cutscene outcome based on a yes/no choice</li>
-<li>Different outcomes based on the player's gold or items</li>
+<li>Different outcomes based on the player’s gold or items</li>
 <li>Repeat a dialog box until the player gives the correct answer</li>
 </ul>
 <h2 id="jumps"><a class="header" href="#jumps">Jumps</a></h2>
 <p><strong>Jumps</strong> are a special type of instruction that instead of causing the event to move on to the next instruction after it, move the event to a specific instruction.</p>
-<p>Consider the following example: (We've indented the instructions in this example for clarity)</p>
+<p>Consider the following example: (We’ve indented the instructions in this example for clarity)</p>
 <pre><code>    StartDialog 
     SpeakerName  "Black Jacques"
     SetDialog    "[0xEA]I am only going to tell you this once"
@@ -605,7 +634,8 @@ EndDialog
 <pre class="mermaid">flowchart LR
     A[StartDialog] --&gt; B[SpeakerName] --&gt; C[SetDialog] --&gt; D[SetU32] --&gt; E[ShowDialog] --&gt; F[EndDialog]
 </pre>
-<p>Let's add in a <code>Jump</code> and see how it affects what the event does:</p>
+
+<p>Let’s add in a <code>Jump</code> and see how it affects what the event does:</p>
 <pre><code>    StartDialog 
     SpeakerName  "Black Jacques"
 loop_start:
@@ -624,45 +654,40 @@ loop_start:
 <pre class="mermaid">flowchart LR
     A[StartDialog] --&gt; B[SpeakerName] --&gt; C[SetDialog] --&gt; D[SetU32] --&gt; E[ShowDialog] --&gt; F[Jump] --&gt; C
 </pre>
+
 <p>This behavior where an event script repeats the same set of instructions more than once is called a <strong>loop</strong>.</p>
 <p align="center">
-<img src="2_topic_guides/event_scripts/../../images/events_infinite_loop.gif" alt="" style="max-height: 300px;" />
+<img src="images/events_infinite_loop.gif" alt="" style="max-height: 300px;" />
 </p>
-<div id="admonition-note" class="admonition admonish-note" role="note" aria-labelledby="admonition-note-title">
-<div class="admonition-title">
-<div id="admonition-note-title">
-<p>Note</p>
-</div>
-<a class="admonition-anchor-link" href="2_topic_guides/event_scripts/jumps_and_conditionals.html#admonition-note"></a>
-</div>
-<div>
-<p>This particular example will make the "I am going to tell you this infinitely many times" dialog box appear over and over again without end, trapping the game in an <strong>infinite loop</strong>.</p>
-<p>We'll fix this in the next section.</p>
-</div>
-</div>
+
+<blockquote class="blockquote-tag blockquote-tag-note">
+<p class="blockquote-tag-title"><svg viewbox="0 0 16 16" width="18" height="18"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
+<p>This particular example will make the “I am going to tell you this infinitely many times” dialog box appear over and over again without end, trapping the game in an <strong>infinite loop</strong>.</p>
+<p>We’ll fix this in the next section.</p>
+</blockquote>
 <h3 id="types-of-jumps"><a class="header" href="#types-of-jumps">Types of jumps</a></h3>
-<div class="table-wrapper"><table><thead><tr><th>Instruction</th><th>Description</th></tr></thead><tbody>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Instruction</th><th>Description</th></tr>
+</thead>
+<tbody>
 <tr><td>Jump</td><td>Jumps to the specified label</td></tr>
 <tr><td>JumpIfTrue</td><td>Jumps to the specified label if previous conditional is true</td></tr>
 <tr><td>JumpIfFalse</td><td>Jumps to the specified label if previous conditional is false</td></tr>
 <tr><td>JumpKeepBackPointer</td><td>Jumps to the specified label and keep track of where the following instruction is</td></tr>
-</tbody></table>
-</div><div id="admonition-note-1" class="admonition admonish-note" role="note" aria-labelledby="admonition-note-1-title">
-<div class="admonition-title">
-<div id="admonition-note-1-title">
-<p>Note</p>
+</tbody>
+</table>
 </div>
-<a class="admonition-anchor-link" href="2_topic_guides/event_scripts/jumps_and_conditionals.html#admonition-note-1"></a>
-</div>
-<div>
+<blockquote class="blockquote-tag blockquote-tag-note">
+<p class="blockquote-tag-title"><svg viewbox="0 0 16 16" width="18" height="18"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
 <p><code>JumpKeepBackPointer</code> enables jumping to a different part of the script, and jumping back using <code>Exit</code>.</p>
 <p>This will be covered in an upcoming later section of the guide.</p>
-</div>
-</div>
+</blockquote>
 <h2 id="conditionals"><a class="header" href="#conditionals">Conditionals</a></h2>
 <p><strong>Conditionals</strong> allow you to control where the event will go after a jump instruction. This will enable you to make events react to player choices and game state.</p>
 <h3 id="player-choice--controlling-loops"><a class="header" href="#player-choice--controlling-loops">Player choice &amp; controlling loops</a></h3>
-<p>As shown in the previous section, we can use a <code>Jump</code> instruction to repeat a dialog box. Let's use a conditional to make the dialog box stop after the player selects a "No" choice.</p>
+<p>As shown in the previous section, we can use a <code>Jump</code> instruction to repeat a dialog box. Let’s use a conditional to make the dialog box stop after the player selects a “No” choice.</p>
 <pre><code>    StartDialog 
     SpeakerName  "Black Jacques"
 loop_start:
@@ -675,7 +700,7 @@ loop_start:
 </code></pre>
 <p>Note that there are three main changes here:</p>
 <ol>
-<li>Changes the <code>ShowDialog</code> to <code>PromptYesNo</code>. This both shows the dialog and gives the player a Yes or No choice, storing <code>1.0</code> in <code>Pool_1[0]</code> if the player chose "Yes", or <code>0.0</code> if the player chose "No".
+<li>Changes the <code>ShowDialog</code> to <code>PromptYesNo</code>. This both shows the dialog and gives the player a Yes or No choice, storing <code>1.0</code> in <code>Pool_1[0]</code> if the player chose “Yes”, or <code>0.0</code> if the player chose “No”.
 <ul>
 <li>Note that like <code>ShowDialog</code>, <code>PromptYesNo</code> also shows the dialog advance triangle if <code>Pool_1[0]</code> is equal to <code>1.0</code>.</li>
 </ul>
@@ -683,19 +708,21 @@ loop_start:
 <li>The <code>FloatsEq Pool_1 0.0 Const 1.0</code>. This is a conditional, which checks if the value in <code>Pool_1[0]</code> is equal to <code>1.0</code>.</li>
 <li>The <code>Jump</code> has been changed to <code>JumpIfTrue</code>. This will move the event to <code>SetDialog</code> if the previous conditional was true, or move the event to <code>EndDialog</code> if the previous conditional was false.</li>
 </ol>
-<p>By adding these instructions, we have created a loop that will repeat if the player selects "Yes" and end when the player selects "No".</p>
+<p>By adding these instructions, we have created a loop that will repeat if the player selects “Yes” and end when the player selects “No”.</p>
 <pre class="mermaid">flowchart LR
     A[StartDialog] --&gt; B[SpeakerName] --&gt; C[SetDialog] --&gt; D[SetU32] --&gt; F[PromptYesNo] --&gt; G[FloatsEq] --&gt; H{JumpIfTrue}
     H -- Yes --&gt; C
     H -- No --&gt; I[EndDialog]
 </pre>
+
 <p align="center">
-<img src="2_topic_guides/event_scripts/../../images/events_yes_no_loop.gif" alt="" style="max-height: 300px;" />
+<img src="images/events_yes_no_loop.gif" alt="" style="max-height: 300px;" />
 </p>
+
 <h3 id="game-state"><a class="header" href="#game-state">Game state</a></h3>
-<p>In addition to controlling loops, conditionals enable you to have events behave differently based on game state (ex. player's gold, items, library completion, etc.).</p>
-<p>As an example of this, let's make a script that gives the player 500 gold if they have less than 1000 gold.</p>
-<p>Here's the script behavior we want to achieve:</p>
+<p>In addition to controlling loops, conditionals enable you to have events behave differently based on game state (ex. player’s gold, items, library completion, etc.).</p>
+<p>As an example of this, let’s make a script that gives the player 500 gold if they have less than 1000 gold.</p>
+<p>Here’s the script behavior we want to achieve:</p>
 <pre class="mermaid">flowchart LR
     A[Greet player] --&gt; B{Does player have &lt; 1000 gold?}
     B -- no --&gt; C[Say they're doing well]
@@ -703,6 +730,7 @@ loop_start:
     C --&gt; E[End conversation]
     D --&gt; E
 </pre>
+
 <p>As a part of this, we will use the <code>GetPlayerGold</code> instruction. It will set <code>Pool_1[0]</code> to the amount of gold the player currently has.</p>
 <pre><code>    StartDialog 
     SpeakerName  "Generous Individual"
@@ -725,19 +753,370 @@ in_need_of_money:
 conversation_end:
     EndDialog 
 </code></pre>
-<p>Here we use <code>JumpIfTrue</code> to go to the <code>in_need_of_money</code> label if the player's gold is less than 1000. If the player has 1000 or more gold, then the script instead continues on to the "Seems like ..." dialog and uses a <code>Jump</code> to go to <code>conversation_end</code>. This results in both paths ending up at <code>conversation_end</code>.</p>
+<p>Here we use <code>JumpIfTrue</code> to go to the <code>in_need_of_money</code> label if the player’s gold is less than 1000. If the player has 1000 or more gold, then the script instead continues on to the “Seems like …” dialog and uses a <code>Jump</code> to go to <code>conversation_end</code>. This results in both paths ending up at <code>conversation_end</code>.</p>
 <h3 id="types-of-conditionals"><a class="header" href="#types-of-conditionals">Types of conditionals</a></h3>
-<div class="table-wrapper"><table><thead><tr><th>Instruction</th><th>Description</th></tr></thead><tbody>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Instruction</th><th>Description</th></tr>
+</thead>
+<tbody>
 <tr><td>FloatsEq</td><td>Checks if two values are equal</td></tr>
 <tr><td>FloatsNeq</td><td>Checks if two values are not equal</td></tr>
 <tr><td>FloatsGreater</td><td>Checks if the first value is greater than the second</td></tr>
 <tr><td>FloatsLess</td><td>Checks if the first value is less than the second</td></tr>
 <tr><td>FloatsGreaterEq</td><td>Checks if the first value is greater than or equal to the second</td></tr>
 <tr><td>FloatsLessEq</td><td>Checks if the first value is less than or equal to the second</td></tr>
-</tbody></table>
-</div><div style="break-before: page; page-break-before: always;"></div><h1 id="reference-guides"><a class="header" href="#reference-guides">Reference guides</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="list-of-event-instructions"><a class="header" href="#list-of-event-instructions">List of event instructions</a></h1>
-<p>TODO: work in progress</p>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="reference-guides"><a class="header" href="#reference-guides">Reference guides</a></h1>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="event-instructions"><a class="header" href="#event-instructions">Event instructions</a></h1>
+<p>This section details the various types of <a href="#instructions">event instructions</a>.</p>
+<ul>
+<li><a href="#jumps-and-conditionals-1">Jumps and conditionals</a></li>
+<li><a href="#player-data">Player data</a></li>
+</ul>
+<blockquote class="blockquote-tag blockquote-tag-note">
+<p class="blockquote-tag-title"><svg viewbox="0 0 16 16" width="18" height="18"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
+<p>This section is currently under construction</p>
+</blockquote>
+<h2 id="table-of-instructions"><a class="header" href="#table-of-instructions">Table of Instructions</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Id</th><th>Name</th><th>Category</th></tr>
+</thead>
+<tbody>
+<tr><td>0x00</td><td>Nop0</td><td></td></tr>
+<tr><td>0x01</td><td>UNUSED_0x01</td><td></td></tr>
+<tr><td>0x02</td><td>Exit</td><td></td></tr>
+<tr><td>0x03</td><td>UNUSED_0x03</td><td></td></tr>
+<tr><td>0x04</td><td>UNUSED_0x04</td><td></td></tr>
+<tr><td>0x05</td><td>UNUSED_0x05</td><td></td></tr>
+<tr><td>0x06</td><td>UNUSED_0x06</td><td></td></tr>
+<tr><td>0x07</td><td>UNUSED_0x07</td><td></td></tr>
+<tr><td>0x08</td><td>UNUSED_0x08</td><td></td></tr>
+<tr><td>0x09</td><td><a href="#jumpkeepbackpointer-0x09">JumpKeepBackPointer</a></td><td><a href="#jumps-1">Jump</a></td></tr>
+<tr><td>0x0A</td><td>StartEvent</td><td></td></tr>
+<tr><td>0x0B</td><td>Sleep</td><td></td></tr>
+<tr><td>0x0C</td><td><a href="#jump-0x0c">Jump</a></td><td><a href="#jumps-1">Jump</a></td></tr>
+<tr><td>0x0D</td><td><a href="#jumpiftrue-0x0d">JumpIfTrue</a></td><td><a href="#jumps-1">Jump</a></td></tr>
+<tr><td>0x0E</td><td><a href="#jumpiffalse-0x0e">JumpIfFalse</a></td><td><a href="#jumps-1">Jump</a></td></tr>
+<tr><td>0x0F</td><td><a href="#floatseq-0x0f">FloatsEq</a></td><td><a href="#conditionals-1">Conditional</a></td></tr>
+<tr><td>0x10</td><td><a href="#floatsneq-0x10">FloatsNeq</a></td><td><a href="#conditionals-1">Conditional</a></td></tr>
+<tr><td>0x11</td><td><a href="#floatsgreater-0x11">FloatsGreater</a></td><td><a href="#conditionals-1">Conditional</a></td></tr>
+<tr><td>0x12</td><td><a href="#floatsless-0x12">FloatsLess</a></td><td><a href="#conditionals-1">Conditional</a></td></tr>
+<tr><td>0x13</td><td><a href="#floatsgreatereq-0x13">FloatsGreaterEq</a></td><td><a href="#conditionals-1">Conditional</a></td></tr>
+<tr><td>0x14</td><td><a href="#floatslesseq-0x14">FloatsLessEq</a></td><td><a href="#conditionals-1">Conditional</a></td></tr>
+<tr><td>0x15</td><td>SetU32</td><td></td></tr>
+<tr><td>0x16</td><td>Cmd_0x16</td><td></td></tr>
+<tr><td>0x17</td><td>Cmd_0x17</td><td></td></tr>
+<tr><td>0x18</td><td>Cmd_0x18</td><td></td></tr>
+<tr><td>0x19</td><td>Cmd_0x19</td><td></td></tr>
+<tr><td>0x1A</td><td>Cmd_0x1A</td><td></td></tr>
+<tr><td>0x1B</td><td>BitAnd</td><td></td></tr>
+<tr><td>0x1C</td><td>BitOr</td><td></td></tr>
+<tr><td>0x1D</td><td>BitXor</td><td></td></tr>
+<tr><td>0x1E</td><td>Cmd_0x1E</td><td></td></tr>
+<tr><td>0x1F</td><td>Cmd_0x1F</td><td></td></tr>
+<tr><td>0x20</td><td>Cmd_0x20</td><td></td></tr>
+<tr><td>0x21</td><td>Cmd_0x21</td><td></td></tr>
+<tr><td>0x22</td><td>Cmd_0x22</td><td></td></tr>
+<tr><td>0x23</td><td>Cmd_0x23</td><td></td></tr>
+<tr><td>0x24</td><td>Cmd_0x24</td><td></td></tr>
+<tr><td>0x25</td><td>StartDialog</td><td>Dialog</td></tr>
+<tr><td>0x26</td><td>EndDialog</td><td>Dialog</td></tr>
+<tr><td>0x27</td><td>ShowDialog</td><td>Dialog</td></tr>
+<tr><td>0x28</td><td>RandomNum</td><td></td></tr>
+<tr><td>0x29</td><td>SetDialog</td><td>Dialog</td></tr>
+<tr><td>0x2A</td><td>SpeakerName</td><td>Dialog</td></tr>
+<tr><td>0x2B</td><td>LoadSkeletalAnimation</td><td></td></tr>
+<tr><td>0x2C</td><td>Cmd_0x2C</td><td></td></tr>
+<tr><td>0x2D</td><td>Cmd_0x2D</td><td></td></tr>
+<tr><td>0x2E</td><td>Cmd_0x2E</td><td></td></tr>
+<tr><td>0x2F</td><td>Cmd_0x2F</td><td></td></tr>
+<tr><td>0x30</td><td>Cmd_0x30</td><td></td></tr>
+<tr><td>0x31</td><td>Cmd_0x31</td><td></td></tr>
+<tr><td>0x32</td><td>Cmd_0x32</td><td></td></tr>
+<tr><td>0x33</td><td>Cmd_0x33</td><td></td></tr>
+<tr><td>0x34</td><td>Cmd_0x34</td><td></td></tr>
+<tr><td>0x35</td><td>Cmd_0x35</td><td></td></tr>
+<tr><td>0x36</td><td>Cmd_0x36</td><td></td></tr>
+<tr><td>0x37</td><td>Cmd_0x37</td><td></td></tr>
+<tr><td>0x38</td><td>Cmd_0x38</td><td></td></tr>
+<tr><td>0x39</td><td>Cmd_0x39</td><td></td></tr>
+<tr><td>0x3A</td><td>Cmd_0x3A</td><td></td></tr>
+<tr><td>0x3B</td><td>Cmd_0x3B</td><td></td></tr>
+<tr><td>0x3C</td><td>Cmd_0x3C</td><td></td></tr>
+<tr><td>0x3D</td><td>Cmd_0x3D</td><td></td></tr>
+<tr><td>0x3E</td><td>Cmd_0x3E</td><td></td></tr>
+<tr><td>0x3F</td><td>Cmd_0x3F</td><td></td></tr>
+<tr><td>0x40</td><td>Cmd_0x40</td><td></td></tr>
+<tr><td>0x41</td><td>Cmd_0x41</td><td></td></tr>
+<tr><td>0x42</td><td>Cmd_0x42</td><td></td></tr>
+<tr><td>0x43</td><td>Cmd_0x43</td><td></td></tr>
+<tr><td>0x44</td><td>Cmd_0x44</td><td></td></tr>
+<tr><td>0x45</td><td>Cmd_0x45</td><td></td></tr>
+<tr><td>0x46</td><td>Cmd_0x46</td><td></td></tr>
+<tr><td>0x47</td><td>Cmd_0x47</td><td></td></tr>
+<tr><td>0x48</td><td>Cmd_0x48</td><td></td></tr>
+<tr><td>0x49</td><td>Cmd_0x49</td><td></td></tr>
+<tr><td>0x4A</td><td>Cmd_0x4A</td><td></td></tr>
+<tr><td>0x4B</td><td>Cmd_0x4B</td><td></td></tr>
+<tr><td>0x4C</td><td>Cmd_0x4C</td><td></td></tr>
+<tr><td>0x4D</td><td>Cmd_0x4D</td><td></td></tr>
+<tr><td>0x4E</td><td>Cmd_0x4E</td><td></td></tr>
+<tr><td>0x4F</td><td>Cmd_0x4F</td><td></td></tr>
+<tr><td>0x50</td><td>Cmd_0x50</td><td></td></tr>
+<tr><td>0x51</td><td>Cmd_0x51</td><td></td></tr>
+<tr><td>0x52</td><td>Cmd_0x52</td><td></td></tr>
+<tr><td>0x53</td><td>Cmd_0x53</td><td></td></tr>
+<tr><td>0x54</td><td>PromptYesNo</td><td>Dialog</td></tr>
+<tr><td>0x55</td><td>GetNumPartyMonsters</td><td><a href="#player-data">Player data</a></td></tr>
+<tr><td>0x56</td><td>GetMonsterSpeciesId</td><td><a href="#player-data">Player data</a></td></tr>
+<tr><td>0x57</td><td>GetItemCount</td><td><a href="#player-data">Player data</a></td></tr>
+<tr><td>0x58</td><td>GivePlayerOneItem</td><td><a href="#player-data">Player data</a></td></tr>
+<tr><td>0x59</td><td>TakePlayerOneItem</td><td><a href="#player-data">Player data</a></td></tr>
+<tr><td>0x5A</td><td>GetNumDarkoniumX5</td><td><a href="#player-data">Player data</a></td></tr>
+<tr><td>0x5B</td><td>IncreaseNumDarkoniumX5</td><td><a href="#player-data">Player data</a></td></tr>
+<tr><td>0x5C</td><td>Cmd_0x5C</td><td></td></tr>
+<tr><td>0x5D</td><td>GetPlayerGold</td><td><a href="#player-data">Player data</a></td></tr>
+<tr><td>0x5E</td><td>GivePlayerGold</td><td><a href="#player-data">Player data</a></td></tr>
+<tr><td>0x5F</td><td>Cmd_0x5F</td><td></td></tr>
+<tr><td>0x60</td><td>Cmd_0x60</td><td></td></tr>
+<tr><td>0x61</td><td>Cmd_0x61</td><td></td></tr>
+<tr><td>0x62</td><td>Cmd_0x62</td><td></td></tr>
+<tr><td>0x63</td><td>Cmd_0x63</td><td></td></tr>
+<tr><td>0x64</td><td>Cmd_0x64</td><td></td></tr>
+<tr><td>0x65</td><td>HealPlayerMonsters</td><td><a href="#player-data">Player data</a></td></tr>
+<tr><td>0x66</td><td>Cmd_0x66</td><td></td></tr>
+<tr><td>0x67</td><td>Cmd_0x67</td><td></td></tr>
+<tr><td>0x68</td><td>Cmd_0x68</td><td></td></tr>
+<tr><td>0x69</td><td>Cmd_0x69</td><td></td></tr>
+<tr><td>0x6A</td><td>Cmd_0x6A</td><td></td></tr>
+<tr><td>0x6B</td><td>GetMonsterName</td><td></td></tr>
+<tr><td>0x6C</td><td>GetMonsterSpeciesName</td><td></td></tr>
+<tr><td>0x6D</td><td>Cmd_0x6D</td><td></td></tr>
+<tr><td>0x6E</td><td>Cmd_0x6E</td><td></td></tr>
+<tr><td>0x6F</td><td>Cmd_0x6F</td><td></td></tr>
+<tr><td>0x70</td><td>Cmd_0x70</td><td></td></tr>
+<tr><td>0x71</td><td>DoAnyMonstersNeedHeal</td><td></td></tr>
+<tr><td>0x72</td><td>Cmd_0x72</td><td></td></tr>
+<tr><td>0x73</td><td>Cmd_0x73</td><td></td></tr>
+<tr><td>0x74</td><td>Cmd_0x74</td><td></td></tr>
+<tr><td>0x75</td><td>Cmd_0x75</td><td></td></tr>
+<tr><td>0x76</td><td>Cmd_0x76</td><td></td></tr>
+<tr><td>0x77</td><td>Cmd_0x77</td><td></td></tr>
+<tr><td>0x78</td><td>Cmd_0x78</td><td></td></tr>
+<tr><td>0x79</td><td>Cmd_0x79</td><td></td></tr>
+<tr><td>0x7A</td><td>Cmd_0x7A</td><td></td></tr>
+<tr><td>0x7B</td><td>Cmd_0x7B</td><td></td></tr>
+<tr><td>0x7C</td><td>Cmd_0x7C</td><td></td></tr>
+<tr><td>0x7D</td><td>Cmd_0x7D</td><td></td></tr>
+<tr><td>0x7E</td><td>Cmd_0x7E</td><td></td></tr>
+<tr><td>0x7F</td><td>Cmd_0x7F</td><td></td></tr>
+<tr><td>0x80</td><td>Cmd_0x80</td><td></td></tr>
+<tr><td>0x81</td><td>GetNumMonstersScouted</td><td></td></tr>
+<tr><td>0x82</td><td>Cmd_0x82</td><td></td></tr>
+<tr><td>0x83</td><td>Cmd_0x83</td><td></td></tr>
+<tr><td>0x84</td><td>Cmd_0x84</td><td></td></tr>
+<tr><td>0x85</td><td>Cmd_0x85</td><td></td></tr>
+<tr><td>0x86</td><td>LoadMap</td><td></td></tr>
+<tr><td>0x87</td><td>LoadModelAndAnimations</td><td></td></tr>
+<tr><td>0x88</td><td>Cmd_0x88</td><td></td></tr>
+<tr><td>0x89</td><td>Cmd_0x89</td><td></td></tr>
+<tr><td>0x8A</td><td>Cmd_0x8A</td><td></td></tr>
+<tr><td>0x8B</td><td>Cmd_0x8B</td><td></td></tr>
+<tr><td>0x8C</td><td>Cmd_0x8C</td><td></td></tr>
+<tr><td>0x8D</td><td>Cmd_0x8D</td><td></td></tr>
+<tr><td>0x8E</td><td>Cmd_0x8E</td><td></td></tr>
+<tr><td>0x8F</td><td>Cmd_0x8F</td><td></td></tr>
+<tr><td>0x90</td><td>Cmd_0x90</td><td></td></tr>
+<tr><td>0x91</td><td>Cmd_0x91</td><td></td></tr>
+<tr><td>0x92</td><td>Cmd_0x92</td><td></td></tr>
+<tr><td>0x93</td><td>Cmd_0x93</td><td></td></tr>
+<tr><td>0x94</td><td>Cmd_0x94</td><td></td></tr>
+<tr><td>0x95</td><td>Cmd_0x95</td><td></td></tr>
+<tr><td>0x96</td><td>Cmd_0x96</td><td></td></tr>
+<tr><td>0x97</td><td>Cmd_0x97</td><td></td></tr>
+<tr><td>0x98</td><td>Cmd_0x98</td><td></td></tr>
+<tr><td>0x99</td><td>LoadPos</td><td></td></tr>
+<tr><td>0x9A</td><td>Cmd_0x9A</td><td></td></tr>
+<tr><td>0x9B</td><td>Cmd_0x9B</td><td></td></tr>
+<tr><td>0x9C</td><td>Cmd_0x9C</td><td></td></tr>
+<tr><td>0x9D</td><td>Cmd_0x9D</td><td></td></tr>
+<tr><td>0x9E</td><td>Cmd_0x9E</td><td></td></tr>
+<tr><td>0x9F</td><td>Cmd_0x9F</td><td></td></tr>
+<tr><td>0xA0</td><td>Cmd_0xA0</td><td></td></tr>
+<tr><td>0xA1</td><td>Cmd_0xA1</td><td></td></tr>
+<tr><td>0xA2</td><td>Cmd_0xA2</td><td></td></tr>
+<tr><td>0xA3</td><td>LoadD16</td><td></td></tr>
+<tr><td>0xA4</td><td>ShowD16</td><td></td></tr>
+<tr><td>0xA5</td><td>HideD16</td><td></td></tr>
+<tr><td>0xA6</td><td>Cmd_0xA6</td><td></td></tr>
+<tr><td>0xA7</td><td>Cmd_0xA7</td><td></td></tr>
+<tr><td>0xA8</td><td>Cmd_0xA8</td><td></td></tr>
+<tr><td>0xA9</td><td>Cmd_0xA9</td><td></td></tr>
+<tr><td>0xAA</td><td>NopAA</td><td></td></tr>
+<tr><td>0xAB</td><td>Cmd_0xAB</td><td></td></tr>
+<tr><td>0xAC</td><td>Cmd_0xAC</td><td></td></tr>
+<tr><td>0xAD</td><td>Cmd_0xAD</td><td></td></tr>
+<tr><td>0xAE</td><td>GetNumBattlesWon</td><td></td></tr>
+<tr><td>0xAF</td><td>Cmd_0xAF</td><td></td></tr>
+<tr><td>0xB0</td><td>Cmd_0xB0</td><td></td></tr>
+<tr><td>0xB1</td><td>Cmd_0xB1</td><td></td></tr>
+<tr><td>0xB2</td><td>Cmd_0xB2</td><td></td></tr>
+<tr><td>0xB3</td><td>Cmd_0xB3</td><td></td></tr>
+<tr><td>0xB4</td><td>Cmd_0xB4</td><td></td></tr>
+<tr><td>0xB5</td><td>PlayerHasRoomInHand</td><td><a href="#player-data">Player data</a></td></tr>
+<tr><td>0xB6</td><td>Cmd_0xB6</td><td></td></tr>
+<tr><td>0xB7</td><td>Cmd_0xB7</td><td></td></tr>
+<tr><td>0xB8</td><td>GetNumMonstersInStorage</td><td></td></tr>
+<tr><td>0xB9</td><td>Cmd_0xB9</td><td></td></tr>
+<tr><td>0xBA</td><td>Cmd_0xBA</td><td></td></tr>
+<tr><td>0xBB</td><td>Cmd_0xBB</td><td></td></tr>
+<tr><td>0xBC</td><td>Cmd_0xBC</td><td></td></tr>
+<tr><td>0xBD</td><td>Cmd_0xBD</td><td></td></tr>
+<tr><td>0xBE</td><td>Cmd_0xBE</td><td></td></tr>
+<tr><td>0xBF</td><td>Cmd_0xBF</td><td></td></tr>
+<tr><td>0xC0</td><td>Cmd_0xC0</td><td></td></tr>
+<tr><td>0xC1</td><td>Cmd_0xC1</td><td></td></tr>
+<tr><td>0xC2</td><td>GetNumPlayerMonsters</td><td></td></tr>
+<tr><td>0xC3</td><td>Cmd_0xC3</td><td></td></tr>
+<tr><td>0xC4</td><td>Cmd_0xC4</td><td></td></tr>
+<tr><td>0xC5</td><td>Cmd_0xC5</td><td></td></tr>
+<tr><td>0xC6</td><td>Cmd_0xC6</td><td></td></tr>
+<tr><td>0xC7</td><td>Cmd_0xC7</td><td></td></tr>
+<tr><td>0xC8</td><td>Cmd_0xC8</td><td></td></tr>
+<tr><td>0xC9</td><td>Cmd_0xC9</td><td></td></tr>
+<tr><td>0xCA</td><td>Cmd_0xCA</td><td></td></tr>
+<tr><td>0xCB</td><td>Cmd_0xCB</td><td></td></tr>
+<tr><td>0xCC</td><td>Cmd_0xCC</td><td></td></tr>
+<tr><td>0xCD</td><td>Cmd_0xCD</td><td></td></tr>
+<tr><td>0xCE</td><td>Cmd_0xCE</td><td></td></tr>
+<tr><td>0xCF</td><td>Cmd_0xCF</td><td></td></tr>
+<tr><td>0xD0</td><td>Cmd_0xD0</td><td></td></tr>
+<tr><td>0xD1</td><td>Cmd_0xD1</td><td></td></tr>
+<tr><td>0xD2</td><td>Cmd_0xD2</td><td></td></tr>
+<tr><td>0xD3</td><td>Cmd_0xD3</td><td></td></tr>
+<tr><td>0xD4</td><td>Cmd_0xD4</td><td></td></tr>
+<tr><td>0xD5</td><td>Cmd_0xD5</td><td></td></tr>
+<tr><td>0xD6</td><td>Cmd_0xD6</td><td></td></tr>
+<tr><td>0xD7</td><td>Cmd_0xD7</td><td></td></tr>
+<tr><td>0xD8</td><td>Cmd_0xD8</td><td></td></tr>
+<tr><td>0xD9</td><td>Cmd_0xD9</td><td></td></tr>
+<tr><td>0xDA</td><td>Cmd_0xDA</td><td></td></tr>
+<tr><td>0xDB</td><td>Cmd_0xDB</td><td></td></tr>
+<tr><td>0xDC</td><td>Cmd_0xDC</td><td></td></tr>
+<tr><td>0xDD</td><td>Cmd_0xDD</td><td></td></tr>
+<tr><td>0xDE</td><td>Cmd_0xDE</td><td></td></tr>
+<tr><td>0xDF</td><td>Cmd_0xDF</td><td></td></tr>
+<tr><td>0xE0</td><td>Cmd_0xE0</td><td></td></tr>
+<tr><td>0xE1</td><td>Cmd_0xE1</td><td></td></tr>
+<tr><td>0xE2</td><td>Cmd_0xE2</td><td></td></tr>
+<tr><td>0xE3</td><td>Cmd_0xE3</td><td></td></tr>
+<tr><td>0xE4</td><td>Cmd_0xE4</td><td></td></tr>
+<tr><td>0xE5</td><td>Cmd_0xE5</td><td></td></tr>
+<tr><td>0xE6</td><td>LoadFldEnmyPrmFile</td><td></td></tr>
+<tr><td>0xE7</td><td>Cmd_0xE7</td><td></td></tr>
+<tr><td>0xE8</td><td>Cmd_0xE8</td><td></td></tr>
+<tr><td>0xE9</td><td>ShowCreditsText</td><td></td></tr>
+<tr><td>0xEA</td><td>Cmd_0xEA</td><td></td></tr>
+<tr><td>0xEB</td><td>Cmd_0xEB</td><td></td></tr>
+<tr><td>0xEC</td><td>Cmd_0xEC</td><td></td></tr>
+<tr><td>0xED</td><td>Cmd_0xED</td><td></td></tr>
+<tr><td>0xEE</td><td>Cmd_0xEE</td><td></td></tr>
+<tr><td>0xEF</td><td>Cmd_0xEF</td><td></td></tr>
+<tr><td>0xF0</td><td>Cmd_0xF0</td><td></td></tr>
+<tr><td>0xF1</td><td>Cmd_0xF1</td><td></td></tr>
+<tr><td>0xF2</td><td>Cmd_0xF2</td><td></td></tr>
+<tr><td>0xF3</td><td>Cmd_0xF3</td><td></td></tr>
+<tr><td>0xF4</td><td>Cmd_0xF4</td><td></td></tr>
+<tr><td>0xF5</td><td>Cmd_0xF5</td><td></td></tr>
+<tr><td>0xF6</td><td>Cmd_0xF6</td><td></td></tr>
+<tr><td>0xF7</td><td>Cmd_0xF7</td><td></td></tr>
+<tr><td>0xF8</td><td>Cmd_0xF8</td><td></td></tr>
+<tr><td>0xF9</td><td>Cmd_0xF9</td><td></td></tr>
+<tr><td>0xFA</td><td>GetNumSkillsInLibrary</td><td></td></tr>
+<tr><td>0xFB</td><td>Cmd_0xFB</td><td></td></tr>
+<tr><td>0xFC</td><td>Cmd_0xFC</td><td></td></tr>
+<tr><td>0xFD</td><td>Cmd_0xFD</td><td></td></tr>
+<tr><td>0xFE</td><td>Cmd_0xFE</td><td></td></tr>
+<tr><td>0xFF</td><td>Cmd_0xFF</td><td></td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="jumps-and-conditionals-1"><a class="header" href="#jumps-and-conditionals-1">Jumps and conditionals</a></h1>
+<p>For more information on jumps and conditionals, see the <a href="#jumps-and-conditionals">jumps and conditionals</a> topic guide.</p>
+<h2 id="jumps-1"><a class="header" href="#jumps-1">Jumps</a></h2>
+<h3 id="jump-0x0c"><a class="header" href="#jump-0x0c">Jump (0x0C)</a></h3>
+<p><code>Jump</code> moves the event to the specified instruction location instead of moving to the next instruction.</p>
+<pre><code>loop_start:
+    SetDialog    "[0xEA]I am going to tell you this infinitely many times"
+    ShowDialog  
+    Jump loop_start
+</code></pre>
+<h4 id="arguments"><a class="header" href="#arguments">Arguments</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>InstructionLocation</code>) - Instruction location to move the event to</li>
+</ul>
+<h3 id="jumpiftrue-0x0d"><a class="header" href="#jumpiftrue-0x0d">JumpIfTrue (0x0D)</a></h3>
+<p><code>JumpIfTrue</code> moves the event to the specified instruction location if the previous conditional was <strong>true</strong>, else moves the event to the next instruction.</p>
+<pre><code>loop_start:
+    SetDialog    "[0xEA]Do you want me to say this again?"
+    PromptYesNo
+    FloatsEq Pool_1 0.0 Const 1.0
+    JumpIfTrue loop_start
+    EndDialog 
+</code></pre>
+<h4 id="arguments-1"><a class="header" href="#arguments-1">Arguments</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>InstructionLocation</code>) - Instruction location to move the event to if the conditional is true</li>
+</ul>
+<h3 id="jumpiffalse-0x0e"><a class="header" href="#jumpiffalse-0x0e">JumpIfFalse (0x0E)</a></h3>
+<p><code>JumpIfFalse</code> moves the event to the specified instruction location if the previous conditional was <strong>false</strong>, else moves the event to the next instruction.</p>
+<pre><code>loop_start:
+    SetDialog    "[0xEA]Do you NOT want me to say this again?"
+    PromptYesNo
+    FloatsEq Pool_1 0.0 Const 1.0
+    JumpIfFalse loop_start
+    EndDialog 
+</code></pre>
+<h4 id="arguments-2"><a class="header" href="#arguments-2">Arguments</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>InstructionLocation</code>) - Instruction location to move the event to if the conditional is false</li>
+</ul>
+<h3 id="jumpkeepbackpointer-0x09"><a class="header" href="#jumpkeepbackpointer-0x09">JumpKeepBackPointer (0x09)</a></h3>
+<h2 id="conditionals-1"><a class="header" href="#conditionals-1">Conditionals</a></h2>
+<h3 id="floatseq-0x0f"><a class="header" href="#floatseq-0x0f">FloatsEq (0x0F)</a></h3>
+<h3 id="floatsneq-0x10"><a class="header" href="#floatsneq-0x10">FloatsNeq (0x10)</a></h3>
+<h3 id="floatsgreater-0x11"><a class="header" href="#floatsgreater-0x11">FloatsGreater (0x11)</a></h3>
+<h3 id="floatsless-0x12"><a class="header" href="#floatsless-0x12">FloatsLess (0x12)</a></h3>
+<h3 id="floatsgreatereq-0x13"><a class="header" href="#floatsgreatereq-0x13">FloatsGreaterEq (0x13)</a></h3>
+<h3 id="floatslesseq-0x14"><a class="header" href="#floatslesseq-0x14">FloatsLessEq (0x14)</a></h3>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="player-data"><a class="header" href="#player-data">Player data</a></h1>
+<h2 id="player-data-1"><a class="header" href="#player-data-1">Player data</a></h2>
+<h3 id="getnumpartymonsters-0x55"><a class="header" href="#getnumpartymonsters-0x55">GetNumPartyMonsters (0x55)</a></h3>
+<p>Returns the number of monsters the player has in their party.</p>
+<h4 id="outputs"><a class="header" href="#outputs">Outputs</a></h4>
+<ol>
+<li>Number of monsters the player has in their party</li>
+</ol>
+<h3 id="getmonsterspeciesid-0x56"><a class="header" href="#getmonsterspeciesid-0x56">GetMonsterSpeciesId (0x56)</a></h3>
+<h3 id="getitemcount-0x57"><a class="header" href="#getitemcount-0x57">GetItemCount (0x57)</a></h3>
+<h3 id="giveplayeroneitem-0x58"><a class="header" href="#giveplayeroneitem-0x58">GivePlayerOneItem (0x58)</a></h3>
+<h3 id="takeplayeroneitem-0x59"><a class="header" href="#takeplayeroneitem-0x59">TakePlayerOneItem (0x59)</a></h3>
+<h3 id="getnumdarkoniumx5-0x5a"><a class="header" href="#getnumdarkoniumx5-0x5a">GetNumDarkoniumX5 (0x5A)</a></h3>
+<h3 id="increasenumdarkoniumx5-0x5b"><a class="header" href="#increasenumdarkoniumx5-0x5b">IncreaseNumDarkoniumX5 (0x5B)</a></h3>
+<h3 id="getplayergold-0x5d"><a class="header" href="#getplayergold-0x5d">GetPlayerGold (0x5D)</a></h3>
+<h3 id="giveplayergold-0x5e"><a class="header" href="#giveplayergold-0x5e">GivePlayerGold (0x5E)</a></h3>
+<h3 id="healplayermonsters-0x65"><a class="header" href="#healplayermonsters-0x65">HealPlayerMonsters (0x65)</a></h3>
+<h3 id="playerhasroominhand-0xb5"><a class="header" href="#playerhasroominhand-0xb5">PlayerHasRoomInHand (0xB5)</a></h3>
 
                     </main>
 
@@ -756,6 +1135,11 @@ conversation_end:
 
         </div>
 
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
 
 
@@ -764,13 +1148,13 @@ conversation_end:
         </script>
 
 
-        <script src="elasticlunr.min.js"></script>
-        <script src="mark.min.js"></script>
-        <script src="searcher.js"></script>
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
 
-        <script src="clipboard.min.js"></script>
-        <script src="highlight.js"></script>
-        <script src="book.js"></script>
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
 
         <!-- Custom JS scripts -->
         <script src="./mermaid.min.js"></script>
