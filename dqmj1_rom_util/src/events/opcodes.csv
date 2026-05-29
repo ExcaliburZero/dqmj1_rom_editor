@@ -42,7 +42,7 @@ Id,Name,Arguments,Inputs,Outputs,Notes
 0x28,RandomNum,[],[Pool_1[0]],[Pool_1[0]],
 0x29,SetDialog,[String],[],[],
 0x2A,SpeakerName,[String],[],[],
-0x2B,Cmd_0x2B,[],[Pool_1[0]],[Pool_1[0]],
+0x2B,LoadSkeletalAnimation,[],[Pool_1[0]],[Pool_1[0]],
 0x2C,Cmd_0x2C,[],[Pool_1[0]],[Pool_1[0]],
 0x2D,Cmd_0x2D,[],[Pool_1[0]],[Pool_1[0]],Something related to strings
 0x2E,Cmd_0x2E,[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",[],
@@ -67,7 +67,7 @@ Id,Name,Arguments,Inputs,Outputs,Notes
 0x41,Cmd_0x41,[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",[],
 0x42,Cmd_0x42,[],[Pool_1[0]],[],
 0x43,Cmd_0x43,"[U32, U32]","[arg_0, arg_1]",[],TODO: confirm args
-0x44,Cmd_0x44,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4], Pool_1[5]]",[],
+0x44,Cmd_0x44,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4], Pool_1[5]]",[],Maybe related to starting a battle?
 0x45,Cmd_0x45,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],
 0x46,Cmd_0x46,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3]]",[],
 0x47,Cmd_0x47,[],[],[Pool_1[0]],
@@ -83,7 +83,7 @@ Id,Name,Arguments,Inputs,Outputs,Notes
 0x51,Cmd_0x51,[],[Pool_1[0]],[],
 0x52,Cmd_0x52,[],[],[],
 0x53,Cmd_0x53,[],[],[],
-0x54,PromptYesNo,[],[Pool_1[0]],[],
+0x54,PromptYesNo,[],[Pool_1[0]],[Pool_1[0]],
 0x55,GetNumPartyMonsters,[],[],[Pool_1[0]],
 0x56,GetMonsterSpeciesId,[],[Pool_1[0]],[Pool_1[0]],
 0x57,GetItemCount,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],"input[0] is the item id, input[1] determines whether to check in the player’s hand or bag"
@@ -169,7 +169,7 @@ Id,Name,Arguments,Inputs,Outputs,Notes
 0xA7,Cmd_0xA7,[],[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",
 0xA8,Cmd_0xA8,[],[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",
 0xA9,Cmd_0xA9,[],[],[],
-0xAA,NopAA,[Bytes],[],[],"Seems to have no effect other than updating the command pointer and setting return value to 0. Can have a value, but does not have to."
+0xAA,NopAA,[ShiftJisString],[],[],
 0xAB,Cmd_0xAB,[],[Pool_1[0]],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3]]",Does something with player monsters species'. Maybe the party monsters? Maybe it counts the number that have a matching rank or family (can't tell which).
 0xAC,Cmd_0xAC,[],[Pool_1[0]],[],Sets some player data value
 0xAD,Cmd_0xAD,[],[],[Pool_1[0]],Gets the player data value set by 0xAC

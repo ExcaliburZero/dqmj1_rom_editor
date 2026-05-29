@@ -3,6 +3,7 @@ use std::{
     io::{self, Write},
 };
 
+use encoding_rs::SHIFT_JIS;
 use serde::Deserialize;
 
 use crate::{
@@ -153,6 +154,10 @@ impl DecodedInstruction<'_> {
                     ArgumentKind::Dqmj1String => {
                         let encoded_string = character_encoding.encode_string(string);
                         Self::round_up_to_multiple_of_4(encoded_string.len())
+                    }
+                    ArgumentKind::ShiftJisString => {
+                        // TODO: implement: encode string and check its size
+                        panic!();
                     }
                     _ => panic!(),
                 },
@@ -332,6 +337,16 @@ impl DisassembledEvt<'_> {
                     arguments.push(Arg::StringLit(string.to_string()));
                     current += raw_arguments.len() - current; // Note: assumes no further args
                 }
+                ArgumentKind::ShiftJisString => {
+                    let relevant_bytes =
+                        raw_arguments[current..].split(|&b| b == 0).next().unwrap();
+                    assert!(!relevant_bytes.is_empty());
+                    let decoded = SHIFT_JIS.decode(relevant_bytes);
+                    let string = decoded.0.trim_end_matches('\0');
+
+                    arguments.push(Arg::StringLit(string.to_string()));
+                    current += raw_arguments.len() - current; // Note: assumes no further args
+                }
                 ArgumentKind::U32 => {
                     let value = f32::from_le_bytes(
                         raw_arguments[current..(current + 4)].try_into().unwrap(),
@@ -426,6 +441,7 @@ pub enum ArgumentKind {
     U32,
     Dqmj1String,
     AsciiString,
+    ShiftJisString,
     InstructionLocation,
     ValueLocation,
 }
@@ -437,6 +453,7 @@ impl ArgumentKind {
             "U32" => ArgumentKind::U32,
             "String" => ArgumentKind::Dqmj1String,
             "AsciiString" => ArgumentKind::AsciiString,
+            "ShiftJisString" => ArgumentKind::ShiftJisString,
             "InstructionLocation" => ArgumentKind::InstructionLocation,
             "ValueLocation" => ArgumentKind::ValueLocation,
             _ => panic!(),
