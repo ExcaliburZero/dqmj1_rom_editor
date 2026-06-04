@@ -1,6 +1,7 @@
 # Event instructions
 This section details the various types of [event instructions](../../2_topic_guides/event_scripts/instructions.md).
 
+* [Math](math.md)
 * [Jumps and conditionals](jumps_and_conditionals.md)
 * [Player data](player_data.md)
 
@@ -32,14 +33,14 @@ This section details the various types of [event instructions](../../2_topic_gui
 | 0x13 | [FloatsGreaterEq](jumps_and_conditionals.md#floatsgreatereq-0x13) | [Conditional](jumps_and_conditionals.md#conditionals) |
 | 0x14 | [FloatsLessEq](jumps_and_conditionals.md#floatslesseq-0x14) | [Conditional](jumps_and_conditionals.md#conditionals) |
 | 0x15 | SetU32 |  |
-| 0x16 | Cmd_0x16 |  |
-| 0x17 | Cmd_0x17 |  |
-| 0x18 | Cmd_0x18 |  |
-| 0x19 | Cmd_0x19 |  |
-| 0x1A | Cmd_0x1A |  |
-| 0x1B | BitAnd |  |
-| 0x1C | BitOr |  |
-| 0x1D | BitXor |  |
+| 0x16 | [Add](math.md#add-0x16) | [Arithmetic](math.md#arithmetic) |
+| 0x17 | [Subtract](math.md#subtract-0x17) | [Arithmetic](math.md#arithmetic) |
+| 0x18 | [Multiply](math.md#multiply-0x18) | [Arithmetic](math.md#arithmetic) |
+| 0x19 | [Divide](math.md#divide-0x19) | [Arithmetic](math.md#arithmetic) |
+| 0x1A | [Modulo](math.md#modulo-0x1a) | [Arithmetic](math.md#arithmetic) |
+| 0x1B | BitAnd | [Bit-wise operations](math.md#bit-wise-operations) |
+| 0x1C | BitOr | [Bit-wise operations](math.md#bit-wise-operations) |
+| 0x1D | BitXor | [Bit-wise operations](math.md#bit-wise-operations) |
 | 0x1E | Cmd_0x1E |  |
 | 0x1F | Cmd_0x1F |  |
 | 0x20 | Cmd_0x20 |  |
@@ -50,7 +51,7 @@ This section details the various types of [event instructions](../../2_topic_gui
 | 0x25 | StartDialog | Dialog |
 | 0x26 | EndDialog | Dialog |
 | 0x27 | ShowDialog | Dialog |
-| 0x28 | RandomNum |  |
+| 0x28 | [RandomNum](math.md#randomnum-0x28) | [Math](math.md#other) |
 | 0x29 | SetDialog | Dialog |
 | 0x2A | SpeakerName | Dialog |
 | 0x2B | LoadSkeletalAnimation |  |
@@ -258,7 +259,7 @@ This section details the various types of [event instructions](../../2_topic_gui
 | 0xF5 | Cmd_0xF5 |  |
 | 0xF6 | Cmd_0xF6 |  |
 | 0xF7 | Cmd_0xF7 |  |
-| 0xF8 | Cmd_0xF8 |  |
+| 0xF8 | IntToString | Dialog |
 | 0xF9 | Cmd_0xF9 |  |
 | 0xFA | GetNumSkillsInLibrary |  |
 | 0xFB | Cmd_0xFB |  |

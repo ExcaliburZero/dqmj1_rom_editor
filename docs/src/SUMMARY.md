@@ -16,5 +16,6 @@
         - [Jumps and conditionals](./2_topic_guides/event_scripts/jumps_and_conditionals.md)
 - [Reference guides](./3_reference_guides/index.md)
     - [Event instructions](./3_reference_guides/event_instructions/index.md)
+      - [Math](./3_reference_guides/event_instructions/math.md)
       - [Jumps and conditionals](./3_reference_guides/event_instructions/jumps_and_conditionals.md)
       - [Player data](./3_reference_guides/event_instructions/player_data.md)
