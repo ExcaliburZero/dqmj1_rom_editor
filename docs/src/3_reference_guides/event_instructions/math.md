@@ -81,7 +81,11 @@ Modulo Pool_1 1.0 Pool_1 0.0 Const 2.0
 * **a** (`Pool` + `Value`) - First operand of the division
 * **b** (`Pool` + `Value`) - Second operand of the division 
 
-## Bit-wise operations
+## Bitwise operations
+> [!NOTE]
+> The bitwise operation instructions might be bugged.
+>
+> They seem to load two values, convert them to 32bit integers, and then store the result without converting it back into a 32bit float. Though this has not yet been confirmed.
 
 ### BitAnd (0x1B)
 ### BitOr (0x1C)
@@ -90,3 +94,18 @@ Modulo Pool_1 1.0 Pool_1 0.0 Const 2.0
 ## Other
 
 ### RandomNum (0x28)
+`RandomNum` generates a random integer in the range from 0 up to but not including a given upper bound.
+
+Ex. with an upper bound of 5, `RandomNum` will pick a number from: 0, 1, 2, 3, 4
+
+```
+# Pick a random integer in the range [0, 9]
+SetU32      Pool_1 0.0 Const 10.0
+RandomNum
+```
+
+#### Inputs
+* **upper bound** (`Pool_1[0]`) - Upper bound of the range of numbers to randomly generate
+
+#### Outputs
+* **number** (`Pool_1[0]`) - Generated random number in range

@@ -38,9 +38,9 @@ This section details the various types of [event instructions](../../2_topic_gui
 | 0x18 | [Multiply](math.md#multiply-0x18) | [Arithmetic](math.md#arithmetic) |
 | 0x19 | [Divide](math.md#divide-0x19) | [Arithmetic](math.md#arithmetic) |
 | 0x1A | [Modulo](math.md#modulo-0x1a) | [Arithmetic](math.md#arithmetic) |
-| 0x1B | BitAnd | [Bit-wise operations](math.md#bit-wise-operations) |
-| 0x1C | BitOr | [Bit-wise operations](math.md#bit-wise-operations) |
-| 0x1D | BitXor | [Bit-wise operations](math.md#bit-wise-operations) |
+| 0x1B | BitAnd | [Bitwise operations](math.md#bitwise-operations) |
+| 0x1C | BitOr | [Bitwise operations](math.md#bitwise-operations) |
+| 0x1D | BitXor | [Bitwise operations](math.md#bitwise-operations) |
 | 0x1E | Cmd_0x1E |  |
 | 0x1F | Cmd_0x1F |  |
 | 0x20 | Cmd_0x20 |  |
