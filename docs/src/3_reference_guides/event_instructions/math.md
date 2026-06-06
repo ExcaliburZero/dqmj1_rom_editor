@@ -2,13 +2,13 @@
 
 ## Arithmetic
 ### Add (0x16)
-`Add` sums together two values and stores the result in a value pool.
+`Add` sums together two float values and stores the result in a value pool.
 
 ```
-# Pool_1[0] = 4 + 5
+# Pool_1[0] = 4 + 5 = 9
 Add Pool_1 0.0 Const 4.0 Const 5.0
 
-# Pool_1[1] = Pool_1[0] + 3
+# Pool_1[1] = Pool_1[0] + 3 = 12
 Add Pool_1 1.0 Pool_1 0.0 Const 3.0
 ```
 
@@ -17,30 +17,36 @@ Add Pool_1 1.0 Pool_1 0.0 Const 3.0
 * **a** (`Pool` + `Value`) - First operand of the addition
 * **b** (`Pool` + `Value`) - Second operand of the addition
 
+#### Outputs
+* **destination** (`destination argument`) - Result of the addition
+
 ### Subtract (0x17)
-`Subtract` subtracts two values and stores the result in a value pool.
+`Subtract` subtracts two float values and stores the result in a value pool.
 
 ```
-# Pool_1[0] = 5 - 4
+# Pool_1[0] = 5 - 4 = 1
 Subtract Pool_1 0.0 Const 5.0 Const 4.0
 
-# Pool_1[1] = Pool_1[0] - 2
+# Pool_1[1] = Pool_1[0] - 2 = -1
 Subtract Pool_1 1.0 Pool_1 0.0 Const 2.0
 ```
 
 #### Arguments
 * **destination** (`Pool` + `Value`) - Value pool and slot to store the result in
-* **a** (`Pool` + `Value`) - First operand of the subtraction
-* **b** (`Pool` + `Value`) - Second operand of the subtraction
+* **a** (`Pool` + `Value`) - Value to subtract from
+* **b** (`Pool` + `Value`) - Value to subtract
+
+#### Outputs
+* **destination** (`destination argument`) - Result of the subtraction
 
 ### Multiply (0x18)
-`Multiply` multiplies two values and stores the result in a value pool.
+`Multiply` multiplies two float values and stores the result in a value pool.
 
 ```
-# Pool_1[0] = 5 * 4
+# Pool_1[0] = 5 * 4 = 20
 Multiply Pool_1 0.0 Const 5.0 Const 4.0
 
-# Pool_1[1] = Pool_1[0] * 2
+# Pool_1[1] = Pool_1[0] * 2 = 40
 Multiply Pool_1 1.0 Pool_1 0.0 Const 2.0
 ```
 
@@ -49,24 +55,30 @@ Multiply Pool_1 1.0 Pool_1 0.0 Const 2.0
 * **a** (`Pool` + `Value`) - First operand of the multiplication
 * **b** (`Pool` + `Value`) - Second operand of the multiplication
 
+#### Outputs
+* **destination** (`destination argument`) - Result of the multiplication
+
 ### Divide (0x19)
-`Divide` divides two values and stores the result in a value pool.
+`Divide` divides two float values and stores the result in a value pool.
 
 ```
-# Pool_1[0] = 80 / 4
+# Pool_1[0] = 80 / 4 = 20
 Divide Pool_1 0.0 Const 80.0 Const 4.0
 
-# Pool_1[1] = Pool_1[0] / 2
+# Pool_1[1] = Pool_1[0] / 2 = 10
 Divide Pool_1 1.0 Pool_1 0.0 Const 2.0
 ```
 
 #### Arguments
 * **destination** (`Pool` + `Value`) - Value pool and slot to store the result in
-* **a** (`Pool` + `Value`) - First operand of the division
-* **b** (`Pool` + `Value`) - Second operand of the division 
+* **a** (`Pool` + `Value`) - Value to divide
+* **b** (`Pool` + `Value`) - Value to use as the divisor
+
+#### Outputs
+* **destination** (`destination argument`) - Result of the division
 
 ### Modulo (0x1A)
-`Modulo` divides two values and stores the remainder of that division in a value pool.
+`Modulo` divides two float values and stores the remainder of that division in a value pool.
 
 ```
 # Pool_1[0] = 6 % 4 = 2
@@ -78,8 +90,11 @@ Modulo Pool_1 1.0 Pool_1 0.0 Const 2.0
 
 #### Arguments
 * **destination** (`Pool` + `Value`) - Value pool and slot to store the remainder in
-* **a** (`Pool` + `Value`) - First operand of the division
-* **b** (`Pool` + `Value`) - Second operand of the division 
+* **a** (`Pool` + `Value`) - Value to divide
+* **b** (`Pool` + `Value`) - Value to use as the divisor
+
+#### Outputs
+* **destination** (`destination argument`) - Result of the modulo operation
 
 ## Bitwise operations
 > [!NOTE]
