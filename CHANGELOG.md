@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     * LoadSkeletalAnimation (#20)
 * Added support for line comments in event scripts (#21)
 
+### Fixed
+* Fixed program crashing when loading an event script the includes a character that does not have a known mapping into a DQMJ1 String. (#16, #18)
+
 ## [0.4.0] - 2026-05-02
 
 ### Added
