@@ -47,7 +47,7 @@ In this case the speaker name is `Black Jacques` and the text shown in the dialo
 <img src="../../images/events_dialog_first_cutscene_ellipses_only.png" alt="" style="max-height: 250px;" />
 </p>
 
-Looking at the text in the `SetDialog` instruction, you'll notice that it starts with `[0xEA]`. This is a [control code](#control-codes). In this case, it indicates that the text is for a conversation. Most conversation text will start with `[0xEA]`, though there are some cases where it may start with a another control code (such as `[0xEB]`).
+Looking at the text in the `SetDialog` instruction, you'll notice that it starts with `[0xEA]`. This is a [control code](#control-codes). In this case, it indicates that the text is for a conversation. Most conversation text will start with `[0xEA]`, though there are some cases where it may start with another control code (such as `[0xEB]`).
 
 ```
 SetDialog    "[0xEA]..."
