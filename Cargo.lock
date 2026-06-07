@@ -1031,6 +1031,7 @@ dependencies = [
  "binrw",
  "chumsky",
  "csv",
+ "encoding_rs",
  "logos",
  "rstest",
  "serde",

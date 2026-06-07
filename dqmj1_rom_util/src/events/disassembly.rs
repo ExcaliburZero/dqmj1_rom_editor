@@ -3,6 +3,7 @@ use std::{
     io::{self, Write},
 };
 
+use encoding_rs::SHIFT_JIS;
 use serde::Deserialize;
 
 use crate::{
@@ -154,6 +155,10 @@ impl DecodedInstruction<'_> {
                         let encoded_string = character_encoding.encode_string(string);
                         Self::round_up_to_multiple_of_4(encoded_string.len())
                     }
+                    ArgumentKind::ShiftJisString => {
+                        let (encoded_string, _, _) = SHIFT_JIS.encode(string);
+                        Self::round_up_to_multiple_of_4(encoded_string.len() + 1)
+                    }
                     _ => panic!(),
                 },
             };
@@ -273,6 +278,12 @@ impl DisassembledEvt<'_> {
                                 bytes
                             } // characters + null terminator
                             ArgumentKind::Dqmj1String => character_encoding.encode_string(string),
+                            ArgumentKind::ShiftJisString => {
+                                let (encoded_string, _, _) = SHIFT_JIS.encode(string);
+                                let mut encoded_string = encoded_string.to_vec();
+                                encoded_string.push(0x00);
+                                encoded_string
+                            }
                             _ => panic!(),
                         };
 
@@ -328,6 +339,16 @@ impl DisassembledEvt<'_> {
                     let string = std::str::from_utf8(relevant_bytes)
                         .unwrap()
                         .trim_end_matches('\0');
+
+                    arguments.push(Arg::StringLit(string.to_string()));
+                    current += raw_arguments.len() - current; // Note: assumes no further args
+                }
+                ArgumentKind::ShiftJisString => {
+                    let relevant_bytes =
+                        raw_arguments[current..].split(|&b| b == 0).next().unwrap();
+                    assert!(!relevant_bytes.is_empty());
+                    let decoded = SHIFT_JIS.decode(relevant_bytes);
+                    let string = decoded.0.trim_end_matches('\0');
 
                     arguments.push(Arg::StringLit(string.to_string()));
                     current += raw_arguments.len() - current; // Note: assumes no further args
@@ -426,6 +447,7 @@ pub enum ArgumentKind {
     U32,
     Dqmj1String,
     AsciiString,
+    ShiftJisString,
     InstructionLocation,
     ValueLocation,
 }
@@ -437,6 +459,7 @@ impl ArgumentKind {
             "U32" => ArgumentKind::U32,
             "String" => ArgumentKind::Dqmj1String,
             "AsciiString" => ArgumentKind::AsciiString,
+            "ShiftJisString" => ArgumentKind::ShiftJisString,
             "InstructionLocation" => ArgumentKind::InstructionLocation,
             "ValueLocation" => ArgumentKind::ValueLocation,
             _ => panic!(),
@@ -622,13 +645,14 @@ mod tests {
     }
 
     #[test]
-    fn test_write_instructions_with_bytes() {
+    fn test_write_instructions_with_shift_jis_string() {
         let opcodes = Opcode::get();
-        let script = read_evt_from_file_and_disassemble("test/data/nopaa_bytes.evt", &opcodes);
+        let script =
+            read_evt_from_file_and_disassemble("test/data/comment_instruction.evt", &opcodes);
 
         assert_eq!(
             instructions_as_string(&script),
-            r#"    NopAA        b"\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c"
+            r#"    Comment      "通信格闘技場：棄権判定"
 "#
         );
     }
@@ -809,11 +833,11 @@ mod tests {
     #[case("test/data/no_instructions.evt")]
     #[case("test/data/only_exit.evt")]
     #[case("test/data/load_pos.evt")]
-    #[case("test/data/nopaa_bytes.evt")]
     #[case("test/data/dialog.evt")]
     #[case("test/data/jump_to_self.evt")]
     #[case("test/data/jump_if.evt")]
     #[case("test/data/start_event.evt")]
+    #[case("test/data/comment_instruction.evt")]
     fn test_decode_encode(#[case] filepath: &str) {
         let evt = read_evt_from_file(filepath);
 
