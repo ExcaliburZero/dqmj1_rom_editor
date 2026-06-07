@@ -96,7 +96,39 @@ Control codes are special pieces of text that instruct the game to display speci
 
 | Code | Purpose |
 |------|---------|
-| `[0xD0]` | Starts a non-conversational dialog (ex. for opening a treasure chest) |
+| `[0xD0]1` | Starts a non-conversational dialog (ex. for opening a treasure chest) |
+| `[0xD0]8` | Shows text that has been stored using IntToString |
 | `[0xEA]` | Starts a conversational dialog |
 | `[0xEB]` | Used to start some conversational dialog (exact behavior unclear) |
 | `[0xF5]` | Inserts the player's name |
+
+### Showing data
+As an example, let's show the amount of gold the player currently has.
+
+First we'll use [GivePlayerGold](../../3_reference_guides/event_instructions/player_data.md#giveplayergold-0x5e) to give the player 500 gold. This will give the player gold and store the player's current amount of gold in `Pool_1[0]`. Since the player starts the game with 150 gold, after this instruction they will have 650 gold.
+
+Next we'll use `IntToString` to store that value as text so that we can display it in a dialog box. `IntToString` reads the value to convert to text from `Pool_1[1]`, so we'll need to move the amount of gold from `Pool_1[0]` to `Pool_1[1]`. Then we'll need to set `Pool_1[0]` to `1`, as `IntToString` requires it.
+
+Finally we'll show the amount of gold in a dialog box by using the `[0xD0]8` control code in the `SetDialog` instruction.
+
+```
+StartDialog
+SetU32       Pool_1 0.0 Const 500.0
+GivePlayerGold
+SetU32       Pool_1 1.0 Pool_1 0.0
+SetU32       Pool_1 0.0 Const 1.0
+IntToString
+SetDialog    "[0xEA]It seems you have [0xD0]8 gold"
+SetU32       Pool_1 0.0 Const 1.0
+ShowDialog  
+EndDialog
+```
+
+<p align="center">
+<img src="../../images/events_control_codes_amount_of_gold.png" alt="" style="max-height: 250px;" />
+</p>
+
+> [!NOTE]
+> `IntToString` can actually take in either a `0` or a `1` from `Pool_1[0]`.
+>
+> Using a `1` stores the text such that it can be displayed in dialog boxes using `[0xD0]8`. It is not yet known what using a `0` does, but it is likely that it stores the text such that it can be displayed using a different control code.
