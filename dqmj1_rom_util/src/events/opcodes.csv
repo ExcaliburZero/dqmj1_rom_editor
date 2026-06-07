@@ -169,7 +169,7 @@ Id,Name,Arguments,Inputs,Outputs,Notes
 0xA7,Cmd_0xA7,[],[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",
 0xA8,Cmd_0xA8,[],[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",
 0xA9,Cmd_0xA9,[],[],[],
-0xAA,NopAA,[ShiftJisString],[],[],
+0xAA,Comment,[ShiftJisString],[],[],
 0xAB,Cmd_0xAB,[],[Pool_1[0]],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3]]",Does something with player monsters species'. Maybe the party monsters? Maybe it counts the number that have a matching rank or family (can't tell which).
 0xAC,Cmd_0xAC,[],[Pool_1[0]],[],Sets some player data value
 0xAD,Cmd_0xAD,[],[],[Pool_1[0]],Gets the player data value set by 0xAC
