@@ -21,11 +21,11 @@ Id,Name,Arguments,Inputs,Outputs,Notes
 0x13,FloatsGreaterEq,"[ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1]",[flag],TODO: confirm
 0x14,FloatsLessEq,"[ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1]",[flag],TODO: confirm
 0x15,SetU32,"[ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1]",[],
-0x16,Cmd_0x16,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1, value_arg_2]",[],
-0x17,Cmd_0x17,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1, value_arg_2]",[],
-0x18,Cmd_0x18,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1, value_arg_2]",[],
-0x19,Cmd_0x19,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1, value_arg_2]",[],
-0x1A,Cmd_0x1A,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1, value_arg_2]",[],
+0x16,Add,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1, value_arg_2]",[],dest = b + c
+0x17,Subtract,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1, value_arg_2]",[],dest = b – c
+0x18,Multiply,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1, value_arg_2]",[],
+0x19,Divide,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1, value_arg_2]",[],
+0x1A,Modulo,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_0, value_arg_1, value_arg_2]",[],
 0x1B,BitAnd,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_1, value_arg_2]",[value_arg_0],TODO: confirm exact functionality
 0x1C,BitOr,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_1, value_arg_2]",[value_arg_0],TODO: confirm exact functionality
 0x1D,BitXor,"[ValueLocation, U32, ValueLocation, U32, ValueLocation, U32]","[value_arg_1, value_arg_2]",[value_arg_0],TODO: confirm exact functionality
@@ -247,7 +247,7 @@ Id,Name,Arguments,Inputs,Outputs,Notes
 0xF5,Cmd_0xF5,[Bytes],[Pool_1[0]],[],TODO: figure out arguments
 0xF6,Cmd_0xF6,[Bytes],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4], Pool_1[5]]",[],TODO: figure out arguments
 0xF7,Cmd_0xF7,[Bytes],[],[Pool_1[0]],TODO: figure out arguments
-0xF8,Cmd_0xF8,[Bytes],"[Pool_1[0], Pool_1[1]]",[],TODO: figure out arguments
+0xF8,IntToString,[],"[Pool_1[0], Pool_1[1]]",[],TODO: figure out arguments
 0xF9,Cmd_0xF9,[Bytes],[],[Pool_1[0]],TODO: figure out arguments
 0xFA,GetNumSkillsInLibrary,[],[],[Pool_1[0]],"TODO: figure out arguments, Related to player’s skill library"
 0xFB,Cmd_0xFB,[Bytes],[Pool_1[0]],[],TODO: figure out arguments
