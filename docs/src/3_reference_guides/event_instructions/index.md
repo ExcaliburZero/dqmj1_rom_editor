@@ -104,8 +104,8 @@ This section details the various types of [event instructions](../../2_topic_gui
 | 0x5A | GetNumDarkoniumX5 | [Player data](player_data.md) |
 | 0x5B | IncreaseNumDarkoniumX5 | [Player data](player_data.md) |
 | 0x5C | Cmd_0x5C |  |
-| 0x5D | GetPlayerGold | [Player data](player_data.md) |
-| 0x5E | GivePlayerGold | [Player data](player_data.md) |
+| 0x5D | [GetPlayerGold](player_data.md#getplayergold-0x5d) | [Player data](player_data.md) |
+| 0x5E | [GivePlayerGold](player_data.md#giveplayergold-0x5e) | [Player data](player_data.md) |
 | 0x5F | Cmd_0x5F |  |
 | 0x60 | Cmd_0x60 |  |
 | 0x61 | Cmd_0x61 |  |
