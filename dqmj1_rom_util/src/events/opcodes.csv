@@ -247,7 +247,7 @@ Id,Name,Arguments,Inputs,Outputs,Notes
 0xF5,Cmd_0xF5,[Bytes],[Pool_1[0]],[],TODO: figure out arguments
 0xF6,Cmd_0xF6,[Bytes],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4], Pool_1[5]]",[],TODO: figure out arguments
 0xF7,Cmd_0xF7,[Bytes],[],[Pool_1[0]],TODO: figure out arguments
-0xF8,IntToString,[Bytes],"[Pool_1[0], Pool_1[1]]",[],TODO: figure out arguments
+0xF8,IntToString,[],"[Pool_1[0], Pool_1[1]]",[],TODO: figure out arguments
 0xF9,Cmd_0xF9,[Bytes],[],[Pool_1[0]],TODO: figure out arguments
 0xFA,GetNumSkillsInLibrary,[],[],[Pool_1[0]],"TODO: figure out arguments, Related to player’s skill library"
 0xFB,Cmd_0xFB,[Bytes],[Pool_1[0]],[],TODO: figure out arguments
