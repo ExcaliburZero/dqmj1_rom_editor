@@ -73,6 +73,7 @@ fn error_unexpected(lex: &mut Lexer<AssemblyToken>) -> LexError {
 
 #[derive(Logos, Debug, Clone, PartialEq)]
 #[logos(skip r"[ \t\r]+")] // skip whitespace
+#[logos(skip(r"#[^\n]*", allow_greedy = true))] // skip comments
 #[logos(extras = LexerExtras)]
 #[logos(error(LexError, error_unexpected))]
 pub enum AssemblyToken {
@@ -246,6 +247,10 @@ mod tests {
     ])]
     #[case("100:", vec![Int(100), Colon])]
     #[case("1\n2", vec![Int(1), Newline, Int(2)])]
+    #[case("#abc123456", vec![])]
+    #[case("1#abc123456", vec![Int(1)])]
+    #[case("1 #abc123456", vec![Int(1)])]
+    #[case("1 #abc123456\n2", vec![Int(1), Newline, Int(2)])]
     fn test_assembly_token_lexing(#[case] string: &str, #[case] expected: Vec<AssemblyToken>) {
         let actual = lex_dqmj1_asm(string);
 

@@ -421,6 +421,24 @@ mod tests {
     }
 
     #[test]
+    fn test_parse_dqmj1_asm_comment() {
+        let opcodes = Opcode::get();
+        let actual = parse_dqmj1_asm_for_test("test/data/asm_comment.dqmj1_asm", &opcodes).unwrap();
+
+        let expected = vec![(
+            None,
+            DecodedInstruction {
+                opcode: &opcodes[EXIT as usize],
+                args: vec![Arg::Float(0.0)],
+                label: None,
+            },
+        )];
+
+        assert_eq!(actual.data, [0x00; 0x1000]);
+        assert_eq!(actual.instructions, expected);
+    }
+
+    #[test]
     fn test_parse_dqmj1_asm_unnecessary_newlines() {
         let opcodes = Opcode::get();
         let actual =
