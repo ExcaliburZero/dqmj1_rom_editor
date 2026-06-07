@@ -850,7 +850,7 @@ mod tests {
         let character_encoding = CharacterEncoding::get(Region::NorthAmerica);
 
         let decoded = DisassembledEvt::from_evt(&evt, &character_encoding, &opcodes);
-        let encoded = decoded.to_evt(&character_encoding);
+        let encoded = decoded.to_evt(&character_encoding).unwrap();
 
         assert_eq!(encoded.data, evt.data);
         assert_eq!(encoded.instructions, evt.instructions);
