@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-7465de07.js";
+            window.path_to_searchindex_js = "searchindex-173ab1d6.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-deff5bc3.js"></script>
+        <script src="toc-d5ae60e1.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -555,7 +555,7 @@ to indicate that it is text.</p>
 <img src="images/events_dialog_first_cutscene_ellipses_only.png" alt="" style="max-height: 250px;" />
 </p>
 
-<p>Looking at the text in the <code>SetDialog</code> instruction, you’ll notice that it starts with <code>[0xEA]</code>. This is a <a href="#control-codes">control code</a>. In this case, it indicates that the text is for a conversation. Most conversation text will start with <code>[0xEA]</code>, though there are some cases where it may start with a another control code (such as <code>[0xEB]</code>).</p>
+<p>Looking at the text in the <code>SetDialog</code> instruction, you’ll notice that it starts with <code>[0xEA]</code>. This is a <a href="#control-codes">control code</a>. In this case, it indicates that the text is for a conversation. Most conversation text will start with <code>[0xEA]</code>, though there are some cases where it may start with another control code (such as <code>[0xEB]</code>).</p>
 <pre><code>SetDialog    "[0xEA]..."
 </code></pre>
 <p>You’ll also notice that before the <code>ShowDialog</code> instruction that there is a <code>SetU32</code> instruction. This controls whether the dialog advance triangle appears at the bottom of the dialog box. Using <code>1.0</code> at the end shows the triangle, while using <code>0.0</code> hides it. See <a href="#value-pools">Value pools</a> for a more detailed explanation of <code>SetU32</code>.</p>
@@ -605,13 +605,39 @@ EndDialog
 <tr><th>Code</th><th>Purpose</th></tr>
 </thead>
 <tbody>
-<tr><td><code>[0xD0]</code></td><td>Starts a non-conversational dialog (ex. for opening a treasure chest)</td></tr>
+<tr><td><code>[0xD0]1</code></td><td>Starts a non-conversational dialog (ex. for opening a treasure chest)</td></tr>
+<tr><td><code>[0xD0]8</code></td><td>Shows text that has been stored using IntToString</td></tr>
 <tr><td><code>[0xEA]</code></td><td>Starts a conversational dialog</td></tr>
 <tr><td><code>[0xEB]</code></td><td>Used to start some conversational dialog (exact behavior unclear)</td></tr>
 <tr><td><code>[0xF5]</code></td><td>Inserts the player’s name</td></tr>
 </tbody>
 </table>
 </div>
+<h3 id="showing-data"><a class="header" href="#showing-data">Showing data</a></h3>
+<p>As an example, let’s show the amount of gold the player currently has.</p>
+<p>First we’ll use <a href="#giveplayergold-0x5e">GivePlayerGold</a> to give the player 500 gold. This will give the player gold and store the player’s current amount of gold in <code>Pool_1[0]</code>. Since the player starts the game with 150 gold, after this instruction they will have 650 gold.</p>
+<p>Next we’ll use <code>IntToString</code> to store that value as text so that we can display it in a dialog box. <code>IntToString</code> reads the value to convert to text from <code>Pool_1[1]</code>, so we’ll need to move the amount of gold from <code>Pool_1[0]</code> to <code>Pool_1[1]</code>. Then we’ll need to set <code>Pool_1[0]</code> to <code>1</code>, as <code>IntToString</code> requires it.</p>
+<p>Finally we’ll show the amount of gold in a dialog box by using the <code>[0xD0]8</code> control code in the <code>SetDialog</code> instruction.</p>
+<pre><code>StartDialog
+SetU32       Pool_1 0.0 Const 500.0
+GivePlayerGold
+SetU32       Pool_1 1.0 Pool_1 0.0
+SetU32       Pool_1 0.0 Const 1.0
+IntToString
+SetDialog    "[0xEA]It seems you have [0xD0]8 gold"
+SetU32       Pool_1 0.0 Const 1.0
+ShowDialog  
+EndDialog
+</code></pre>
+<p align="center">
+<img src="images/events_control_codes_amount_of_gold.png" alt="" style="max-height: 250px;" />
+</p>
+
+<blockquote class="blockquote-tag blockquote-tag-note">
+<p class="blockquote-tag-title"><svg viewbox="0 0 16 16" width="18" height="18"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
+<p><code>IntToString</code> can actually take in either a <code>0</code> or a <code>1</code> from <code>Pool_1[0]</code>.</p>
+<p>Using a <code>1</code> stores the text such that it can be displayed in dialog boxes using <code>[0xD0]8</code>. It is not yet known what using a <code>0</code> does, but it is likely that it stores the text such that it can be displayed using a different control code.</p>
+</blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="jumps-and-conditionals"><a class="header" href="#jumps-and-conditionals">Jumps and conditionals</a></h1>
 <p><strong>Jumps and conditionals</strong> are used to make cutscenes and overworld events react to player choices or game state.</p>
@@ -776,6 +802,7 @@ conversation_end:
 <h1 id="event-instructions"><a class="header" href="#event-instructions">Event instructions</a></h1>
 <p>This section details the various types of <a href="#instructions">event instructions</a>.</p>
 <ul>
+<li><a href="#math">Math</a></li>
 <li><a href="#jumps-and-conditionals-1">Jumps and conditionals</a></li>
 <li><a href="#player-data">Player data</a></li>
 </ul>
@@ -812,14 +839,14 @@ conversation_end:
 <tr><td>0x13</td><td><a href="#floatsgreatereq-0x13">FloatsGreaterEq</a></td><td><a href="#conditionals-1">Conditional</a></td></tr>
 <tr><td>0x14</td><td><a href="#floatslesseq-0x14">FloatsLessEq</a></td><td><a href="#conditionals-1">Conditional</a></td></tr>
 <tr><td>0x15</td><td>SetU32</td><td></td></tr>
-<tr><td>0x16</td><td>Cmd_0x16</td><td></td></tr>
-<tr><td>0x17</td><td>Cmd_0x17</td><td></td></tr>
-<tr><td>0x18</td><td>Cmd_0x18</td><td></td></tr>
-<tr><td>0x19</td><td>Cmd_0x19</td><td></td></tr>
-<tr><td>0x1A</td><td>Cmd_0x1A</td><td></td></tr>
-<tr><td>0x1B</td><td>BitAnd</td><td></td></tr>
-<tr><td>0x1C</td><td>BitOr</td><td></td></tr>
-<tr><td>0x1D</td><td>BitXor</td><td></td></tr>
+<tr><td>0x16</td><td><a href="#add-0x16">Add</a></td><td><a href="#arithmetic">Arithmetic</a></td></tr>
+<tr><td>0x17</td><td><a href="#subtract-0x17">Subtract</a></td><td><a href="#arithmetic">Arithmetic</a></td></tr>
+<tr><td>0x18</td><td><a href="#multiply-0x18">Multiply</a></td><td><a href="#arithmetic">Arithmetic</a></td></tr>
+<tr><td>0x19</td><td><a href="#divide-0x19">Divide</a></td><td><a href="#arithmetic">Arithmetic</a></td></tr>
+<tr><td>0x1A</td><td><a href="#modulo-0x1a">Modulo</a></td><td><a href="#arithmetic">Arithmetic</a></td></tr>
+<tr><td>0x1B</td><td>BitAnd</td><td><a href="#bitwise-operations">Bitwise operations</a></td></tr>
+<tr><td>0x1C</td><td>BitOr</td><td><a href="#bitwise-operations">Bitwise operations</a></td></tr>
+<tr><td>0x1D</td><td>BitXor</td><td><a href="#bitwise-operations">Bitwise operations</a></td></tr>
 <tr><td>0x1E</td><td>Cmd_0x1E</td><td></td></tr>
 <tr><td>0x1F</td><td>Cmd_0x1F</td><td></td></tr>
 <tr><td>0x20</td><td>Cmd_0x20</td><td></td></tr>
@@ -830,7 +857,7 @@ conversation_end:
 <tr><td>0x25</td><td>StartDialog</td><td>Dialog</td></tr>
 <tr><td>0x26</td><td>EndDialog</td><td>Dialog</td></tr>
 <tr><td>0x27</td><td>ShowDialog</td><td>Dialog</td></tr>
-<tr><td>0x28</td><td>RandomNum</td><td></td></tr>
+<tr><td>0x28</td><td><a href="#randomnum-0x28">RandomNum</a></td><td><a href="#other">Math</a></td></tr>
 <tr><td>0x29</td><td>SetDialog</td><td>Dialog</td></tr>
 <tr><td>0x2A</td><td>SpeakerName</td><td>Dialog</td></tr>
 <tr><td>0x2B</td><td>LoadSkeletalAnimation</td><td></td></tr>
@@ -883,8 +910,8 @@ conversation_end:
 <tr><td>0x5A</td><td>GetNumDarkoniumX5</td><td><a href="#player-data">Player data</a></td></tr>
 <tr><td>0x5B</td><td>IncreaseNumDarkoniumX5</td><td><a href="#player-data">Player data</a></td></tr>
 <tr><td>0x5C</td><td>Cmd_0x5C</td><td></td></tr>
-<tr><td>0x5D</td><td>GetPlayerGold</td><td><a href="#player-data">Player data</a></td></tr>
-<tr><td>0x5E</td><td>GivePlayerGold</td><td><a href="#player-data">Player data</a></td></tr>
+<tr><td>0x5D</td><td><a href="#getplayergold-0x5d">GetPlayerGold</a></td><td><a href="#player-data">Player data</a></td></tr>
+<tr><td>0x5E</td><td><a href="#giveplayergold-0x5e">GivePlayerGold</a></td><td><a href="#player-data">Player data</a></td></tr>
 <tr><td>0x5F</td><td>Cmd_0x5F</td><td></td></tr>
 <tr><td>0x60</td><td>Cmd_0x60</td><td></td></tr>
 <tr><td>0x61</td><td>Cmd_0x61</td><td></td></tr>
@@ -1038,7 +1065,7 @@ conversation_end:
 <tr><td>0xF5</td><td>Cmd_0xF5</td><td></td></tr>
 <tr><td>0xF6</td><td>Cmd_0xF6</td><td></td></tr>
 <tr><td>0xF7</td><td>Cmd_0xF7</td><td></td></tr>
-<tr><td>0xF8</td><td>Cmd_0xF8</td><td></td></tr>
+<tr><td>0xF8</td><td>IntToString</td><td>Dialog</td></tr>
 <tr><td>0xF9</td><td>Cmd_0xF9</td><td></td></tr>
 <tr><td>0xFA</td><td>GetNumSkillsInLibrary</td><td></td></tr>
 <tr><td>0xFB</td><td>Cmd_0xFB</td><td></td></tr>
@@ -1050,6 +1077,124 @@ conversation_end:
 </table>
 </div>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="math"><a class="header" href="#math">Math</a></h1>
+<h2 id="arithmetic"><a class="header" href="#arithmetic">Arithmetic</a></h2>
+<h3 id="add-0x16"><a class="header" href="#add-0x16">Add (0x16)</a></h3>
+<p><code>Add</code> sums together two float values and stores the result in a value pool.</p>
+<pre><code># Pool_1[0] = 4 + 5 = 9
+Add Pool_1 0.0 Const 4.0 Const 5.0
+
+# Pool_1[1] = Pool_1[0] + 3 = 12
+Add Pool_1 1.0 Pool_1 0.0 Const 3.0
+</code></pre>
+<h4 id="arguments"><a class="header" href="#arguments">Arguments</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>Pool</code> + <code>Value</code>) - Value pool and slot to store the result in</li>
+<li><strong>a</strong> (<code>Pool</code> + <code>Value</code>) - First operand of the addition</li>
+<li><strong>b</strong> (<code>Pool</code> + <code>Value</code>) - Second operand of the addition</li>
+</ul>
+<h4 id="outputs"><a class="header" href="#outputs">Outputs</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>destination argument</code>) - Result of the addition</li>
+</ul>
+<h3 id="subtract-0x17"><a class="header" href="#subtract-0x17">Subtract (0x17)</a></h3>
+<p><code>Subtract</code> subtracts two float values and stores the result in a value pool.</p>
+<pre><code># Pool_1[0] = 5 - 4 = 1
+Subtract Pool_1 0.0 Const 5.0 Const 4.0
+
+# Pool_1[1] = Pool_1[0] - 2 = -1
+Subtract Pool_1 1.0 Pool_1 0.0 Const 2.0
+</code></pre>
+<h4 id="arguments-1"><a class="header" href="#arguments-1">Arguments</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>Pool</code> + <code>Value</code>) - Value pool and slot to store the result in</li>
+<li><strong>a</strong> (<code>Pool</code> + <code>Value</code>) - Value to subtract from</li>
+<li><strong>b</strong> (<code>Pool</code> + <code>Value</code>) - Value to subtract</li>
+</ul>
+<h4 id="outputs-1"><a class="header" href="#outputs-1">Outputs</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>destination argument</code>) - Result of the subtraction</li>
+</ul>
+<h3 id="multiply-0x18"><a class="header" href="#multiply-0x18">Multiply (0x18)</a></h3>
+<p><code>Multiply</code> multiplies two float values and stores the result in a value pool.</p>
+<pre><code># Pool_1[0] = 5 * 4 = 20
+Multiply Pool_1 0.0 Const 5.0 Const 4.0
+
+# Pool_1[1] = Pool_1[0] * 2 = 40
+Multiply Pool_1 1.0 Pool_1 0.0 Const 2.0
+</code></pre>
+<h4 id="arguments-2"><a class="header" href="#arguments-2">Arguments</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>Pool</code> + <code>Value</code>) - Value pool and slot to store the result in</li>
+<li><strong>a</strong> (<code>Pool</code> + <code>Value</code>) - First operand of the multiplication</li>
+<li><strong>b</strong> (<code>Pool</code> + <code>Value</code>) - Second operand of the multiplication</li>
+</ul>
+<h4 id="outputs-2"><a class="header" href="#outputs-2">Outputs</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>destination argument</code>) - Result of the multiplication</li>
+</ul>
+<h3 id="divide-0x19"><a class="header" href="#divide-0x19">Divide (0x19)</a></h3>
+<p><code>Divide</code> divides two float values and stores the result in a value pool.</p>
+<pre><code># Pool_1[0] = 80 / 4 = 20
+Divide Pool_1 0.0 Const 80.0 Const 4.0
+
+# Pool_1[1] = Pool_1[0] / 2 = 10
+Divide Pool_1 1.0 Pool_1 0.0 Const 2.0
+</code></pre>
+<h4 id="arguments-3"><a class="header" href="#arguments-3">Arguments</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>Pool</code> + <code>Value</code>) - Value pool and slot to store the result in</li>
+<li><strong>a</strong> (<code>Pool</code> + <code>Value</code>) - Value to divide</li>
+<li><strong>b</strong> (<code>Pool</code> + <code>Value</code>) - Value to use as the divisor</li>
+</ul>
+<h4 id="outputs-3"><a class="header" href="#outputs-3">Outputs</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>destination argument</code>) - Result of the division</li>
+</ul>
+<h3 id="modulo-0x1a"><a class="header" href="#modulo-0x1a">Modulo (0x1A)</a></h3>
+<p><code>Modulo</code> divides two float values and stores the remainder of that division in a value pool.</p>
+<pre><code># Pool_1[0] = 6 % 4 = 2
+Modulo Pool_1 0.0 Const 6.0 Const 4.0
+
+# Pool_1[1] = Pool_1[0] % 2 = 0
+Modulo Pool_1 1.0 Pool_1 0.0 Const 2.0
+</code></pre>
+<h4 id="arguments-4"><a class="header" href="#arguments-4">Arguments</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>Pool</code> + <code>Value</code>) - Value pool and slot to store the remainder in</li>
+<li><strong>a</strong> (<code>Pool</code> + <code>Value</code>) - Value to divide</li>
+<li><strong>b</strong> (<code>Pool</code> + <code>Value</code>) - Value to use as the divisor</li>
+</ul>
+<h4 id="outputs-4"><a class="header" href="#outputs-4">Outputs</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>destination argument</code>) - Result of the modulo operation</li>
+</ul>
+<h2 id="bitwise-operations"><a class="header" href="#bitwise-operations">Bitwise operations</a></h2>
+<blockquote class="blockquote-tag blockquote-tag-note">
+<p class="blockquote-tag-title"><svg viewbox="0 0 16 16" width="18" height="18"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
+<p>The bitwise operation instructions might be bugged.</p>
+<p>They seem to load two values, convert them to 32bit integers, and then store the result without converting it back into a 32bit float. Though this has not yet been confirmed.</p>
+</blockquote>
+<h3 id="bitand-0x1b"><a class="header" href="#bitand-0x1b">BitAnd (0x1B)</a></h3>
+<h3 id="bitor-0x1c"><a class="header" href="#bitor-0x1c">BitOr (0x1C)</a></h3>
+<h3 id="bitxor-0x1d"><a class="header" href="#bitxor-0x1d">BitXor (0x1D)</a></h3>
+<h2 id="other"><a class="header" href="#other">Other</a></h2>
+<h3 id="randomnum-0x28"><a class="header" href="#randomnum-0x28">RandomNum (0x28)</a></h3>
+<p><code>RandomNum</code> generates a random integer in the range from 0 up to but not including a given upper bound.</p>
+<p>Ex. with an upper bound of 5, <code>RandomNum</code> will pick a number from: 0, 1, 2, 3, 4</p>
+<pre><code># Pick a random integer in the range [0, 9]
+SetU32      Pool_1 0.0 Const 10.0
+RandomNum
+</code></pre>
+<h4 id="inputs"><a class="header" href="#inputs">Inputs</a></h4>
+<ul>
+<li><strong>upper bound</strong> (<code>Pool_1[0]</code>) - Upper bound of the range of numbers to randomly generate</li>
+</ul>
+<h4 id="outputs-5"><a class="header" href="#outputs-5">Outputs</a></h4>
+<ul>
+<li><strong>number</strong> (<code>Pool_1[0]</code>) - Generated random number in range</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="jumps-and-conditionals-1"><a class="header" href="#jumps-and-conditionals-1">Jumps and conditionals</a></h1>
 <p>For more information on jumps and conditionals, see the <a href="#jumps-and-conditionals">jumps and conditionals</a> topic guide.</p>
 <h2 id="jumps-1"><a class="header" href="#jumps-1">Jumps</a></h2>
@@ -1060,7 +1205,7 @@ conversation_end:
     ShowDialog  
     Jump loop_start
 </code></pre>
-<h4 id="arguments"><a class="header" href="#arguments">Arguments</a></h4>
+<h4 id="arguments-5"><a class="header" href="#arguments-5">Arguments</a></h4>
 <ul>
 <li><strong>destination</strong> (<code>InstructionLocation</code>) - Instruction location to move the event to</li>
 </ul>
@@ -1073,7 +1218,7 @@ conversation_end:
     JumpIfTrue loop_start
     EndDialog 
 </code></pre>
-<h4 id="arguments-1"><a class="header" href="#arguments-1">Arguments</a></h4>
+<h4 id="arguments-1-1"><a class="header" href="#arguments-1-1">Arguments</a></h4>
 <ul>
 <li><strong>destination</strong> (<code>InstructionLocation</code>) - Instruction location to move the event to if the conditional is true</li>
 </ul>
@@ -1086,7 +1231,7 @@ conversation_end:
     JumpIfFalse loop_start
     EndDialog 
 </code></pre>
-<h4 id="arguments-2"><a class="header" href="#arguments-2">Arguments</a></h4>
+<h4 id="arguments-2-1"><a class="header" href="#arguments-2-1">Arguments</a></h4>
 <ul>
 <li><strong>destination</strong> (<code>InstructionLocation</code>) - Instruction location to move the event to if the conditional is false</li>
 </ul>
@@ -1102,11 +1247,13 @@ conversation_end:
 <h1 id="player-data"><a class="header" href="#player-data">Player data</a></h1>
 <h2 id="player-data-1"><a class="header" href="#player-data-1">Player data</a></h2>
 <h3 id="getnumpartymonsters-0x55"><a class="header" href="#getnumpartymonsters-0x55">GetNumPartyMonsters (0x55)</a></h3>
-<p>Returns the number of monsters the player has in their party.</p>
-<h4 id="outputs"><a class="header" href="#outputs">Outputs</a></h4>
-<ol>
-<li>Number of monsters the player has in their party</li>
-</ol>
+<p><code>GetNumPartyMonsters</code> gets the number of monsters the player has in their party.</p>
+<pre><code>GetNumPartyMonsters
+</code></pre>
+<h4 id="outputs-6"><a class="header" href="#outputs-6">Outputs</a></h4>
+<ul>
+<li><strong>num_monsters</strong> (<code>Pool_1[0]</code>) - Number of monsters the player has in their party</li>
+</ul>
 <h3 id="getmonsterspeciesid-0x56"><a class="header" href="#getmonsterspeciesid-0x56">GetMonsterSpeciesId (0x56)</a></h3>
 <h3 id="getitemcount-0x57"><a class="header" href="#getitemcount-0x57">GetItemCount (0x57)</a></h3>
 <h3 id="giveplayeroneitem-0x58"><a class="header" href="#giveplayeroneitem-0x58">GivePlayerOneItem (0x58)</a></h3>
@@ -1114,7 +1261,28 @@ conversation_end:
 <h3 id="getnumdarkoniumx5-0x5a"><a class="header" href="#getnumdarkoniumx5-0x5a">GetNumDarkoniumX5 (0x5A)</a></h3>
 <h3 id="increasenumdarkoniumx5-0x5b"><a class="header" href="#increasenumdarkoniumx5-0x5b">IncreaseNumDarkoniumX5 (0x5B)</a></h3>
 <h3 id="getplayergold-0x5d"><a class="header" href="#getplayergold-0x5d">GetPlayerGold (0x5D)</a></h3>
+<p><code>GetPlayerGold</code> gets the amount of gold the player has.</p>
+<pre><code>GetPlayerGold
+</code></pre>
+<h4 id="outputs-1-1"><a class="header" href="#outputs-1-1">Outputs</a></h4>
+<ul>
+<li><strong>gold</strong> (<code>Pool_1[0]</code>) - Amount of gold the player has</li>
+</ul>
 <h3 id="giveplayergold-0x5e"><a class="header" href="#giveplayergold-0x5e">GivePlayerGold (0x5E)</a></h3>
+<p><code>GivePlayerGold</code> gives the player gold and then returns the amount of gold they have.</p>
+<p>The gold is added to the player’s current gold. For example, if the player currently has 150 gold then giving them 500 gold will result in them having 650 gold.</p>
+<pre><code># Give the player 500 gold
+SetU32       Pool_1 0.0 Const 500.0
+GivePlayerGold
+</code></pre>
+<h4 id="inputs-1"><a class="header" href="#inputs-1">Inputs</a></h4>
+<ul>
+<li><strong>gold</strong> (<code>Pool_1[0]</code>) - Amount of gold to give the player</li>
+</ul>
+<h4 id="outputs-2-1"><a class="header" href="#outputs-2-1">Outputs</a></h4>
+<ul>
+<li><strong>new_gold</strong> (<code>Pool_1[0]</code>) - Amount of gold the player has after giving them the additional gold</li>
+</ul>
 <h3 id="healplayermonsters-0x65"><a class="header" href="#healplayermonsters-0x65">HealPlayerMonsters (0x65)</a></h3>
 <h3 id="playerhasroominhand-0xb5"><a class="header" href="#playerhasroominhand-0xb5">PlayerHasRoomInHand (0xB5)</a></h3>
 

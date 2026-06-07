@@ -35,10 +35,10 @@
             const path_to_root = "../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../../searchindex-7465de07.js";
+            window.path_to_searchindex_js = "../../searchindex-173ab1d6.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../../toc-deff5bc3.js"></script>
+        <script src="../../toc-d5ae60e1.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,6 +177,7 @@
                         <h1 id="event-instructions"><a class="header" href="#event-instructions">Event instructions</a></h1>
 <p>This section details the various types of <a href="../../2_topic_guides/event_scripts/instructions.html">event instructions</a>.</p>
 <ul>
+<li><a href="math.html">Math</a></li>
 <li><a href="jumps_and_conditionals.html">Jumps and conditionals</a></li>
 <li><a href="player_data.html">Player data</a></li>
 </ul>
@@ -213,14 +214,14 @@
 <tr><td>0x13</td><td><a href="jumps_and_conditionals.html#floatsgreatereq-0x13">FloatsGreaterEq</a></td><td><a href="jumps_and_conditionals.html#conditionals">Conditional</a></td></tr>
 <tr><td>0x14</td><td><a href="jumps_and_conditionals.html#floatslesseq-0x14">FloatsLessEq</a></td><td><a href="jumps_and_conditionals.html#conditionals">Conditional</a></td></tr>
 <tr><td>0x15</td><td>SetU32</td><td></td></tr>
-<tr><td>0x16</td><td>Cmd_0x16</td><td></td></tr>
-<tr><td>0x17</td><td>Cmd_0x17</td><td></td></tr>
-<tr><td>0x18</td><td>Cmd_0x18</td><td></td></tr>
-<tr><td>0x19</td><td>Cmd_0x19</td><td></td></tr>
-<tr><td>0x1A</td><td>Cmd_0x1A</td><td></td></tr>
-<tr><td>0x1B</td><td>BitAnd</td><td></td></tr>
-<tr><td>0x1C</td><td>BitOr</td><td></td></tr>
-<tr><td>0x1D</td><td>BitXor</td><td></td></tr>
+<tr><td>0x16</td><td><a href="math.html#add-0x16">Add</a></td><td><a href="math.html#arithmetic">Arithmetic</a></td></tr>
+<tr><td>0x17</td><td><a href="math.html#subtract-0x17">Subtract</a></td><td><a href="math.html#arithmetic">Arithmetic</a></td></tr>
+<tr><td>0x18</td><td><a href="math.html#multiply-0x18">Multiply</a></td><td><a href="math.html#arithmetic">Arithmetic</a></td></tr>
+<tr><td>0x19</td><td><a href="math.html#divide-0x19">Divide</a></td><td><a href="math.html#arithmetic">Arithmetic</a></td></tr>
+<tr><td>0x1A</td><td><a href="math.html#modulo-0x1a">Modulo</a></td><td><a href="math.html#arithmetic">Arithmetic</a></td></tr>
+<tr><td>0x1B</td><td>BitAnd</td><td><a href="math.html#bitwise-operations">Bitwise operations</a></td></tr>
+<tr><td>0x1C</td><td>BitOr</td><td><a href="math.html#bitwise-operations">Bitwise operations</a></td></tr>
+<tr><td>0x1D</td><td>BitXor</td><td><a href="math.html#bitwise-operations">Bitwise operations</a></td></tr>
 <tr><td>0x1E</td><td>Cmd_0x1E</td><td></td></tr>
 <tr><td>0x1F</td><td>Cmd_0x1F</td><td></td></tr>
 <tr><td>0x20</td><td>Cmd_0x20</td><td></td></tr>
@@ -231,7 +232,7 @@
 <tr><td>0x25</td><td>StartDialog</td><td>Dialog</td></tr>
 <tr><td>0x26</td><td>EndDialog</td><td>Dialog</td></tr>
 <tr><td>0x27</td><td>ShowDialog</td><td>Dialog</td></tr>
-<tr><td>0x28</td><td>RandomNum</td><td></td></tr>
+<tr><td>0x28</td><td><a href="math.html#randomnum-0x28">RandomNum</a></td><td><a href="math.html#other">Math</a></td></tr>
 <tr><td>0x29</td><td>SetDialog</td><td>Dialog</td></tr>
 <tr><td>0x2A</td><td>SpeakerName</td><td>Dialog</td></tr>
 <tr><td>0x2B</td><td>LoadSkeletalAnimation</td><td></td></tr>
@@ -284,8 +285,8 @@
 <tr><td>0x5A</td><td>GetNumDarkoniumX5</td><td><a href="player_data.html">Player data</a></td></tr>
 <tr><td>0x5B</td><td>IncreaseNumDarkoniumX5</td><td><a href="player_data.html">Player data</a></td></tr>
 <tr><td>0x5C</td><td>Cmd_0x5C</td><td></td></tr>
-<tr><td>0x5D</td><td>GetPlayerGold</td><td><a href="player_data.html">Player data</a></td></tr>
-<tr><td>0x5E</td><td>GivePlayerGold</td><td><a href="player_data.html">Player data</a></td></tr>
+<tr><td>0x5D</td><td><a href="player_data.html#getplayergold-0x5d">GetPlayerGold</a></td><td><a href="player_data.html">Player data</a></td></tr>
+<tr><td>0x5E</td><td><a href="player_data.html#giveplayergold-0x5e">GivePlayerGold</a></td><td><a href="player_data.html">Player data</a></td></tr>
 <tr><td>0x5F</td><td>Cmd_0x5F</td><td></td></tr>
 <tr><td>0x60</td><td>Cmd_0x60</td><td></td></tr>
 <tr><td>0x61</td><td>Cmd_0x61</td><td></td></tr>
@@ -439,7 +440,7 @@
 <tr><td>0xF5</td><td>Cmd_0xF5</td><td></td></tr>
 <tr><td>0xF6</td><td>Cmd_0xF6</td><td></td></tr>
 <tr><td>0xF7</td><td>Cmd_0xF7</td><td></td></tr>
-<tr><td>0xF8</td><td>Cmd_0xF8</td><td></td></tr>
+<tr><td>0xF8</td><td>IntToString</td><td>Dialog</td></tr>
 <tr><td>0xF9</td><td>Cmd_0xF9</td><td></td></tr>
 <tr><td>0xFA</td><td>GetNumSkillsInLibrary</td><td></td></tr>
 <tr><td>0xFB</td><td>Cmd_0xFB</td><td></td></tr>
@@ -459,7 +460,7 @@
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../../3_reference_guides/event_instructions/jumps_and_conditionals.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../3_reference_guides/event_instructions/math.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -473,7 +474,7 @@
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../../3_reference_guides/event_instructions/jumps_and_conditionals.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../3_reference_guides/event_instructions/math.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

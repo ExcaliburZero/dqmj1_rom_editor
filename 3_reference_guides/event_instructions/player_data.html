@@ -35,10 +35,10 @@
             const path_to_root = "../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../../searchindex-7465de07.js";
+            window.path_to_searchindex_js = "../../searchindex-173ab1d6.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../../toc-deff5bc3.js"></script>
+        <script src="../../toc-d5ae60e1.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,11 +177,13 @@
                         <h1 id="player-data"><a class="header" href="#player-data">Player data</a></h1>
 <h2 id="player-data-1"><a class="header" href="#player-data-1">Player data</a></h2>
 <h3 id="getnumpartymonsters-0x55"><a class="header" href="#getnumpartymonsters-0x55">GetNumPartyMonsters (0x55)</a></h3>
-<p>Returns the number of monsters the player has in their party.</p>
+<p><code>GetNumPartyMonsters</code> gets the number of monsters the player has in their party.</p>
+<pre><code>GetNumPartyMonsters
+</code></pre>
 <h4 id="outputs"><a class="header" href="#outputs">Outputs</a></h4>
-<ol>
-<li>Number of monsters the player has in their party</li>
-</ol>
+<ul>
+<li><strong>num_monsters</strong> (<code>Pool_1[0]</code>) - Number of monsters the player has in their party</li>
+</ul>
 <h3 id="getmonsterspeciesid-0x56"><a class="header" href="#getmonsterspeciesid-0x56">GetMonsterSpeciesId (0x56)</a></h3>
 <h3 id="getitemcount-0x57"><a class="header" href="#getitemcount-0x57">GetItemCount (0x57)</a></h3>
 <h3 id="giveplayeroneitem-0x58"><a class="header" href="#giveplayeroneitem-0x58">GivePlayerOneItem (0x58)</a></h3>
@@ -189,7 +191,28 @@
 <h3 id="getnumdarkoniumx5-0x5a"><a class="header" href="#getnumdarkoniumx5-0x5a">GetNumDarkoniumX5 (0x5A)</a></h3>
 <h3 id="increasenumdarkoniumx5-0x5b"><a class="header" href="#increasenumdarkoniumx5-0x5b">IncreaseNumDarkoniumX5 (0x5B)</a></h3>
 <h3 id="getplayergold-0x5d"><a class="header" href="#getplayergold-0x5d">GetPlayerGold (0x5D)</a></h3>
+<p><code>GetPlayerGold</code> gets the amount of gold the player has.</p>
+<pre><code>GetPlayerGold
+</code></pre>
+<h4 id="outputs-1"><a class="header" href="#outputs-1">Outputs</a></h4>
+<ul>
+<li><strong>gold</strong> (<code>Pool_1[0]</code>) - Amount of gold the player has</li>
+</ul>
 <h3 id="giveplayergold-0x5e"><a class="header" href="#giveplayergold-0x5e">GivePlayerGold (0x5E)</a></h3>
+<p><code>GivePlayerGold</code> gives the player gold and then returns the amount of gold they have.</p>
+<p>The gold is added to the player’s current gold. For example, if the player currently has 150 gold then giving them 500 gold will result in them having 650 gold.</p>
+<pre><code># Give the player 500 gold
+SetU32       Pool_1 0.0 Const 500.0
+GivePlayerGold
+</code></pre>
+<h4 id="inputs"><a class="header" href="#inputs">Inputs</a></h4>
+<ul>
+<li><strong>gold</strong> (<code>Pool_1[0]</code>) - Amount of gold to give the player</li>
+</ul>
+<h4 id="outputs-2"><a class="header" href="#outputs-2">Outputs</a></h4>
+<ul>
+<li><strong>new_gold</strong> (<code>Pool_1[0]</code>) - Amount of gold the player has after giving them the additional gold</li>
+</ul>
 <h3 id="healplayermonsters-0x65"><a class="header" href="#healplayermonsters-0x65">HealPlayerMonsters (0x65)</a></h3>
 <h3 id="playerhasroominhand-0xb5"><a class="header" href="#playerhasroominhand-0xb5">PlayerHasRoomInHand (0xB5)</a></h3>
 

@@ -35,10 +35,10 @@
             const path_to_root = "../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../../searchindex-7465de07.js";
+            window.path_to_searchindex_js = "../../searchindex-173ab1d6.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../../toc-deff5bc3.js"></script>
+        <script src="../../toc-d5ae60e1.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -215,7 +215,7 @@ to indicate that it is text.</p>
 <img src="../../images/events_dialog_first_cutscene_ellipses_only.png" alt="" style="max-height: 250px;" />
 </p>
 
-<p>Looking at the text in the <code>SetDialog</code> instruction, you’ll notice that it starts with <code>[0xEA]</code>. This is a <a href="#control-codes">control code</a>. In this case, it indicates that the text is for a conversation. Most conversation text will start with <code>[0xEA]</code>, though there are some cases where it may start with a another control code (such as <code>[0xEB]</code>).</p>
+<p>Looking at the text in the <code>SetDialog</code> instruction, you’ll notice that it starts with <code>[0xEA]</code>. This is a <a href="#control-codes">control code</a>. In this case, it indicates that the text is for a conversation. Most conversation text will start with <code>[0xEA]</code>, though there are some cases where it may start with another control code (such as <code>[0xEB]</code>).</p>
 <pre><code>SetDialog    "[0xEA]..."
 </code></pre>
 <p>You’ll also notice that before the <code>ShowDialog</code> instruction that there is a <code>SetU32</code> instruction. This controls whether the dialog advance triangle appears at the bottom of the dialog box. Using <code>1.0</code> at the end shows the triangle, while using <code>0.0</code> hides it. See <a href="value_pools.html">Value pools</a> for a more detailed explanation of <code>SetU32</code>.</p>
@@ -265,13 +265,39 @@ EndDialog
 <tr><th>Code</th><th>Purpose</th></tr>
 </thead>
 <tbody>
-<tr><td><code>[0xD0]</code></td><td>Starts a non-conversational dialog (ex. for opening a treasure chest)</td></tr>
+<tr><td><code>[0xD0]1</code></td><td>Starts a non-conversational dialog (ex. for opening a treasure chest)</td></tr>
+<tr><td><code>[0xD0]8</code></td><td>Shows text that has been stored using IntToString</td></tr>
 <tr><td><code>[0xEA]</code></td><td>Starts a conversational dialog</td></tr>
 <tr><td><code>[0xEB]</code></td><td>Used to start some conversational dialog (exact behavior unclear)</td></tr>
 <tr><td><code>[0xF5]</code></td><td>Inserts the player’s name</td></tr>
 </tbody>
 </table>
 </div>
+<h3 id="showing-data"><a class="header" href="#showing-data">Showing data</a></h3>
+<p>As an example, let’s show the amount of gold the player currently has.</p>
+<p>First we’ll use <a href="../../3_reference_guides/event_instructions/player_data.html#giveplayergold-0x5e">GivePlayerGold</a> to give the player 500 gold. This will give the player gold and store the player’s current amount of gold in <code>Pool_1[0]</code>. Since the player starts the game with 150 gold, after this instruction they will have 650 gold.</p>
+<p>Next we’ll use <code>IntToString</code> to store that value as text so that we can display it in a dialog box. <code>IntToString</code> reads the value to convert to text from <code>Pool_1[1]</code>, so we’ll need to move the amount of gold from <code>Pool_1[0]</code> to <code>Pool_1[1]</code>. Then we’ll need to set <code>Pool_1[0]</code> to <code>1</code>, as <code>IntToString</code> requires it.</p>
+<p>Finally we’ll show the amount of gold in a dialog box by using the <code>[0xD0]8</code> control code in the <code>SetDialog</code> instruction.</p>
+<pre><code>StartDialog
+SetU32       Pool_1 0.0 Const 500.0
+GivePlayerGold
+SetU32       Pool_1 1.0 Pool_1 0.0
+SetU32       Pool_1 0.0 Const 1.0
+IntToString
+SetDialog    "[0xEA]It seems you have [0xD0]8 gold"
+SetU32       Pool_1 0.0 Const 1.0
+ShowDialog  
+EndDialog
+</code></pre>
+<p align="center">
+<img src="../../images/events_control_codes_amount_of_gold.png" alt="" style="max-height: 250px;" />
+</p>
+
+<blockquote class="blockquote-tag blockquote-tag-note">
+<p class="blockquote-tag-title"><svg viewbox="0 0 16 16" width="18" height="18"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
+<p><code>IntToString</code> can actually take in either a <code>0</code> or a <code>1</code> from <code>Pool_1[0]</code>.</p>
+<p>Using a <code>1</code> stores the text such that it can be displayed in dialog boxes using <code>[0xD0]8</code>. It is not yet known what using a <code>0</code> does, but it is likely that it stores the text such that it can be displayed using a different control code.</p>
+</blockquote>
 
                     </main>
 

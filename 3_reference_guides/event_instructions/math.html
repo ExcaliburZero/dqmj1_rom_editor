@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Value pools - DQMJ1 ROM Editor</title>
+        <title>Math - DQMJ1 ROM Editor</title>
 
 
         <!-- Custom HTML head -->
@@ -174,83 +174,133 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="value-pools"><a class="header" href="#value-pools">Value pools</a></h1>
-<p><strong>Value pools</strong> are the way that event scripts store and keep track of data. <a href="instructions.html">Instructions</a> read data from value pools as input and store data into value pools as output.</p>
-<p>Each pool holds a numbered list of values that can be written to, or read from.</p>
-<p>We will refer to entries in a pool by the pool name followed by the entry number in square brackets (ex. entry <code>0</code> of <code>Pool_1</code> = <code>Pool_1[0]</code>).</p>
-<pre><code>SetU32       Pool_1 0.0 Const 2.0   # Store the value 2.0 into Pool_1[0]
-SetU32       Pool_1 1.0 Const 1.0   # Store the value 1.0 into Pool_1[1]
+                        <h1 id="math"><a class="header" href="#math">Math</a></h1>
+<h2 id="arithmetic"><a class="header" href="#arithmetic">Arithmetic</a></h2>
+<h3 id="add-0x16"><a class="header" href="#add-0x16">Add (0x16)</a></h3>
+<p><code>Add</code> sums together two float values and stores the result in a value pool.</p>
+<pre><code># Pool_1[0] = 4 + 5 = 9
+Add Pool_1 0.0 Const 4.0 Const 5.0
 
-GetItemCount                        # Checks how many strong medicines (2.0)
-                                    # the player has in their bag (1.0)
-                                    # and store that number in Pool_1[0]
-
-GivePlayerGold                      # Give the player 1 gold for each strong
-                                    # medicine in their bag
+# Pool_1[1] = Pool_1[0] + 3 = 12
+Add Pool_1 1.0 Pool_1 0.0 Const 3.0
 </code></pre>
-<h2 id="example"><a class="header" href="#example">Example</a></h2>
-<p>Let’s explore the example shown above, which gives the player 1 gold for each strong medicine they have in their bag.</p>
-<h3 id="as-input"><a class="header" href="#as-input">As input</a></h3>
-<p>Notice that the <code>GetItemCount</code> instruction does not take any <a href="instructions.html#parts-of-an-instruction">arguments</a>. But it needs some way to know what type of item we want to count, as well as whether we want to look in the player’s hand, bag, or both.</p>
-<p>The <code>GetItemCount</code> instruction takes two inputs, an <code>item_id</code> and an <code>item_location</code>. It reads the <code>item_id</code> from <code>Pool_1[0]</code>, and it reads <code>item_location</code> from <code>Pool_1[1]</code>.</p>
-<p>So in order to have <code>GetItemCount</code> count the number of strong medicines the player has in their bag, we will need to:</p>
+<h4 id="arguments"><a class="header" href="#arguments">Arguments</a></h4>
 <ul>
-<li>Store <code>2.0</code> in <code>Pool_1[0]</code>, as <code>2</code> is the <a href="https://datacrystal.tcrf.net/wiki/Dragon_Quest_Monsters:_Joker/Notes#Item_IDs">item id for strong medicine</a></li>
-<li>Store <code>1.0</code> in <code>Pool_1[1]</code>, as <code>1</code> is a special value for <code>GetItemCount</code> indicating to look only in the player’s bag</li>
+<li><strong>destination</strong> (<code>Pool</code> + <code>Value</code>) - Value pool and slot to store the result in</li>
+<li><strong>a</strong> (<code>Pool</code> + <code>Value</code>) - First operand of the addition</li>
+<li><strong>b</strong> (<code>Pool</code> + <code>Value</code>) - Second operand of the addition</li>
 </ul>
-<p>To store a value within a pool, we can use the <code>SetU32</code> instruction. It takes 4 arguments:</p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Argument</th><th>Purpose</th></tr>
-</thead>
-<tbody>
-<tr><td>1st</td><td>Pool to store the value in</td></tr>
-<tr><td>2nd</td><td>Entry within that pool to store the value in</td></tr>
-<tr><td>3rd</td><td><code>Const</code></td></tr>
-<tr><td>4th</td><td>Value to store</td></tr>
-</tbody>
-</table>
-</div>
-<blockquote class="blockquote-tag blockquote-tag-note">
-<p class="blockquote-tag-title"><svg viewbox="0 0 16 16" width="18" height="18"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
-<p><code>SetU32</code> can also be used to move a value from one pool entry to another. In that case the 3rd argument is the pool to read the value from, and the 4th argument is the entry in that pool to read from.</p>
-</blockquote>
-<p>The two <code>SetU32</code> instructions below will store <code>2.0</code> into <code>Pool_1[0]</code> and <code>1.0</code> into <code>Pool_1[1]</code>.</p>
-<pre><code>SetU32       Pool_1 0.0 Const 2.0   # Store the value 2.0 into Pool_1[0]
-SetU32       Pool_1 1.0 Const 1.0   # Store the value 1.0 into Pool_1[1]
+<h4 id="outputs"><a class="header" href="#outputs">Outputs</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>destination argument</code>) - Result of the addition</li>
+</ul>
+<h3 id="subtract-0x17"><a class="header" href="#subtract-0x17">Subtract (0x17)</a></h3>
+<p><code>Subtract</code> subtracts two float values and stores the result in a value pool.</p>
+<pre><code># Pool_1[0] = 5 - 4 = 1
+Subtract Pool_1 0.0 Const 5.0 Const 4.0
+
+# Pool_1[1] = Pool_1[0] - 2 = -1
+Subtract Pool_1 1.0 Pool_1 0.0 Const 2.0
 </code></pre>
-<p>The <code>GetItemCount</code> instruction will then count the number of strong medicines that the player has in their bag. Once it has executed, the count is stored into <code>Pool_1[0]</code>, which the next instruction can then read.</p>
-<h3 id="as-output"><a class="header" href="#as-output">As output</a></h3>
-<p>We want the <code>GivePlayerGold</code> instruction to give the player 1 gold for each strong medicine in their bag, but we don’t know how many strong medicines the player will have in their bag until the script is actually running. So we can’t just use <code>SetU32</code> to specify a fixed amount.</p>
-<p><code>GetItemCount</code> stores its result into <code>Pool_1[0]</code> after it executes, and <code>GivePlayerGold</code> reads the amount of gold to give from <code>Pool_1[0]</code>. So by placing <code>GivePlayerGold</code> directly after <code>GetItemCount</code>, it will give the player gold equal to the count that was calculated.</p>
-<h2 id="supported-pools"><a class="header" href="#supported-pools">Supported pools</a></h2>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Name</th><th>Main purpose</th></tr>
-</thead>
-<tbody>
-<tr><td><code>Pool_0</code></td><td>Storing data for later use.</td></tr>
-<tr><td><code>Pool_1</code></td><td>Passing data as input to instructions. Instructions also store their output in this pool.</td></tr>
-<tr><td><code>Pool_3</code></td><td>Storing data for later use. (unclear if this has a special purpose)</td></tr>
-</tbody>
-</table>
-</div>
+<h4 id="arguments-1"><a class="header" href="#arguments-1">Arguments</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>Pool</code> + <code>Value</code>) - Value pool and slot to store the result in</li>
+<li><strong>a</strong> (<code>Pool</code> + <code>Value</code>) - Value to subtract from</li>
+<li><strong>b</strong> (<code>Pool</code> + <code>Value</code>) - Value to subtract</li>
+</ul>
+<h4 id="outputs-1"><a class="header" href="#outputs-1">Outputs</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>destination argument</code>) - Result of the subtraction</li>
+</ul>
+<h3 id="multiply-0x18"><a class="header" href="#multiply-0x18">Multiply (0x18)</a></h3>
+<p><code>Multiply</code> multiplies two float values and stores the result in a value pool.</p>
+<pre><code># Pool_1[0] = 5 * 4 = 20
+Multiply Pool_1 0.0 Const 5.0 Const 4.0
+
+# Pool_1[1] = Pool_1[0] * 2 = 40
+Multiply Pool_1 1.0 Pool_1 0.0 Const 2.0
+</code></pre>
+<h4 id="arguments-2"><a class="header" href="#arguments-2">Arguments</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>Pool</code> + <code>Value</code>) - Value pool and slot to store the result in</li>
+<li><strong>a</strong> (<code>Pool</code> + <code>Value</code>) - First operand of the multiplication</li>
+<li><strong>b</strong> (<code>Pool</code> + <code>Value</code>) - Second operand of the multiplication</li>
+</ul>
+<h4 id="outputs-2"><a class="header" href="#outputs-2">Outputs</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>destination argument</code>) - Result of the multiplication</li>
+</ul>
+<h3 id="divide-0x19"><a class="header" href="#divide-0x19">Divide (0x19)</a></h3>
+<p><code>Divide</code> divides two float values and stores the result in a value pool.</p>
+<pre><code># Pool_1[0] = 80 / 4 = 20
+Divide Pool_1 0.0 Const 80.0 Const 4.0
+
+# Pool_1[1] = Pool_1[0] / 2 = 10
+Divide Pool_1 1.0 Pool_1 0.0 Const 2.0
+</code></pre>
+<h4 id="arguments-3"><a class="header" href="#arguments-3">Arguments</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>Pool</code> + <code>Value</code>) - Value pool and slot to store the result in</li>
+<li><strong>a</strong> (<code>Pool</code> + <code>Value</code>) - Value to divide</li>
+<li><strong>b</strong> (<code>Pool</code> + <code>Value</code>) - Value to use as the divisor</li>
+</ul>
+<h4 id="outputs-3"><a class="header" href="#outputs-3">Outputs</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>destination argument</code>) - Result of the division</li>
+</ul>
+<h3 id="modulo-0x1a"><a class="header" href="#modulo-0x1a">Modulo (0x1A)</a></h3>
+<p><code>Modulo</code> divides two float values and stores the remainder of that division in a value pool.</p>
+<pre><code># Pool_1[0] = 6 % 4 = 2
+Modulo Pool_1 0.0 Const 6.0 Const 4.0
+
+# Pool_1[1] = Pool_1[0] % 2 = 0
+Modulo Pool_1 1.0 Pool_1 0.0 Const 2.0
+</code></pre>
+<h4 id="arguments-4"><a class="header" href="#arguments-4">Arguments</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>Pool</code> + <code>Value</code>) - Value pool and slot to store the remainder in</li>
+<li><strong>a</strong> (<code>Pool</code> + <code>Value</code>) - Value to divide</li>
+<li><strong>b</strong> (<code>Pool</code> + <code>Value</code>) - Value to use as the divisor</li>
+</ul>
+<h4 id="outputs-4"><a class="header" href="#outputs-4">Outputs</a></h4>
+<ul>
+<li><strong>destination</strong> (<code>destination argument</code>) - Result of the modulo operation</li>
+</ul>
+<h2 id="bitwise-operations"><a class="header" href="#bitwise-operations">Bitwise operations</a></h2>
 <blockquote class="blockquote-tag blockquote-tag-note">
 <p class="blockquote-tag-title"><svg viewbox="0 0 16 16" width="18" height="18"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p>
-<p>There is no <code>Pool_2</code>, as the internal representation for event scripts uses <code>2</code> for the pool to represent <code>Const</code> rather than an actual pool.</p>
+<p>The bitwise operation instructions might be bugged.</p>
+<p>They seem to load two values, convert them to 32bit integers, and then store the result without converting it back into a 32bit float. Though this has not yet been confirmed.</p>
 </blockquote>
+<h3 id="bitand-0x1b"><a class="header" href="#bitand-0x1b">BitAnd (0x1B)</a></h3>
+<h3 id="bitor-0x1c"><a class="header" href="#bitor-0x1c">BitOr (0x1C)</a></h3>
+<h3 id="bitxor-0x1d"><a class="header" href="#bitxor-0x1d">BitXor (0x1D)</a></h3>
+<h2 id="other"><a class="header" href="#other">Other</a></h2>
+<h3 id="randomnum-0x28"><a class="header" href="#randomnum-0x28">RandomNum (0x28)</a></h3>
+<p><code>RandomNum</code> generates a random integer in the range from 0 up to but not including a given upper bound.</p>
+<p>Ex. with an upper bound of 5, <code>RandomNum</code> will pick a number from: 0, 1, 2, 3, 4</p>
+<pre><code># Pick a random integer in the range [0, 9]
+SetU32      Pool_1 0.0 Const 10.0
+RandomNum
+</code></pre>
+<h4 id="inputs"><a class="header" href="#inputs">Inputs</a></h4>
+<ul>
+<li><strong>upper bound</strong> (<code>Pool_1[0]</code>) - Upper bound of the range of numbers to randomly generate</li>
+</ul>
+<h4 id="outputs-5"><a class="header" href="#outputs-5">Outputs</a></h4>
+<ul>
+<li><strong>number</strong> (<code>Pool_1[0]</code>) - Generated random number in range</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../2_topic_guides/event_scripts/instructions.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../3_reference_guides/event_instructions/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../../2_topic_guides/event_scripts/dialog.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../3_reference_guides/event_instructions/jumps_and_conditionals.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -260,11 +310,11 @@ SetU32       Pool_1 1.0 Const 1.0   # Store the value 1.0 into Pool_1[1]
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../2_topic_guides/event_scripts/instructions.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../3_reference_guides/event_instructions/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../../2_topic_guides/event_scripts/dialog.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../3_reference_guides/event_instructions/jumps_and_conditionals.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
