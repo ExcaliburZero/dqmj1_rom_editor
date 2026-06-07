@@ -3,6 +3,8 @@ tmp/
 
 /target/
 
+.~lock*
+
 # Logs
 logs
 *.log
