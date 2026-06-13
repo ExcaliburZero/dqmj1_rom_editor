@@ -1,10 +1,20 @@
 use std::{
-    fs::{self, File},
+    ffi::OsString,
+    fs::{self, DirEntry, File},
     io::Write,
-    path::Path,
+    path::{Path, PathBuf},
 };
 
-use binrw::{binread, io::SeekFrom};
+use binrw::{binread, io::SeekFrom, meta::ReadMagic};
+use thiserror::Error;
+
+#[derive(Error, Debug, Clone, PartialEq)]
+pub enum FpkError {
+    #[error("Found subdirectory \"{0}\" when creating fpk file")]
+    Subdirectory(PathBuf),
+    #[error("Found file with too long name \"{0}\", can only have 32 bytes max")]
+    FilenameTooLong(String),
+}
 
 #[binread]
 #[brw(little)]
@@ -23,9 +33,8 @@ pub struct FpkFile {
 }
 
 impl FpkFile {
-    pub fn write(&self, filepath: &Path) -> std::io::Result<()> {
-        let mut file = File::create(filepath)?;
-        file.write_all(&self.data)?;
+    pub fn write<W: Write>(&self, writer: &mut W) -> std::io::Result<()> {
+        writer.write_all(&self.data)?;
 
         Ok(())
     }
@@ -43,6 +52,47 @@ pub struct Fpk {
 }
 
 impl Fpk {
+    pub fn from_directory(directory: &Path) -> Result<Fpk, Box<dyn std::error::Error>> {
+        let mut children = fs::read_dir(directory)?.collect::<Result<Vec<DirEntry>, _>>()?;
+        children.sort_by_key(|child| child.file_name());
+
+        // Make sure we can create the fpk
+        for child in children.iter() {
+            if child.file_type()?.is_dir() {
+                return Err(Box::new(FpkError::Subdirectory(child.path())));
+            }
+        }
+
+        // Read in the files
+        let mut files = vec![];
+        for child in children.iter() {
+            let name_info = encode_name_info(&child.file_name())?;
+            let offset = 0; // temporary, since we don't know the size of the header yet
+            let data = fs::read(child.path())?;
+            let size = data.len().try_into()?;
+
+            files.push(FpkFile {
+                name_info,
+                offset,
+                size,
+                data,
+            });
+        }
+
+        // Set the offsets
+        let header_size = 4 + (0x20 + 4 + 4) * files.len();
+        let mut offset = header_size;
+        for file in files.iter_mut() {
+            file.offset = offset.try_into()?;
+            offset += file.data.len();
+        }
+
+        Ok(Fpk {
+            num_files: files.len().try_into()?,
+            files,
+        })
+    }
+
     pub fn write_to_directory(&self, directory: &Path) -> Result<(), Box<dyn std::error::Error>> {
         fs::create_dir(directory)?;
 
@@ -55,18 +105,55 @@ impl Fpk {
                 .collect();
             let filename = str::from_utf8(&filename_bytes)?;
             let filepath = directory.join(filename);
-            file.write(&filepath)?;
+            file.write(&mut File::create(filepath)?)?;
+        }
+
+        Ok(())
+    }
+
+    pub fn write<W: Write>(&self, writer: &mut W) -> Result<(), Box<dyn std::error::Error>> {
+        // Implemented manually due to file contents being stored in second half, rather than
+        // directly with the file definition
+        //
+        // Assumes that all of the file content offsets are correct
+        writer.write_all(&Fpk::MAGIC)?;
+        writer.write_all(&self.num_files.to_le_bytes())?;
+
+        for file in self.files.iter() {
+            writer.write_all(&file.name_info)?;
+            writer.write_all(&file.offset.to_le_bytes())?;
+            writer.write_all(&file.size.to_le_bytes())?;
+        }
+
+        for file in self.files.iter() {
+            writer.write_all(&file.data)?;
         }
 
         Ok(())
     }
 }
 
+fn encode_name_info(file_name: &OsString) -> Result<[u8; 0x20], FpkError> {
+    let bytes = file_name.as_encoded_bytes();
+    if bytes.len() > 32 {
+        return Err(FpkError::FilenameTooLong(
+            file_name.to_str().unwrap().to_string(),
+        ));
+    }
+
+    let mut name_info = [0u8; 32];
+    let len = bytes.len();
+    name_info[..len].copy_from_slice(&bytes[..len]);
+
+    Ok(name_info)
+}
+
 #[cfg(test)]
 mod tests {
-    use std::fs::File;
+    use std::{fs::File, io::Cursor};
 
     use binrw::BinRead;
+    use rstest::rstest;
 
     use super::*;
 
@@ -131,5 +218,122 @@ mod tests {
         };
 
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_fpk_from_directory_empty() -> Result<(), Box<dyn std::error::Error>> {
+        let dir = Path::new("test/data/fpk_empty");
+        fs::create_dir_all(dir)?; // create empty dir, since it can't be tracked by git
+
+        let actual = Fpk::from_directory(dir)?;
+
+        let expected = Fpk {
+            num_files: 0,
+            files: vec![],
+        };
+
+        assert_eq!(actual, expected);
+
+        let mut actual_contents = Cursor::new(vec![]);
+        actual.write(&mut actual_contents)?;
+
+        let expected_contents: Vec<u8> = vec![70, 80, 75, 0, 0, 0, 0, 0];
+
+        assert_eq!(expected_contents, actual_contents.into_inner());
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_fpk_from_directory_single_file() -> Result<(), Box<dyn std::error::Error>> {
+        let actual = Fpk::from_directory(Path::new("test/data/fpk_single_file"))?;
+
+        let expected = Fpk {
+            num_files: 1,
+            files: vec![FpkFile {
+                name_info: [
+                    102, 105, 108, 101, 49, 46, 116, 120, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                ],
+                offset: 44,
+                size: 3,
+                data: vec![97, 98, 99],
+            }],
+        };
+
+        assert_eq!(actual, expected);
+
+        let mut actual_contents = Cursor::new(vec![]);
+        actual.write(&mut actual_contents)?;
+
+        let expected_contents: Vec<u8> = vec![
+            70, 80, 75, 0, 1, 0, 0, 0, 102, 105, 108, 101, 49, 46, 116, 120, 116, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 44, 0, 0, 0, 3, 0, 0, 0, 97, 98, 99,
+        ];
+
+        assert_eq!(expected_contents, actual_contents.into_inner());
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_fpk_from_directory_multiple_files() -> Result<(), Box<dyn std::error::Error>> {
+        let actual = Fpk::from_directory(Path::new("test/data/fpk_multiple_files"))?;
+
+        let expected = Fpk {
+            num_files: 2,
+            files: vec![
+                FpkFile {
+                    name_info: [
+                        102, 105, 108, 101, 49, 46, 116, 120, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    ],
+                    offset: 84,
+                    size: 3,
+                    data: vec![97, 98, 99],
+                },
+                FpkFile {
+                    name_info: [
+                        102, 105, 108, 101, 50, 46, 116, 120, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    ],
+                    offset: 87,
+                    size: 3,
+                    data: vec![100, 101, 102],
+                },
+            ],
+        };
+
+        assert_eq!(actual, expected);
+
+        let mut actual_contents = Cursor::new(vec![]);
+        actual.write(&mut actual_contents)?;
+
+        let expected_contents: Vec<u8> = vec![
+            70, 80, 75, 0, 2, 0, 0, 0, 102, 105, 108, 101, 49, 46, 116, 120, 116, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 84, 0, 0, 0, 3, 0, 0, 0, 102, 105,
+            108, 101, 50, 46, 116, 120, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 87, 0, 0, 0, 3, 0, 0, 0, 97, 98, 99, 100, 101, 102,
+        ];
+
+        assert_eq!(expected_contents, actual_contents.into_inner());
+
+        Ok(())
+    }
+
+    #[rstest]
+    #[case("test/data/single_file.fpk")]
+    #[case("test/data/two_files.fpk")]
+    fn test_read_write(#[case] filepath: &str) -> Result<(), Box<dyn std::error::Error>> {
+        let before = fs::read(filepath)?;
+        let fpk = read_fpk_from_file(filepath);
+
+        let mut writer = Cursor::new(vec![]);
+        fpk.write(&mut writer)?;
+
+        let after = writer.into_inner();
+
+        assert_eq!(before, after);
+        Ok(())
     }
 }
