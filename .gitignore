@@ -1,5 +1,6 @@
 tmp/
 /experiment_scripts/
+/pre-commit.ps1
 
 /target/
 
