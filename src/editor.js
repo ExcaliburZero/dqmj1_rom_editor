@@ -484,6 +484,33 @@ async function exportEvents() {
     console.log("Finished exporting events");
 }
 
+async function showMaps() {
+    console.log("Showing maps");
+
+    currentPage = document.getElementById("maps-page");
+    currentPageNavigation = document.getElementById("navigation-maps");
+
+    currentPage.style.display = "block";
+    currentPageNavigation.classList = "selected";
+
+    // await getMaps();
+
+    // populateMapsTable();
+}
+
+async function exportMaps() {
+    const outputDirectory = await open({
+        multiple: false,
+        directory: true,
+        title: "Select a Directory",
+    });
+
+    const options = { outputDirectory: outputDirectory };
+    console.log(`Exporting maps: ${JSON.stringify(options)}`);
+    await invoke("export_maps", options);
+    console.log("Finished exporting maps");
+}
+
 async function getStringTables() {
     if (stringTables !== null) {
         return;
@@ -556,6 +583,8 @@ async function showPage(pageName) {
         showSkillSets();
     } else if (pageName === "events") {
         showEvents();
+    } else if (pageName === "maps") {
+        showMaps();
     }
 }
 
@@ -579,6 +608,12 @@ window.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
 
         showPage("events");
+    });
+
+    document.querySelector("#navigation-maps").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        showPage("maps");
     });
 
     document.querySelector("#encounters-select").addEventListener("change", (e) => {
@@ -621,6 +656,12 @@ window.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
 
         exportEvents();
+    });
+
+    document.querySelector("#export-maps").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        exportMaps();
     });
 
     document.addEventListener("keydown", async (e) => {

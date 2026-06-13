@@ -1,5 +1,5 @@
 use crate::commands::{
-    create_mod, export_events, extract_maps, get_btl_enmy_prm, get_event_files_list, get_mods,
+    create_mod, export_events, export_maps, get_btl_enmy_prm, get_event_files_list, get_mods,
     get_skill_tbl, get_string_tables, import_events, load_mod, pack_rom, save_mod,
     set_btl_enmy_prm, set_skill_tbl, unpack_rom,
 };
@@ -27,7 +27,7 @@ pub fn run() {
             get_event_files_list,
             export_events,
             import_events,
-            extract_maps
+            export_maps
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

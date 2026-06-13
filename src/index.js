@@ -18,8 +18,6 @@ async function unpackRom() {
     console.log(`Unpacking rom: ${JSON.stringify(options)}`);
     await invoke("unpack_rom", options);
     console.log("Finished unpacking rom");
-
-    await invoke("extract_maps", {});
 }
 
 function selectMod(tag) {

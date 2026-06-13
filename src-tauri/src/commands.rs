@@ -333,7 +333,8 @@ pub fn import_events(app: tauri::AppHandle, filepaths: Vec<String>) -> Vec<FileE
 }
 
 #[tauri::command]
-pub fn extract_maps(app: tauri::AppHandle) {
+pub fn export_maps(app: tauri::AppHandle, output_directory: String) {
+    let output_directory = Path::new(&output_directory);
     let temp_directory = get_temp_directory(&app);
     let files_directory = temp_directory.join("files");
 
@@ -347,8 +348,8 @@ pub fn extract_maps(app: tauri::AppHandle) {
         let mut reader = File::open(filepath).unwrap();
         let fpk = Fpk::read(&mut reader).unwrap();
 
-        fpk.write_to_directory(&filepath.with_extension(""))
-            .unwrap();
+        let fpk_dir = output_directory.join(filepath.file_name().unwrap());
+        fpk.write_to_directory(&fpk_dir).unwrap();
     }
 }
 
