@@ -44,7 +44,7 @@ jobs:
       run: cargo fmt --all -- --check
 
     - name: Check JS, CSS, JSON using Biome
-      run: npx @biomejs/biome ci
+      run: npx @biomejs/biome@2.4.0 ci
 
     - name: Lint Rust code (Core)
       working-directory: dqmj1_rom_util
