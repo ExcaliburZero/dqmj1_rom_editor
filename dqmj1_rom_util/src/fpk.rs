@@ -40,6 +40,31 @@ impl FpkFile {
     }
 }
 
+#[derive(Debug, PartialEq, PartialOrd, Ord, Eq)]
+enum FileKind {
+    Nsbmd,
+    Atr,
+    Scn,
+    Pos,
+    Nsbtx,
+    Other(String),
+}
+
+impl FileKind {
+    pub fn from_path(filepath: &Path) -> FileKind {
+        let extension = filepath.extension().unwrap().to_str().unwrap().to_string();
+
+        match extension.as_str() {
+            "nsbmd" => FileKind::Nsbmd,
+            "atr" => FileKind::Atr,
+            "scn" => FileKind::Scn,
+            "pos" => FileKind::Pos,
+            "nsbtx" => FileKind::Nsbtx,
+            _ => FileKind::Other(extension),
+        }
+    }
+}
+
 #[binread]
 #[brw(little)]
 #[derive(Debug, PartialEq)]
@@ -54,7 +79,7 @@ pub struct Fpk {
 impl Fpk {
     pub fn from_directory(directory: &Path) -> Result<Fpk, Box<dyn std::error::Error>> {
         let mut children = fs::read_dir(directory)?.collect::<Result<Vec<DirEntry>, _>>()?;
-        children.sort_by_key(|child| child.file_name());
+        children.sort_by_key(|child| (FileKind::from_path(&child.path()), child.file_name()));
 
         // Make sure we can create the fpk
         for child in children.iter() {
