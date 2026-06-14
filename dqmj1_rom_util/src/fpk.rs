@@ -94,7 +94,7 @@ impl Fpk {
     }
 
     pub fn write_to_directory(&self, directory: &Path) -> Result<(), Box<dyn std::error::Error>> {
-        fs::create_dir(directory)?;
+        fs::create_dir_all(directory)?;
 
         for file in self.files.iter() {
             let filename_bytes: Vec<u8> = file
