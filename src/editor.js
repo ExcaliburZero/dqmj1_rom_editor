@@ -511,6 +511,27 @@ async function exportMaps() {
     console.log("Finished exporting maps");
 }
 
+async function importMaps(directories) {
+    const mapResults = document.getElementById("map-results");
+    mapResults.innerHTML = `Importing ${directories.length} map files`;
+
+    const options = { directories: directories };
+    console.log(`Import map files: ${JSON.stringify(options)}`);
+    const errors = await invoke("import_maps", options);
+
+    if (errors.length === 0) {
+        mapResults.innerHTML = `Finished importing ${directories.length} map files`;
+    } else {
+        const innerHTML = [`<p>${errors.length} error(s) while importing map files</p>`];
+
+        for (const error of errors) {
+            innerHTML.push(`${error}<br />`);
+        }
+
+        mapResults.innerHTML = innerHTML.join("");
+    }
+}
+
 async function getStringTables() {
     if (stringTables !== null) {
         return;
@@ -677,17 +698,25 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 
     const eventsPage = document.getElementById("events-page");
+    const mapsPage = document.getElementById("maps-page");
     getCurrentWebview().onDragDropEvent((event) => {
         if (event.payload.type === "drop") {
             const paths = event.payload.paths;
-            importEvents(paths);
+
+            if (currentPage.id === "events-page") {
+                importEvents(paths);
+            } else if (currentPage.id === "maps-page") {
+                importMaps(paths);
+            }
         }
 
         if (event.payload.type === "enter") {
             eventsPage.classList.add("drag-over");
+            mapsPage.classList.add("drag-over");
         }
         if (event.payload.type === "leave" || event.payload.type === "drop") {
             eventsPage.classList.remove("drag-over");
+            mapsPage.classList.remove("drag-over");
         }
     });
 });

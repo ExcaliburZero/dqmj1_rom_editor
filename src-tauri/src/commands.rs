@@ -353,6 +353,57 @@ pub fn export_maps(app: tauri::AppHandle, output_directory: String) {
     }
 }
 
+fn map_dir_to_fpk(
+    directory: &Path,
+    output_filepath: &Path,
+) -> Result<(), Box<dyn std::error::Error>> {
+    println!("{:?} -> {:?}", directory, output_filepath);
+
+    let fpk = Fpk::from_directory(directory)?;
+
+    let mut file = File::create(output_filepath)?;
+    fpk.write(&mut file)?;
+
+    Ok(())
+}
+
+#[tauri::command]
+pub fn import_maps(app: tauri::AppHandle, directories: Vec<String>) -> Vec<String> {
+    // TODO: maybe write to a different dir and move to proper dir if all successful?
+    let temp_directory = get_temp_directory(&app);
+    let output_directory = temp_directory.join("files");
+
+    let results: Vec<_> = directories
+        .par_iter()
+        .map(|directory| {
+            let directory = Path::new(directory);
+            let base_name = directory
+                .file_name()
+                .unwrap()
+                .to_str()
+                .unwrap()
+                .split_once(".")
+                .unwrap()
+                .0;
+
+            let output_filepath = output_directory.join(format!("{}.map", base_name));
+            (
+                directory,
+                map_dir_to_fpk(directory, &output_filepath).map_err(|err| err.to_string()),
+            )
+        })
+        .collect();
+
+    let mut errors = vec![];
+    for (directory, result) in results {
+        if let Err(error) = result {
+            errors.push(format!("{:?}: {}", directory, error));
+        }
+    }
+
+    errors
+}
+
 #[tauri::command]
 pub fn get_mods(app: tauri::AppHandle) -> Vec<String> {
     get_mod_names(&app)
