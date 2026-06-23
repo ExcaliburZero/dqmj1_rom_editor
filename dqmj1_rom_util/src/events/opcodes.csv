@@ -67,7 +67,7 @@ Id,Name,Arguments,Inputs,Outputs,Notes
 0x41,Cmd_0x41,[],"[Pool_1[0], Pool_1[1], Pool_1[2]]",[],
 0x42,Cmd_0x42,[],[Pool_1[0]],[],
 0x43,Cmd_0x43,"[U32, U32]","[arg_0, arg_1]",[],TODO: confirm args
-0x44,Cmd_0x44,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4], Pool_1[5]]",[],Maybe related to starting a battle?
+0x44,StartBattle,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3], Pool_1[4], Pool_1[5]]",[],Maybe related to starting a battle?
 0x45,Cmd_0x45,[],"[Pool_1[0], Pool_1[1]]",[Pool_1[0]],
 0x46,Cmd_0x46,[],"[Pool_1[0], Pool_1[1], Pool_1[2], Pool_1[3]]",[],
 0x47,Cmd_0x47,[],[],[Pool_1[0]],

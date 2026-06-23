@@ -19,3 +19,4 @@
       - [Math](./3_reference_guides/event_instructions/math.md)
       - [Jumps and conditionals](./3_reference_guides/event_instructions/jumps_and_conditionals.md)
       - [Player data](./3_reference_guides/event_instructions/player_data.md)
+      - [Other](./3_reference_guides/event_instructions/other.md)

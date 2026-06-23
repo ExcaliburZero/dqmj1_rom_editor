@@ -79,7 +79,7 @@ This section details the various types of [event instructions](../../2_topic_gui
 | 0x41 | Cmd_0x41 |  |
 | 0x42 | Cmd_0x42 |  |
 | 0x43 | Cmd_0x43 |  |
-| 0x44 | Cmd_0x44 |  |
+| 0x44 | StartBattle | [Other](other.md) |
 | 0x45 | Cmd_0x45 |  |
 | 0x46 | Cmd_0x46 |  |
 | 0x47 | Cmd_0x47 |  |
