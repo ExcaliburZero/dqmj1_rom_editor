@@ -559,6 +559,29 @@ async function syncFiles() {
     }
 }
 
+async function exportAll() {
+    await getEncounters();
+    await getSkillSets();
+    await getStringTables();
+
+    await syncFiles();
+
+    const directory = await open({
+        multiple: false,
+        directory: true,
+    });
+
+    const options = {
+        directory: directory,
+        btlEnmyPrm: encounters,
+        skillTbl: { [skillSetsRegion]: skillSets },
+        stringTables: stringTables,
+    };
+    console.log(`Exporting all data: ${JSON.stringify(options)}`);
+    await invoke("export_all", options);
+    console.log("Finished exporting all data");
+}
+
 async function savePatchedRom() {
     console.log(encounters);
 
@@ -659,6 +682,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
         const id = parseInt(value.substring(0, 3));
         showSkillSet(id);
+    });
+
+    document.querySelector("#export-all").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        exportAll();
     });
 
     document.querySelector("#save-mod").addEventListener("click", (e) => {

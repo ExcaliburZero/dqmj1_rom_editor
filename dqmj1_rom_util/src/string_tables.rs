@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     regions::Region,
@@ -10,7 +10,7 @@ use crate::{
 
 const POINTER_SIZE_IN_BYTES: usize = 4;
 
-#[derive(Serialize)]
+#[derive(Deserialize, Serialize)]
 pub struct StringTables {
     pub species_names: Vec<String>,
     pub item_names: Vec<String>,

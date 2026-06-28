@@ -15,17 +15,9 @@ use serde::Serialize;
 use tauri::Manager;
 
 use dqmj1_rom_util::{
-    btl_enmy_prm::BtlEnmyPrm,
-    events::{
-        assembly::parser::{parse_dqmj1_asm, ParseError, ParseLexError, ParseLexErrors},
-        binary::Evt,
-        disassembly::{DisassembledEvt, Opcode},
-    },
-    fpk::Fpk,
-    regions::Region,
-    skill_tbl::SkillTblWithRegion,
-    string_tables::StringTables,
-    strings::encoding::CharacterEncoding,
+    btl_enmy_prm::BtlEnmyPrm, events::{
+        assembly::parser::{ParseError, ParseLexError, ParseLexErrors, parse_dqmj1_asm}, binary::Evt, disassembly::{DisassembledEvt, Opcode},
+    }, export::AllData, fpk::Fpk, regions::Region, skill_tbl::SkillTblWithRegion, string_tables::StringTables, strings::encoding::CharacterEncoding,
 };
 
 fn get_mod_files(directory: &Path) -> Vec<String> {
@@ -407,6 +399,21 @@ pub fn import_maps(app: tauri::AppHandle, directories: Vec<String>) -> Vec<Strin
     }
 
     errors
+}
+
+#[tauri::command]
+pub fn export_all(
+    directory: &str,
+    btl_enmy_prm: BtlEnmyPrm,
+    skill_tbl: SkillTblWithRegion,
+    string_tables: StringTables,
+) {
+    let all_data = AllData {
+        btl_enmy_prm,
+        skill_tbl,
+        string_tables,
+    };
+    all_data.write_spreadsheets(Path::new(directory));
 }
 
 #[tauri::command]
