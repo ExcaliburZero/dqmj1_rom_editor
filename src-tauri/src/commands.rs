@@ -39,8 +39,13 @@ fn get_mod_files(directory: &Path) -> Vec<String> {
         .unwrap()
         .map(|fp| "files/".to_string() + fp.unwrap().file_name().unwrap().to_str().unwrap())
         .collect();
+    let map_files: Vec<String> = glob(&(files_directory.to_str().unwrap().to_owned() + "/*.map"))
+        .unwrap()
+        .map(|fp| "files/".to_string() + fp.unwrap().file_name().unwrap().to_str().unwrap())
+        .collect();
 
     mod_files.extend_from_slice(&event_files);
+    mod_files.extend_from_slice(&map_files);
 
     mod_files
 }
