@@ -484,6 +484,54 @@ async function exportEvents() {
     console.log("Finished exporting events");
 }
 
+async function showMaps() {
+    console.log("Showing maps");
+
+    currentPage = document.getElementById("maps-page");
+    currentPageNavigation = document.getElementById("navigation-maps");
+
+    currentPage.style.display = "block";
+    currentPageNavigation.classList = "selected";
+
+    // await getMaps();
+
+    // populateMapsTable();
+}
+
+async function exportMaps() {
+    const outputDirectory = await open({
+        multiple: false,
+        directory: true,
+        title: "Select a Directory",
+    });
+
+    const options = { outputDirectory: outputDirectory };
+    console.log(`Exporting maps: ${JSON.stringify(options)}`);
+    await invoke("export_maps", options);
+    console.log("Finished exporting maps");
+}
+
+async function importMaps(directories) {
+    const mapResults = document.getElementById("map-results");
+    mapResults.innerHTML = `Importing ${directories.length} map files`;
+
+    const options = { directories: directories };
+    console.log(`Import map files: ${JSON.stringify(options)}`);
+    const errors = await invoke("import_maps", options);
+
+    if (errors.length === 0) {
+        mapResults.innerHTML = `Finished importing ${directories.length} map files`;
+    } else {
+        const innerHTML = [`<p>${errors.length} error(s) while importing map files</p>`];
+
+        for (const error of errors) {
+            innerHTML.push(`${error}<br />`);
+        }
+
+        mapResults.innerHTML = innerHTML.join("");
+    }
+}
+
 async function getStringTables() {
     if (stringTables !== null) {
         return;
@@ -556,6 +604,8 @@ async function showPage(pageName) {
         showSkillSets();
     } else if (pageName === "events") {
         showEvents();
+    } else if (pageName === "maps") {
+        showMaps();
     }
 }
 
@@ -579,6 +629,12 @@ window.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
 
         showPage("events");
+    });
+
+    document.querySelector("#navigation-maps").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        showPage("maps");
     });
 
     document.querySelector("#encounters-select").addEventListener("change", (e) => {
@@ -623,6 +679,12 @@ window.addEventListener("DOMContentLoaded", () => {
         exportEvents();
     });
 
+    document.querySelector("#export-maps").addEventListener("click", (e) => {
+        e.preventDefault();
+
+        exportMaps();
+    });
+
     document.addEventListener("keydown", async (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === "s") {
             // Save mod - Ctrl+s (or Cmd+s on Mac)
@@ -636,17 +698,25 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 
     const eventsPage = document.getElementById("events-page");
+    const mapsPage = document.getElementById("maps-page");
     getCurrentWebview().onDragDropEvent((event) => {
         if (event.payload.type === "drop") {
             const paths = event.payload.paths;
-            importEvents(paths);
+
+            if (currentPage.id === "events-page") {
+                importEvents(paths);
+            } else if (currentPage.id === "maps-page") {
+                importMaps(paths);
+            }
         }
 
         if (event.payload.type === "enter") {
             eventsPage.classList.add("drag-over");
+            mapsPage.classList.add("drag-over");
         }
         if (event.payload.type === "leave" || event.payload.type === "drop") {
             eventsPage.classList.remove("drag-over");
+            mapsPage.classList.remove("drag-over");
         }
     });
 });

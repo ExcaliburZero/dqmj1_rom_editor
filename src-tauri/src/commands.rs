@@ -21,6 +21,7 @@ use dqmj1_rom_util::{
         binary::Evt,
         disassembly::{DisassembledEvt, Opcode},
     },
+    fpk::Fpk,
     regions::Region,
     skill_tbl::SkillTblWithRegion,
     string_tables::StringTables,
@@ -38,8 +39,13 @@ fn get_mod_files(directory: &Path) -> Vec<String> {
         .unwrap()
         .map(|fp| "files/".to_string() + fp.unwrap().file_name().unwrap().to_str().unwrap())
         .collect();
+    let map_files: Vec<String> = glob(&(files_directory.to_str().unwrap().to_owned() + "/*.map"))
+        .unwrap()
+        .map(|fp| "files/".to_string() + fp.unwrap().file_name().unwrap().to_str().unwrap())
+        .collect();
 
     mod_files.extend_from_slice(&event_files);
+    mod_files.extend_from_slice(&map_files);
 
     mod_files
 }
@@ -329,6 +335,78 @@ pub fn import_events(app: tauri::AppHandle, filepaths: Vec<String>) -> Vec<FileE
 
         errors
     }
+}
+
+#[tauri::command]
+pub fn export_maps(app: tauri::AppHandle, output_directory: String) {
+    let output_directory = Path::new(&output_directory);
+    let temp_directory = get_temp_directory(&app);
+    let files_directory = temp_directory.join("files");
+
+    let map_files: Vec<PathBuf> = glob(&(files_directory.to_str().unwrap().to_owned() + "/*.map"))
+        .unwrap()
+        .map(|p| p.unwrap())
+        .collect();
+
+    // TODO: parallelize
+    for filepath in map_files.iter() {
+        let mut reader = File::open(filepath).unwrap();
+        let fpk = Fpk::read(&mut reader).unwrap();
+
+        let fpk_dir = output_directory.join(filepath.file_name().unwrap());
+        fpk.write_to_directory(&fpk_dir).unwrap();
+    }
+}
+
+fn map_dir_to_fpk(
+    directory: &Path,
+    output_filepath: &Path,
+) -> Result<(), Box<dyn std::error::Error>> {
+    println!("{:?} -> {:?}", directory, output_filepath);
+
+    let fpk = Fpk::from_directory(directory)?;
+
+    let mut file = File::create(output_filepath)?;
+    fpk.write(&mut file)?;
+
+    Ok(())
+}
+
+#[tauri::command]
+pub fn import_maps(app: tauri::AppHandle, directories: Vec<String>) -> Vec<String> {
+    // TODO: maybe write to a different dir and move to proper dir if all successful?
+    let temp_directory = get_temp_directory(&app);
+    let output_directory = temp_directory.join("files");
+
+    let results: Vec<_> = directories
+        .par_iter()
+        .map(|directory| {
+            let directory = Path::new(directory);
+            let base_name = directory
+                .file_name()
+                .unwrap()
+                .to_str()
+                .unwrap()
+                .split_once(".")
+                .unwrap()
+                .0;
+
+            let output_filepath = output_directory.join(format!("{}.map", base_name));
+            (
+                directory,
+                map_dir_to_fpk(directory, &output_filepath).map_err(|err| err.to_string()),
+            )
+        })
+        .collect();
+
+    let mut errors = vec![];
+    for (directory, result) in results {
+        if let Err(error) = result {
+            errors.push(format!("{:?}: {}", directory, error));
+        }
+    }
+
+    errors
 }
 
 #[tauri::command]
